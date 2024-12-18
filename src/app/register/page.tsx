@@ -155,10 +155,10 @@ export default function RegisterPage() {
         })} placeholder="Подтвердите пароль" type={showPassword ? 'text' : 'password'} required className="max-h-[40px] mb-4 w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]" />
       </div>
       {(passwordStrength <4) &&<div className='text-[#8190b1] text-[9px] mr-[3px] text-center mb-2'>Используй 8 или больше литер с миксом из букв, чисел, символов, заглавних букв</div>}
-      <div className='flex mb-[15px]'>
+      {referrer &&<div className='flex mb-[15px]'>
         <div className='text-[#8190b1] text-[13px] mr-[3px]'>Приглашен:</div>
         <div className='text-[#8190b1] text-[13px] font-bold'>{referrer}</div>
-      </div>
+      </div>}
       <button type="submit" className="mb-[20px] w-full bg-[#234bef] text-white py-2 rounded-md hover:bg-blue-600 transition duration-300 disabled:opacity-50">
         Продолжить
       </button>
