@@ -81,11 +81,11 @@ export async function POST(request: Request) {
     try {
         // Parse request body
         const body = await request.json();
-        const { fullName, email, nickname, password, phone, country } = body;
+        const { firstName, lastName, username, email, phone, country, password, referrer } = body;
 
         // Validate input
-        if (!fullName || !email || !nickname || !password || !phone || !country) {
-            return NextResponse.json({ error: 'All fields are required' }, { status: 400 });
+        if (!firstName || !lastName || !email || !username || !password || !phone || !country) {
+            return NextResponse.json({ error: 'Всі поля повині бути заповнені' }, { status: 400 });
         }
 
         // Connect to database
@@ -102,13 +102,15 @@ export async function POST(request: Request) {
 
         // Create new user
         const newUser = new User({
-            fullName,
+            firstName,
+            lastName,
+            username,
             email,
-            nickname,
-            password: hashedPassword,
             phone,
             country,
-        });
+            password: hashedPassword,
+            referrer,
+          });
 
         await newUser.save();
 

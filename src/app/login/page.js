@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -35,9 +36,10 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <form 
         onSubmit={handleSubmit(onSubmit)} 
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-md"
+        className="bg-white p-8  w-full max-w-md"
       >
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <h2 className="text-3xl  mb-6 text-center ">Войти в акаунт</h2>
+        <h3 className=" mb-6 text-center">Введите свой емейл и пароль</h3>
         
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
@@ -46,42 +48,65 @@ export default function LoginPage() {
         )}
 
         <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 mb-2">Email</label>
           <input 
             id="email"
             {...register('email')} 
             placeholder="Enter your email" 
             type="email" 
             required 
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]"
           />
         </div>
 
-        <div className="mb-6">
-          <label htmlFor="password" className="block text-gray-700 mb-2">Password</label>
+        <div className="mb-[10px]">
           <input 
             id="password"
             {...register('password')} 
             placeholder="Enter your password" 
             type="password" 
             required 
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]"
           />
+        </div>
+        <div className="mt-4 flex justify-between mb-[10px]">
+          <div className='flex justify-between align-middle'>
+            <input 
+              id="checkbox"
+              {...register('checkbox')} 
+              type="checkbox" 
+              required 
+              className="px-3 py-2 rounded-md focus:outline-none bg-[#e8f0fd] mr-[5px]"
+            > 
+            </input>
+            <a className="text-blue-500 hover:underline">
+              Запомнить меня
+            </a>
+          </div>
+          <Link href='/forgot-password' className="text-blue-500 hover:underline">
+            Забил пароль?
+          </Link>
         </div>
         <button 
           type="submit" 
           disabled={isSubmitting}
-          className="w-full bg-black text-white py-2 rounded-md hover:bg-blue-600 transition duration-300 disabled:opacity-50"
+          className="mb-[20px] w-full bg-[#234bef] text-white py-2 rounded-md hover:bg-blue-600 transition duration-300 disabled:opacity-50"
         >
-          {isSubmitting ? 'Logging in...' : 'Login'}
+          {isSubmitting ? 'Входим...' : 'Войти'}
         </button>
-
-        <div className="mt-4 text-center">
-          <a href="/forgot-password" className="text-blue-500 hover:underline">
-            Forgot Password?
-          </a>
+        <div className="flex items-center w-full mb-[15px]">
+          <div className="flex-grow h-[2px] bg-[#e2e2e0]"></div>
+          <div className="px-4 text-center text-[#8190b1]">Или</div>
+          <div className="flex-grow h-[2px] bg-[#e2e2e0]"></div>
         </div>
+
+        <div className='flex justify-center text-center'>
+          <Link href='/register' className="text-[#8190b1] pt-[7px] p-[7px]  hover:underline  w-full border rounded border-px border-[#e2e2e0]">
+            Cоздать новий акаунт
+          </Link>
+        </div>
+        
       </form>
+        
     </div>
   );
 }
