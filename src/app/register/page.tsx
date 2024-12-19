@@ -80,7 +80,6 @@ export default function RegisterPage() {
       alert(result.error);
     }
   };
-  const password = watch('password', '');
 
   useEffect(() => {
     const password = watch('password', '');
