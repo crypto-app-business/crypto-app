@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams  } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+// import { useRouter, useSearchParams  } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 export default function RegisterPage() {
@@ -9,7 +10,7 @@ export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
   const [referrer, setReferrer] = useState<string | null>(null);
-  const searchParams = useSearchParams();
+  // const searchParams = useSearchParams();
   const [isUsernameUnique, setIsUsernameUnique] = useState(true);
 
   const checkUsername = async (username: string) => {
@@ -31,11 +32,16 @@ export default function RegisterPage() {
   
   ///register?referrer=ABCD1234 для створення реферального посилання
 
+  // useEffect(() => {
+  //   // Отримання реферального параметра з URL
+  //   const ref = searchParams.get('referrer');
+  //   if (ref) setReferrer(ref);
+  // }, [searchParams]);
   useEffect(() => {
-    // Отримання реферального параметра з URL
-    const ref = searchParams.get('referrer');
-    if (ref) setReferrer(ref);
-  }, [searchParams]);
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('referrer');
+    setReferrer(ref);
+  }, []);
 
   const validatePassword = (password: string): boolean | string => {
     console.log("asdjhsgd")
