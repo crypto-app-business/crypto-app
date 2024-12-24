@@ -280,12 +280,16 @@ export default function Header() {
           </div>
         </div>
         <div className="hidden md:flex gap-3 mx-4 w-3/12 md:w-2/4">
+        <Link className="w-full" href="/login">
           <FirstButton className={""} onClick={undefined}>
             Log In
           </FirstButton>
+        </Link>
+        <Link className="w-full" href="/register">
           <SecondButton className={""} onClick={undefined}>
             Sign Up
           </SecondButton>
+        </Link>
         </div>
         <div className="md:hidden sm:ml-80 text-2xl">
           <button
