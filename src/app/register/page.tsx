@@ -9,7 +9,7 @@ export default function RegisterPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
-  const [referrer, setReferrer] = useState<string | null>(null);
+  const [referrer, setReferrer] = useState<string>("none");
   // const searchParams = useSearchParams();
   const [isUsernameUnique, setIsUsernameUnique] = useState(true);
 
@@ -40,7 +40,8 @@ export default function RegisterPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('referrer');
-    setReferrer(ref);
+    console.log(ref)
+    if(ref)setReferrer(ref);
   }, []);
 
   const validatePassword = (password: string): boolean | string => {

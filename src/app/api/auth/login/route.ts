@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import User from '@/models/User';
+import connectDB from '@/utils/connectDB';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
         }
 
         // Connect to database
-        await mongoose.connect(process.env.MONGO_URI!, {});
+        await connectDB();
 
         // Find user by email
         const user = await User.findOne({ email });
