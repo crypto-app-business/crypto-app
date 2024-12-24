@@ -73,9 +73,9 @@
 
 
 import { NextResponse } from 'next/server';
-import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 import User from '@/models/User';
+import connectDB from '@/utils/connectDB';
 
 export async function POST(request: Request) {
     try {
@@ -89,14 +89,12 @@ export async function POST(request: Request) {
         }
 
         // Connect to database
-        await mongoose.connect(process.env.MONGO_URI!, {});
-
+        await connectDB();
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return NextResponse.json({ error: 'Email already registered' }, { status: 400 });
         }
-
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -111,7 +109,6 @@ export async function POST(request: Request) {
             password: hashedPassword,
             referrer,
           });
-
         await newUser.save();
 
         return NextResponse.json({ success: true, message: 'User registered successfully' }, { status: 201 });

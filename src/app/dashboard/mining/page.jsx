@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import DepositComponent from '@/components/dashboard/DepositComponent/DepositComponent';
+import MiningActivation from '@/components/dashboard/MiningActivation/MiningActivation';
 import PendingDeposits from '@/components/dashboard/PendingDeposits/PendingDeposits';
 import AdminDeposits from '@/components/dashboard/AdminDeposits/AdminDeposits';
 
@@ -63,9 +64,10 @@ export default function Dashboard() {
           ) : (
             <p>Баланс отсутсвует</p>
           )}
-          <DepositComponent id={user?.id} />
+          {/* <DepositComponent id={user?.id} />
           <PendingDeposits id={user?.id} />
-          <AdminDeposits/>
+          <AdminDeposits/> */}
+          <MiningActivation user={user}></MiningActivation>
         </div>
       </div>
     );

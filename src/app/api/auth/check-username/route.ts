@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import mongoose from 'mongoose';
 import User from '@/models/User';
+import connectDB from '@/utils/connectDB';
 
 export async function POST(request: Request) {
   try {
@@ -11,8 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Юзернейм є обов’язковим' }, { status: 400 });
     }
 
-    // Підключення до бази даних
-    await mongoose.connect(process.env.MONGO_URI!, {});
+    await connectDB();
 
     // Перевіряємо, чи існує користувач з таким юзернеймом
     const existingUser = await User.findOne({ username });

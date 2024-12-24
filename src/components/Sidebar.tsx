@@ -6,11 +6,11 @@ export default function Sidebar() {
   const links: { text: string; href: string }[] =[
     {
       text: "Главная",
-      href: "#",
+      href: "/dashboard",
     },
     {
       text: "Майнинг",
-      href: "#",
+      href: "/dashboard/mining",
     },
     {
       text: "Настройки",
