@@ -14,7 +14,7 @@ export function SecondButton({
   ...props
 }: Props) {
   const cx = classNames([
-    "text-white rounded-full py-3 px-6 md:py-4 md:px-10 bg-gradient-to-br hover:bg-gradient-to-r transition-all duration-500 from-primary to-secondary hover:bg-blend-darken",
+    "w-max text-white rounded-full py-3 px-6 md:py-4 md:px-10 bg-gradient-to-br hover:bg-gradient-to-r transition-all duration-500 from-primary to-secondary hover:bg-blend-darken",
     className,
   ]);
 
