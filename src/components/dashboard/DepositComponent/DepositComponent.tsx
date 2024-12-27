@@ -68,7 +68,7 @@ export default function DepositComponent({ id }) {
   };
 
   return (
-    <div style={{ padding: '20px', border: '1px solid #ddd', borderRadius: '8px' }}>
+    <div style={{ }}>
       {!isOpen &&<button onClick={()=>{setIsOpen(true)}} style={{ padding: '10px 20px', backgroundColor: '#4caf50', color: 'white', border: 'none', borderRadius: '4px' }}>
         Пополнить
       </button>}

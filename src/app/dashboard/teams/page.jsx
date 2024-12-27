@@ -6,6 +6,7 @@ import DepositComponent from '@/components/dashboard/DepositComponent/DepositCom
 import MiningActivation from '@/components/dashboard/MiningActivation/MiningActivation';
 import PendingDeposits from '@/components/dashboard/PendingDeposits/PendingDeposits';
 import AdminDeposits from '@/components/dashboard/AdminDeposits/AdminDeposits';
+import TeamComponent from '@/components/dashboard/TeamComponent/TeamComponent';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -50,24 +51,9 @@ export default function Dashboard() {
   }, [])
 
     return (
-      <div className="grid grid-cols-3 gap-6">
-        <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
-          <p className="text-gray-500 mt-2">Баланс</p>       
-          {user?.balance && Object.keys(user.balance).length > 0 ? (
-            <ul>
-              {Object.entries(user.balance).map(([currency, amount]) => (
-                <li key={currency}>
-                  <strong>{currency}:</strong> {amount}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Баланс отсутсвует</p>
-          )}
-          {/* <DepositComponent id={user?.id} />
-          <PendingDeposits id={user?.id} />
-          <AdminDeposits/> */}
-          {/* <MiningActivation user={user}></MiningActivation> */}
+      <div className="">
+        <div className="">
+        <TeamComponent />
         </div>
       </div>
     );

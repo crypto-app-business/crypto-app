@@ -1,7 +1,24 @@
 // import { HomeIcon, UserIcon, CogIcon } from '@heroicons/react/outline';
 import Link from "next/link";
 
-export default function Sidebar() {
+
+const CloseIcon = () => (
+  <svg 
+    className="w-6 h-6" 
+    fill="none" 
+    stroke="currentColor" 
+    viewBox="0 0 24 24"
+  >
+    <path 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      strokeWidth={2} 
+      d="M6 18L18 6M6 6l12 12"
+    />
+  </svg>
+);
+
+export default function Sidebar({isSidebarOpen, toggleSidebar}) {
 
   const links: { text: string; href: string }[] =[
     {
@@ -42,7 +59,7 @@ export default function Sidebar() {
     },
     {
       text: "Команда",
-      href: "#",
+      href: "/dashboard/teams",
     },
     {
       text: "Статистика",
@@ -62,6 +79,9 @@ export default function Sidebar() {
       </div> */}
       {/* Навігація */}
       <nav className="flex-grow text-white bg-[#324458] rounded">
+        <div className="sm:hidden flex justify-end  mt-[5px] mr-[5px] mb-[-30px]">
+          { isSidebarOpen && <div onClick={toggleSidebar} className={"sm:hidden"}><CloseIcon/></div>}
+        </div>
         <ul>
           {links.map((elem:{ text: string; href: string }, index: number)=>(
             <Link href={elem.href} key={index}>

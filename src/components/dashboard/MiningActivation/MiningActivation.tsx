@@ -105,17 +105,17 @@ export default function MiningActivation({ user }: MiningActivationProps) {
   };
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
+    <div className="">
       <h2 className="text-xl font-bold mb-4">Активировать майнинг</h2>
       {error && <p className="text-red-500">{error}</p>}
       <form onSubmit={handleSubmit}>
         {/* Вибір тижня */}
-        <label className="block mb-2">
-          Выберите длительность:
+        <label className="mb-2 block ">
+          <div>Выберите длительность:</div>
           <select
             value={week}
             onChange={(e) => setWeek(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full max-w-[300px] p-2 border rounded"
           >
             <option value="">Вибрать</option>
             {[...Array(4)].map((_, index) => (
@@ -128,11 +128,11 @@ export default function MiningActivation({ user }: MiningActivationProps) {
 
         {/* Вибір криптовалюти */}
         <label className="block mb-2">
-            Выберите криптовалюту:
+           <div> Выберите криптовалюту:</div>
           <select
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full max-w-[300px] p-2 border rounded"
           >
             <option value="">Вибрать</option>
             {user?.balance &&
@@ -146,7 +146,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
 
         {/* Введення кількості */}
         <label className="block mb-2">
-          Введите количество:
+        <div>Введите количество: </div>
           <input
             type="text" // Змінюємо тип на "text" для повного контролю
             value={amount}
@@ -157,7 +157,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
                 setAmount(value);
               }
             }}
-            className="w-full p-2 border rounded"
+            className="w-full max-w-[300px] p-2 border rounded"
             placeholder="Например, 0.01"
           />
         </label>
@@ -165,42 +165,77 @@ export default function MiningActivation({ user }: MiningActivationProps) {
         {/* Кнопка */}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+          className="w-full max-w-[300px] text-white bg-[#4caf50] p-2 rounded hover:bg-blue-600"
         >
           Создать
         </button>
       </form>
 
       {/* Виведення активних майнінгів */}
-      <h3 className="text-lg font-bold mt-6">Активные майнинговые сессии</h3>
-      {miningSessions.length > 0 ? (
-        <ul className="mt-4">
-          {miningSessions.map((session, index) => (
-            <li
-              key={`miningSessions-${index}`}
-              className="p-4 border rounded mb-2 shadow-sm hover:shadow-md"
-            >
-              <p>
-                <strong>Криптовалюта:</strong> {session.currency}
-              </p>
-              <p>
-                <strong>Сумма:</strong> {session.amount}
-              </p>
-              <p>
-                <strong>Дата создания:</strong> {new Date(session.startDate).toLocaleString()}
-              </p>
-              <p>
-                <strong>Дата завершения:</strong> {new Date(session.endDate).toLocaleString()}
-              </p>
-              <p>
-                <strong>Проценти:</strong> {session.percentage.join(', ')}%
-              </p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p className="text-gray-500 mt-2">Нет активних сессий.</p>
-      )}
+      <div>
+  <h3 className="text-lg font-bold mt-6">Активные майнинговые сессии</h3>
+  {miningSessions.length > 0 ? (
+    <>
+      {/* Таблиця для великих екранів */}
+      <div className="hidden lg:block">
+        <table className="w-full border-collapse border border-gray-200 mt-4">
+          <thead>
+            <tr className="bg-gray-100">
+              <th className="border px-4 py-2">Криптовалюта</th>
+              <th className="border px-4 py-2">Сумма</th>
+              <th className="border px-4 py-2">Дата создания</th>
+              <th className="border px-4 py-2">Дата завершения</th>
+              <th className="border px-4 py-2">Проценти</th>
+            </tr>
+          </thead>
+          <tbody>
+            {miningSessions.map((session, index) => (
+              <tr key={`table-row-${index}`} className="hover:bg-gray-50">
+                <td className="border px-4 py-2">{session.currency}</td>
+                <td className="border px-4 py-2">{session.amount}</td>
+                <td className="border px-4 py-2">
+                  {new Date(session.startDate).toLocaleString()}
+                </td>
+                <td className="border px-4 py-2">
+                  {new Date(session.endDate).toLocaleString()}
+                </td>
+                <td className="border px-4 py-2">{session.percentage.join(', ')}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Список для мобільних пристроїв */}
+      <ul className="lg:hidden mt-4">
+        {miningSessions.map((session, index) => (
+          <li
+            key={`miningSessions-${index}`}
+            className="p-4 border rounded mb-2 shadow-sm hover:shadow-md"
+          >
+            <p>
+              <strong>Криптовалюта:</strong> {session.currency}
+            </p>
+            <p>
+              <strong>Сумма:</strong> {session.amount}
+            </p>
+            <p>
+              <strong>Дата создания:</strong> {new Date(session.startDate).toLocaleString()}
+            </p>
+            <p>
+              <strong>Дата завершения:</strong> {new Date(session.endDate).toLocaleString()}
+            </p>
+            <p>
+              <strong>Проценти:</strong> {session.percentage.join(', ')}%
+            </p>
+          </li>
+        ))}
+      </ul>
+    </>
+  ) : (
+    <p className="text-gray-500 mt-2">Нет активних сессий.</p>
+  )}
+</div>
     </div>
   );
 }

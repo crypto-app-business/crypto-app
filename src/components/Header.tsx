@@ -37,7 +37,7 @@ export default function Header() {
         <div className='flex gap-[20px]'>
           <h1 className='text-[40px]'>Лого</h1>
           <div className='flex flex-col'>
-            <div className='flex gap-[5px] align-middle'>
+            {/* <div className='flex gap-[5px] align-middle'>
               <div>icon</div>
               <div>Дата</div>
               <div>date</div>
@@ -46,19 +46,19 @@ export default function Header() {
               <div>icon</div>
               <div>Время</div>
               <div>time</div>
-            </div>
+            </div> */}
           </div>
         </div>
         <div>
-          <div className='flex'>
+          {/* <div className='flex'>
             <div>Уведомления</div>
             <div>Язик</div>
             <div>Профиль</div>
-          </div>
-          <div className='flex'>
+          </div> */}
+          {/* <div className='flex'>
             <div>Кабинет</div>
             <div>Кабинет партнера</div>
-          </div>
+          </div> */}
         </div>
       </div>
       {/* <h1 className="text-xl font-bold text-gray-800">Вітаємо у Дашборді!</h1>

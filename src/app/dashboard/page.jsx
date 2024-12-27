@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import DepositComponent from '@/components/dashboard/DepositComponent/DepositComponent';
 import PendingDeposits from '@/components/dashboard/PendingDeposits/PendingDeposits';
 import AdminDeposits from '@/components/dashboard/AdminDeposits/AdminDeposits';
+import MiningActivation from '@/components/dashboard/MiningActivation/MiningActivation';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -49,8 +50,8 @@ export default function Dashboard() {
   }, [])
 
     return (
-      <div className="grid grid-cols-3 gap-6">
-        <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
+      <div className="p-2">
+        <div className="hover:shadow-lg transition-all">
           <p className="text-gray-500 mt-2">Баланс</p>       
           {user?.balance && Object.keys(user.balance).length > 0 ? (
             <ul>
@@ -66,6 +67,7 @@ export default function Dashboard() {
           <DepositComponent id={user?.id} />
           <PendingDeposits id={user?.id} />
           <AdminDeposits/>
+          <MiningActivation user={user}></MiningActivation>
         </div>
       </div>
     );
