@@ -43,7 +43,7 @@ export async function GET() {
         id: user._id,
         fullName: user.fullName,
         email: user.email,
-        nickname: user.nickname,
+        username: user.username,
         balance: user.balance || {}, // Повертаємо баланс або порожній об'єкт
       },
     });

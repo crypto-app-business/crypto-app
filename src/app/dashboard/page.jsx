@@ -11,6 +11,8 @@ export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState(null);
 
+  // register?referrer=ABCD1234
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -40,7 +42,7 @@ export default function Dashboard() {
     
       if (response.ok) {
         const data = await response.json();
-        setUser((prev) => ({ ...prev, balance: data.data.balance }));
+        setUser((prev) => ({ ...prev, balance: data.data.balance, username: data.data.username }));
         console.log('User data:', data.data);
       } else {
         console.error('Error fetching user data:', await response.json());
@@ -65,6 +67,17 @@ export default function Dashboard() {
             <p>Баланс отсутсвует</p>
           )}
           <DepositComponent id={user?.id} />
+          {user?.username && (
+          <div className="mt-4 p-4 bg-gray-100 rounded shadow-md">
+            <p className="text-gray-700 font-semibold">Ваша рефералка:</p>
+            <a
+              href={`/register?referrer=${user.username}`}
+              className="text-blue-500 hover:underline break-all"
+            >
+              {`${window.location.origin}/register?referrer=${user.username}`}
+            </a>
+          </div>
+          )}
           <PendingDeposits id={user?.id} />
           <AdminDeposits/>
           <MiningActivation user={user}></MiningActivation>
