@@ -2,15 +2,12 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import DepositComponent from '@/components/dashboard/DepositComponent/DepositComponent';
-import MiningActivation from '@/components/dashboard/MiningActivation/MiningActivation';
-import PendingDeposits from '@/components/dashboard/PendingDeposits/PendingDeposits';
-import AdminDeposits from '@/components/dashboard/AdminDeposits/AdminDeposits';
 import TeamComponent from '@/components/dashboard/TeamComponent/TeamComponent';
 
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -26,6 +23,8 @@ export default function Dashboard() {
       } catch (error) {
         console.error('Error checking auth:', error);
         router.push('/login');
+      } finally {
+        setLoading(false); // Завантаження завершено
       }
     };
     checkAuth();
@@ -49,11 +48,17 @@ export default function Dashboard() {
     };
     fetchUserData();
   }, [])
-
+  console.log(user)
     return (
       <div className="">
         <div className="">
-        <TeamComponent />
+        {loading ? (
+        <p>Loading...</p>
+      ) : user ? (
+        <TeamComponent userId={user.id} />
+      ) : (
+        <p>No user data available</p>
+      )}
         </div>
       </div>
     );
