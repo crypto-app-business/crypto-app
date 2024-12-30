@@ -8,7 +8,7 @@ const UserSchema = new mongoose.Schema({
     password: { type: String, required: true },
     phone: { type: String, required: true },
     country: { type: String, required: true },
-    referrer: { type: String, default: 'none' },
+    referrer: { type: String },
     balance: { type: Map, of: Number, default: {} },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
 }, { timestamps: true });

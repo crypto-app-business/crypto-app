@@ -24,14 +24,14 @@ export async function GET(req: Request) {
     const buildReferralTree = async (username: string, depth = 1, maxDepth = 10, visited = new Set()) => {
       if (depth > maxDepth || visited.has(username)) return [];
       visited.add(username);
-
-      const users = await User.find({ referrerUsername: username });
+      const users = await User.find({ referrer: username });
       const tree = await Promise.all(
         users.map(async (user) => {
           const deposits = await MiningSession.find({ userId: user._id });
           return {
             email: user.email,
-            referrer: user.referrerUsername !== 'none' ? user.referrerUsername : 'None',
+            username: user.username,
+            referrer: user.referrer  !== 'none' ? user.referrer : 'None',
             registrationDate: user.createdAt,
             deposits: deposits.map(({ currency, amount }) => ({ currency, amount })),
             line: depth,
