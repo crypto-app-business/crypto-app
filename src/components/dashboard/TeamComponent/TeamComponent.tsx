@@ -93,25 +93,23 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
         <p>Loading...</p>
       ) : (
         <>
-          <div className="grid grid-cols-3 gap-4 mb-6">
-            <div className="grid grid-cols-3 gap-4 mb-6">
-             <div className="flex flex-col items-center">
-               <div className="text-xl font-semibold">{team.length}</div>
-               <div className="text-gray-300">Активных партнёров</div>
-             </div>
-             <div className="flex flex-col items-center">
-               <div className="text-xl font-semibold">
-                 {team.filter(member => member.referrer === userId).length}
-               </div>
-               <div className="text-gray-300">Личные партнёры</div>
-             </div>
-             <div className="flex flex-col items-center">
-               <div className="text-xl font-semibold">
-                  {team.length}
-               </div>
-               <div className="text-gray-300">Всего</div>
-             </div>
-           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className="flex flex-col items-center">
+              <div className="text-xl font-semibold">{team.length}</div>
+              <div className="text-gray-300">Активных партнёров</div>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-xl font-semibold">
+                {team.filter(member => member.referrer === userId).length}
+              </div>
+              <div className="text-gray-300">Личные партнёры</div>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-xl font-semibold">
+                 {team.length}
+              </div>
+              <div className="text-gray-300">Всего</div>
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-4 mb-6">
