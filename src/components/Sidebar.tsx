@@ -35,7 +35,7 @@ export default function Sidebar({isSidebarOpen, toggleSidebar}) {
     },
     {
       text: "Стейкинг",
-      href: "#",
+      href: "/dashboard/staking",
     },
     {
       text: "Листинг",

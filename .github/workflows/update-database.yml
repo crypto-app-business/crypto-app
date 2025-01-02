@@ -1,0 +1,25 @@
+name: Update Database
+
+on:
+  schedule:
+    # Запускатиметься кожного дня о 00:00
+    - cron: '0 18 * * *'
+
+jobs:
+  update-database:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Клонуємо репозиторій
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Викликаємо API вашого Next.js проекту
+      - name: Call Next.js API
+        env:
+          VERCEL_URL: ${{ secrets.VERCEL_URL }}
+          STAKING_SECRET_KEY: ${{ secrets.STAKING_SECRET_KEY }}
+        run: |
+          curl -X POST https://${VERCEL_URL}/api/updateStaking \
+          -H "Content-Type: application/json" \
+          -H "x-secret-key: ${STAKING_SECRET_KEY}"

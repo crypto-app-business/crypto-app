@@ -7,7 +7,6 @@ import connectDB from '@/utils/connectDB';
 export async function POST(request: Request) {
   try {
     const { depositId, userId } = await request.json();
-    console.log(depositId, userId)
     if (!depositId || !userId) {
       return NextResponse.json(
         { error: 'Deposit ID and User ID are required' },
@@ -21,9 +20,8 @@ export async function POST(request: Request) {
 
     // Отримання адміністратора
     const adminUser = await User.findOne({ _id: userId });
-    console.log(adminUser)
-    console.log(adminUser)
-    if (!adminUser || !adminUser?.role) {
+
+    if (adminUser?.role !=='admin') {
       return NextResponse.json(
         { error: 'Access denied. User is not an administrator.' },
         { status: 403 }
@@ -46,7 +44,6 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
-    console.log('User before updating balance:', user);
 
     // Оновлення балансу
     user.balance.set(deposit.currency, (user.balance.get(deposit.currency) || 0) + deposit.amount);
