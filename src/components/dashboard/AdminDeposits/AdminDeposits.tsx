@@ -7,7 +7,17 @@ interface Deposit {
   amount: number;
 }
 
-export default function AdminDeposits() {
+
+interface User {
+  id: string;
+  balance: Record<string, number>;
+}
+
+interface AdminDepositsProps {
+  user: User;
+}
+
+export default function AdminDeposits({ user }: AdminDepositsProps) {
   const [deposits, setDeposits] = useState<Deposit[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -34,13 +44,13 @@ export default function AdminDeposits() {
     fetchDeposits();
   }, []);
 
-  const confirmDeposit = async (depositId: string, userId: string) => {
+  const confirmDeposit = async (depositId: string, userId: string, adminId: string) => {
     console.log(depositId, userId)
     try {
       const response = await fetch('/api/confirm-deposit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ depositId, userId }),
+        body: JSON.stringify({ depositId, userId, adminId }),
       });
 
       const data = await response.json();
@@ -92,7 +102,7 @@ export default function AdminDeposits() {
               <strong>Сумма:</strong> {deposit.amount}
             </p>
             <button
-              onClick={() => confirmDeposit(deposit._id, deposit.id)}
+              onClick={() => confirmDeposit(deposit._id, deposit.id, user.id)}
               style={{
                 padding: '10px 20px',
                 backgroundColor: '#4caf50',

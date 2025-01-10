@@ -11,6 +11,7 @@ const UserSchema = new mongoose.Schema({
     referrer: { type: String },
     balance: { type: Map, of: Number, default: {} },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    createdAt: { type: Date, default: Date.now },
 }, { timestamps: true });
 
 const User = mongoose.models.User || mongoose.model('User', UserSchema);

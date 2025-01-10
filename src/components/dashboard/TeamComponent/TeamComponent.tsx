@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 interface Deposit {
   currency: string;
@@ -50,6 +50,7 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
         }
         const data: RawUserData[] = await response.json();
         const flattenedData = flattenTree(data);
+        console.log(flattenedData)
         setTeam(flattenedData);
       } catch (error) {
         console.error('Error fetching team data:', error);
@@ -86,6 +87,18 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
     );
   };
 
+  const activePartnersCount = useMemo(() => {
+    return team.reduce((count, member) => {
+      return count + (member.deposits.length > 0 ? 1 : 0);
+    }, 0);
+  }, [team]);
+
+  const personalPartnersCount = useMemo(() => {
+    return team.filter(
+      member =>  member.line === 1
+    ).length;
+  }, [team, userId]);
+
   return (
     <div className="p-6 bg-gradient-to-br from-gray-800 to-gray-700 rounded-lg shadow-md">
       <h3 className="text-2xl font-bold mb-4">Команда</h3>
@@ -95,12 +108,12 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div className="flex flex-col items-center">
-              <div className="text-xl font-semibold">{team.length}</div>
+              <div className="text-xl font-semibold">{activePartnersCount}</div>
               <div className="text-gray-300">Активных партнёров</div>
             </div>
             <div className="flex flex-col items-center">
               <div className="text-xl font-semibold">
-                {team.filter(member => member.referrer === userId).length}
+                {personalPartnersCount}
               </div>
               <div className="text-gray-300">Личные партнёры</div>
             </div>

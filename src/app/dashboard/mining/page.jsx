@@ -50,24 +50,11 @@ export default function Dashboard() {
   }, [])
 
     return (
-      <div className="grid grid-cols-3 gap-6">
+      <div className="">
         <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
-          <p className="text-gray-500 mt-2">Баланс</p>       
-          {user?.balance && Object.keys(user.balance).length > 0 ? (
-            <ul>
-              {Object.entries(user.balance).map(([currency, amount]) => (
-                <li key={currency}>
-                  <strong>{currency}:</strong> {amount}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Баланс отсутсвует</p>
-          )}
-          {/* <DepositComponent id={user?.id} />
           <PendingDeposits id={user?.id} />
-          <AdminDeposits/> */}
-          {/* <MiningActivation user={user}></MiningActivation> */}
+          {user?.role === 'admin'&&<AdminDeposits user={user}/>}
+          <MiningActivation user={user}></MiningActivation>
         </div>
       </div>
     );

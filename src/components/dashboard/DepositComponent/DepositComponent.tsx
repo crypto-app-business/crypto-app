@@ -69,18 +69,18 @@ export default function DepositComponent({ id }) {
 
   return (
     <div style={{ }}>
-      {!isOpen &&<button onClick={()=>{setIsOpen(true)}} style={{ padding: '10px 20px', backgroundColor: '#4caf50', color: 'white', border: 'none', borderRadius: '4px' }}>
+      {!isOpen &&<button onClick={()=>{setIsOpen(true)}} className="mt-4 bg-white text-blue font-medium px-4 py-2 rounded-full hover:bg-gray-200 transition">
         Пополнить
       </button>}
     {isOpen &&<>
       <h2>Пополнения депозита</h2>
-      <div style={{ marginBottom: '10px' }}>
+      <div className='mb-[10px]'>
         <label htmlFor="currency">Выбрать криптовалюту</label>
         <select
           id="currency"
           value={currency}
           onChange={(e) => setCurrency(e.target.value)}
-          style={{ marginLeft: '10px' }}
+          className='bg-blue'
         >
           <option value="">Выбрать...</option>
           <option value="USDT">USDT</option>
@@ -88,15 +88,15 @@ export default function DepositComponent({ id }) {
           <option value="BTC">Bitcoin (BTC)</option>
         </select>
       </div>
-      <div style={{ marginBottom: '10px' }}>
+      <div className='mb-[10px]'>
         <label htmlFor="amount">Выбрать сумму:</label>
         <input
           id="amount"
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          style={{ marginLeft: '10px' }}
           placeholder={`Минимально: ${currency ? minAmounts[currency] : '...'} ${currency}`}
+          className='text-blue'
         />
       </div>
       {!isPending && (

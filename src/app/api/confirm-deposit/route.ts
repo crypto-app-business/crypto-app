@@ -6,8 +6,8 @@ import connectDB from '@/utils/connectDB';
 
 export async function POST(request: Request) {
   try {
-    const { depositId, userId } = await request.json();
-    if (!depositId || !userId) {
+    const { depositId, userId, adminId } = await request.json();
+    if (!depositId || !userId || !adminId) {
       return NextResponse.json(
         { error: 'Deposit ID and User ID are required' },
         { status: 400 }
@@ -19,7 +19,10 @@ export async function POST(request: Request) {
     console.log('Connected to MongoDB.');
 
     // Отримання адміністратора
-    const adminUser = await User.findOne({ _id: userId });
+    const adminUser = await User.findOne({ _id: adminId });
+
+    // каждий день начисления
+    // добавить правильную инфу по добавлению денег, процент каждій день, начисления, добавить верние недели
 
     if (adminUser?.role !=='admin') {
       return NextResponse.json(

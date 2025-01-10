@@ -6,6 +6,7 @@ import DepositComponent from '@/components/dashboard/DepositComponent/DepositCom
 import PendingDeposits from '@/components/dashboard/PendingDeposits/PendingDeposits';
 import AdminDeposits from '@/components/dashboard/AdminDeposits/AdminDeposits';
 import MiningActivation from '@/components/dashboard/MiningActivation/MiningActivation';
+import DashboardPanel from '@/components/dashboard/DashboardPanel/DashboardPanel';
 
 export default function Dashboard() {
   const router = useRouter();
@@ -51,7 +52,9 @@ export default function Dashboard() {
     return (
       <div className="p-2">
         <div className="hover:shadow-lg transition-all">
-          <p className="text-gray-500 mt-2">Баланс</p>       
+          <AdminDeposits/>
+          <DashboardPanel user={user}></DashboardPanel>
+          {/* <p className="text-gray-500 mt-2">Баланс</p>       
           {user?.balance && Object.keys(user.balance).length > 0 ? (
             <ul>
               {Object.entries(user.balance).map(([currency, amount]) => (
@@ -62,8 +65,8 @@ export default function Dashboard() {
             </ul>
           ) : (
             <p>Баланс отсутсвует</p>
-          )}
-          <DepositComponent id={user?.id} />
+          )} */}
+          {/* <DepositComponent id={user?.id} /> */}
           {user?.username && (
           <div className="mt-4 p-4 bg-gray-100 rounded shadow-md">
             <p className="text-gray-700 font-semibold">Ваша рефералка:</p>
@@ -75,9 +78,7 @@ export default function Dashboard() {
             </a>
           </div>
           )}
-          <PendingDeposits id={user?.id} />
-          {user?.role === 'admin'&&<AdminDeposits/>}
-          <MiningActivation user={user}></MiningActivation>
+
         </div>
       </div>
     );

@@ -45,6 +45,9 @@ export async function GET() {
         email: user.email,
         username: user.username,
         balance: user.balance || {}, // Повертаємо баланс або порожній об'єкт
+        referrer: user.referrer,
+        phone: user.phone,
+        registrationDate: user.createdAt,
       },
     });
   } catch (error) {
