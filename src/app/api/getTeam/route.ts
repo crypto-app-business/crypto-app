@@ -36,6 +36,7 @@ export async function GET(req: Request) {
             deposits: deposits.map(({ currency, amount }) => ({ currency, amount })),
             line: depth,
             subTree: await buildReferralTree(user.username, depth + 1, maxDepth, visited),
+            firstName: user.firstName,
           };
         })
       );

@@ -552,6 +552,8 @@ export default function MiningActivation({ user }: MiningActivationProps) {
                 />
               </label>
 
+              <div>{error}</div>
+
               <button
                 type="submit"
                 className="w-full text-white bg-[#4caf50] p-2 rounded hover:bg-green-600"

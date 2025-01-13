@@ -15,13 +15,14 @@ interface RawUserData {
   subTree: RawUserData[];
 }
 
-interface FlattenedUserData {
+export interface FlattenedUserData {
   email: string;
   username: string;
   referrer: string;
   registrationDate: string;
   deposits: Deposit[];
   line: number;
+  firstName?: string
 }
 
 interface TeamComponentProps {

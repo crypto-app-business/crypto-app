@@ -52,7 +52,7 @@ export default function Dashboard() {
     return (
       <div className="p-2">
         <div className="hover:shadow-lg transition-all">
-          <AdminDeposits/>
+          {user?.role ==="admin"&& <AdminDeposits user={user}/>}
           <DashboardPanel user={user}></DashboardPanel>
           {/* <p className="text-gray-500 mt-2">Баланс</p>       
           {user?.balance && Object.keys(user.balance).length > 0 ? (
@@ -67,17 +67,7 @@ export default function Dashboard() {
             <p>Баланс отсутсвует</p>
           )} */}
           {/* <DepositComponent id={user?.id} /> */}
-          {user?.username && (
-          <div className="mt-4 p-4 bg-gray-100 rounded shadow-md">
-            <p className="text-gray-700 font-semibold">Ваша рефералка:</p>
-            <a
-              href={`/register?referrer=${user.username}`}
-              className="text-blue-500 hover:underline break-all"
-            >
-              {`${window.location.origin}/register?referrer=${user.username}`}
-            </a>
-          </div>
-          )}
+          
 
         </div>
       </div>

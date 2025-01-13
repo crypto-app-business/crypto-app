@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
-export default function DepositComponent({ id }) {
-  const [currency, setCurrency] = useState('');
+export default function DepositComponent({ id, selectedWallet }) {
   const [amount, setAmount] = useState('');
   const [wallet, setWallet] = useState('');
   const [message, setMessage] = useState('');
@@ -20,19 +19,21 @@ export default function DepositComponent({ id }) {
     BTC: 0.001,
   };
 
+  console.log(selectedWallet, selectedWallet)
+
   const handleDeposit = async () => {
-    if (!currency || !amount) {
+    if (!selectedWallet || !amount) {
       alert('Please select a currency and enter an amount.');
       return;
     }
 
-    if (amount < minAmounts[currency]) {
-      alert(`Minimum amount for ${currency} is ${minAmounts[currency]}.`);
+    if (amount < minAmounts[selectedWallet]) {
+      alert(`Minimum amount for ${selectedWallet} is ${minAmounts[selectedWallet]}.`);
       return;
     }
 
-    setMessage(`Для оформления баланса, отправтье ${amount} ${currency} на кошелек ниже`);
-    setWallet(wallets[currency]);
+    setMessage(`Для оформления баланса, отправтье ${amount} ${selectedWallet} на кошелек ниже`);
+    setWallet(wallets[selectedWallet]);
     setIsPending(true);
   };
 
@@ -45,7 +46,7 @@ export default function DepositComponent({ id }) {
         },
         body: JSON.stringify({
           id,
-          currency,
+          currency: selectedWallet,
           amount: parseFloat(amount),
         }),
       });
@@ -55,7 +56,6 @@ export default function DepositComponent({ id }) {
         setIsOpen(false)
         alert('Deposit created successfully! Waiting for confirmation.');
         setIsPending(false);
-        setCurrency('');
         setAmount('');
         setMessage('');
         setWallet('');
@@ -69,25 +69,11 @@ export default function DepositComponent({ id }) {
 
   return (
     <div style={{ }}>
-      {!isOpen &&<button onClick={()=>{setIsOpen(true)}} className="mt-4 bg-white text-blue font-medium px-4 py-2 rounded-full hover:bg-gray-200 transition">
+      {!isOpen &&<button onClick={()=>{setIsOpen(true)}} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
         Пополнить
       </button>}
     {isOpen &&<>
       <h2>Пополнения депозита</h2>
-      <div className='mb-[10px]'>
-        <label htmlFor="currency">Выбрать криптовалюту</label>
-        <select
-          id="currency"
-          value={currency}
-          onChange={(e) => setCurrency(e.target.value)}
-          className='bg-blue'
-        >
-          <option value="">Выбрать...</option>
-          <option value="USDT">USDT</option>
-          <option value="ETH">Ethereum (ETH)</option>
-          <option value="BTC">Bitcoin (BTC)</option>
-        </select>
-      </div>
       <div className='mb-[10px]'>
         <label htmlFor="amount">Выбрать сумму:</label>
         <input
@@ -95,12 +81,12 @@ export default function DepositComponent({ id }) {
           type="number"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          placeholder={`Минимально: ${currency ? minAmounts[currency] : '...'} ${currency}`}
+          placeholder={`Минимально: ${selectedWallet ? minAmounts[selectedWallet] : '...'} ${selectedWallet}`}
           className='text-blue'
         />
       </div>
       {!isPending && (
-        <button onClick={handleDeposit} style={{ padding: '10px 20px', backgroundColor: '#4caf50', color: 'white', border: 'none', borderRadius: '4px' }}>
+        <button onClick={handleDeposit} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
           Оплатить
         </button>
       )}
@@ -110,7 +96,7 @@ export default function DepositComponent({ id }) {
           <p>
             <strong>Кошелек:</strong> {wallet}
           </p>
-          <button onClick={handlePaid} style={{ padding: '10px 20px', backgroundColor: '#2196f3', color: 'white', border: 'none', borderRadius: '4px' }}>
+          <button onClick={handlePaid} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
             Оплачено
           </button>
         </div>
