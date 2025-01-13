@@ -40,7 +40,7 @@ export default function LastRegistrations({ userId }) {
 
   return (
     <div className="flex flex-col gap-[17px]">
-      {lastRegistrations.length > 0 ? (
+      {lastRegistrations.length > 0 && (
         lastRegistrations.map(({ username, line, registrationDate, firstName}, index) => (
           <div key={index} className="flex flex-wrap justify-around border py-[7px] rounded-[5px] text-[16px]">
             <div>{firstName}</div>
@@ -49,8 +49,6 @@ export default function LastRegistrations({ userId }) {
             <div>{username}</div>
           </div>
         ))
-      ) : (
-        <p>Немає даних</p>
       )}
     </div>
   );

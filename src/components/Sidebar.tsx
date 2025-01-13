@@ -72,10 +72,10 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
     className={`fixed inset-0 z-50 bg-gradient-to-b from-gray-800 to-gray-900 text-white flex flex-col transition-all duration-300 ease-in-out ${
       isSidebarOpen
         ? "w-full h-full sm:w-[384px] sm:h-auto rounded-none"
-        : "w-[384px] h-auto rounded-[15px]"
+        : "w-[370px] h-auto rounded-[15px]"
     }`}
   >
-      <nav className="flex-grow text-white bg-[#293953] rounded-[15px] w-full ">
+      <nav className="flex-grow text-white bg-[#293953] w-full ">
         <div className="sm:hidden flex justify-end mt-[5px] mr-[5px] mb-[-30px]">
           {isSidebarOpen && (
             <div onClick={toggleSidebar} className={"sm:hidden mt-[35px] mr-[29px]"}>
