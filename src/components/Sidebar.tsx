@@ -75,7 +75,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
         : "w-[370px] h-auto rounded-[15px]"
     }`}
   >
-      <nav className="flex-grow text-white bg-[#293953] w-full ">
+      <nav className="flex-grow text-white bg-[#293953] w-full rounded-none sm:rounded-[15px]">
         <div className="sm:hidden flex justify-end mt-[5px] mr-[5px] mb-[-30px]">
           {isSidebarOpen && (
             <div onClick={toggleSidebar} className={"sm:hidden mt-[35px] mr-[29px]"}>
