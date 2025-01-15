@@ -52,9 +52,9 @@ export default function Dashboard() {
     return (
       <div className="">
         <div className="p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-all">
-          <PendingDeposits id={user?.id} />
           {user?.role === 'admin'&&<AdminDeposits user={user}/>}
           <MiningActivation user={user}></MiningActivation>
+          <PendingDeposits id={user?.id} />
         </div>
       </div>
     );

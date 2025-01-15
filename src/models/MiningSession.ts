@@ -5,7 +5,7 @@ const MiningSessionSchema = new mongoose.Schema({
   week: { type: Number, required: true },
   currency: { type: String, required: true },
   amount: { type: Number, required: true },
-  percentage: { type: [Number], required: true },
+  percentage: { type: Number, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
   isCompleted: { type: Boolean, default: false },
