@@ -8,6 +8,7 @@ const MiningSessionSchema = new mongoose.Schema({
   percentage: { type: Number, required: true },
   startDate: { type: Date, required: true },
   endDate: { type: Date, required: true },
+  paidDays: { type: Number, default: 0 },
   isCompleted: { type: Boolean, default: false },
 });
 

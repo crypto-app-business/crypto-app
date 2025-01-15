@@ -6,6 +6,7 @@ import ContractData from './contractData'
 interface User {
   id: string;
   balance: Record<string, number>;
+  role: string;
 }
 
 interface MiningSession {
@@ -86,6 +87,25 @@ export default function MiningActivation({ user }: MiningActivationProps) {
   const availableContracts = Object.entries(ContractData());
   const [selectedSessionIndex, setSelectedSessionIndex] = useState<number>(0);
 
+  // useEffect(() => {
+  //   const fetchMiningSessions = async () => {
+  //     if (!user?.id) return;
+  //     try {
+  //       const response = await fetch(`/api/mining?userId=${user?.id}`);
+  //       if (response.ok) {
+  //         const data: { sessions: MiningSession[] } = await response.json();
+  //         setMiningSessions(data.sessions);
+  //       } else {
+  //         console.error('Ошибка получения данных о майнинге.');
+  //       }
+  //     } catch (error) {
+  //       console.error('Ошибка сервера:', error);
+  //     }
+  //   };
+
+  //   fetchMiningSessions();
+  // }, [user?.id]);
+
   useEffect(() => {
     const fetchMiningSessions = async () => {
       if (!user?.id) return;
@@ -101,9 +121,21 @@ export default function MiningActivation({ user }: MiningActivationProps) {
         console.error('Ошибка сервера:', error);
       }
     };
-
-    fetchMiningSessions();
-  }, [user?.id]);
+  
+    const updateMiningBalances = async () => {
+      try {
+        const response = await fetch('/api/mining/complete', { method: 'PATCH', body: JSON.stringify({ userId: user?.id }), });
+        if (!response.ok) {
+          console.error('Ошибка обновления баланса для майнинга.');
+        }
+      } catch (error) {
+        console.error('Ошибка сервера при обновлении баланса:', error);
+        }
+      };
+  
+      fetchMiningSessions();
+      updateMiningBalances(); // Додаємо виклик для оновлення балансу
+    }, [user?.id]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -158,11 +190,42 @@ export default function MiningActivation({ user }: MiningActivationProps) {
     setWeek(session.weeks[0]?.weekNumber?.toString() || '');
   };
 
+  const handleSimulateTime = async () => {
+    if (!confirm('Are you sure you want to simulate time?')) return;
+
+    try {
+      const response = await fetch('/api/admin/simulate-mining', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setMiningSessions(data.updatedSessions);
+        alert('Time simulated successfully!');
+      } else {
+        console.error('Failed to simulate time.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+
   return (
     <>
     <div className="bg-gray-50 p-6 flex flex-wrap sm:flex-row flex-col-reverse gap-[70px] w-full">
       <div className='max-w-[300px]'>
         <h3 className="text-[24px] font-bold mb-[20px]">Майнинговые сессии</h3>
+        {user?.role === "admin" &&<button
+          onClick={handleSimulateTime}
+          className="bg-blue text-white px-4 py-2 rounded mb-4"
+          // disabled={isLoading}
+        >
+          {/* {isLoading ? 'Simulating...' : 'Simulate Time'} */}
+          Симулировать майнинг
+        </button>}
         <div className='flex flex-col gap-[15px]'>
         {availableContracts.map(([amountRange, { weeks }], index) => (
           <div key={amountRange}>
@@ -290,7 +353,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
     </div>
     <h3 className="text-xl font-bold mt-10 text-gray-800">Активные майнинговые сессии</h3>
 
-    {miningSessions.length > 0 ? (
+    {miningSessions?.length > 0 ? (
   <div className="flex flex-wrap gap-6 mt-6">
     {miningSessions.map((session, index) => (
       <div
