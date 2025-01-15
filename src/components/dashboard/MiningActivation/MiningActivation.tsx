@@ -165,8 +165,8 @@ export default function MiningActivation({ user }: MiningActivationProps) {
         <h3 className="text-[24px] font-bold mb-[20px]">Майнинговые сессии</h3>
         <div className='flex flex-col gap-[15px]'>
         {availableContracts.map(([amountRange, { weeks }], index) => (
+          <div key={amountRange}>
           <div
-            key={amountRange}
             className={`px-[15px] py-[10px] border rounded-[15px] cursor-pointer ${
               selectedSessionIndex === index ? 'bg-blue text-white' : ''
             }`}
@@ -188,11 +188,59 @@ export default function MiningActivation({ user }: MiningActivationProps) {
               <div className='text-[16px] ml-auto w-max'>{weeks.length > 0 && (`от ${weeks[weeks.length - 1].percentage}-${weeks[0].percentage}%`)}</div>
             }
           </div>
+            {selectedSessionIndex === index &&<div className='sm:hidden block'>
+              <h3 className="text-[24px] font-bold mb-[20px] text-blue">Активировать майнинг</h3>
+              <div className="flex flex-wrap gap-4 mb-[30px] ">       
+                <div className="bg-blue rounded-[15px] shadow-md w-[330px] min-h-[203px]">
+                  <div className="text-white rounded-[15px] pt-[31px] pl-[27px] pr-[27px]">
+                    <div className="">
+                        <h4 className="text-[20px] mb-[15px] font-bold">Сессия #{selectedSessionIndex+1}</h4>
+                        <form onSubmit={handleSubmit}>
+                        <label className="mb-[10px] block">
+                          <div className="text-[16px] mb-[5px] text-black">Виберите срок и %:</div>
+                          <select
+                            value={week && percentage ? `${week}-${percentage}` : ""}
+                            onChange={(e) => {
+                              const [weekValue, percentageValue] = e.target.value.split('-');
+                              setWeek(weekValue);
+                              setPercentage(percentageValue);
+                            }}
+                            className="w-full max-w-[300px] p-2 border rounded text-black"
+                          >
+                            <option value="">Вибрать</option>
+                            {availableContracts[selectedSessionIndex][1].weeks.map((elem, index) => (
+                              <option key={`week-${index}`} value={`${elem.weekNumber}-${elem.percentage}`}>
+                                {elem.weekNumber} неделя - {elem.percentage}%
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <DepositInput 
+                          amount={amount}
+                          setAmount={setAmount}
+                          selectedSessionIndex={selectedSessionIndex}
+                          availableContracts={availableContracts}
+                        />
+                    <div>{error}
+                    </div>
+                    <div className="flex justify-end mb-[31px]">
+                    <button type="submit" className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
+                      Пополнить
+                    </button>
+                          
+                    </div>
+                    </form>
+                    </div>
+                  </div>
+                </div>      
+              </div>
+            </div>}
+          </div>
         ))}
       </div>
 
       </div>
-      <div className='max-w-[330px]'>
+      <div className='max-w-[330px] sm:block hidden'>
         <h3 className="text-[24px] font-bold mb-[20px] text-blue">Активировать майнинг</h3>
         <div className="flex flex-wrap gap-4 mb-[30px] ">       
           <div className="bg-blue rounded-[15px] shadow-md w-[330px] min-h-[203px]">
@@ -239,10 +287,9 @@ export default function MiningActivation({ user }: MiningActivationProps) {
           </div>      
         </div>
       </div>
+    </div>
     <h3 className="text-xl font-bold mt-10 text-gray-800">Активные майнинговые сессии</h3>
 
-
-    </div>
     {miningSessions.length > 0 ? (
   <div className="flex flex-wrap gap-6 mt-6">
     {miningSessions.map((session, index) => (
@@ -266,7 +313,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
         </p>
         <p>
           <strong className="text-gray-700">Проценти:</strong>{' '}
-          {session.percentage.join(', ')}%
+          {session.percentage}%
         </p>
       </div>
     ))}
