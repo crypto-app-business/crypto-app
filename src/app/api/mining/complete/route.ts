@@ -24,47 +24,38 @@ export async function PATCH(request) {
       console.log(now);
       const daysSinceStart = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
 
-      // const daysSinceStart = Math.floor((now - startDate) / (1000 * 60 * 60 * 24)); // кількість днів від початку
-      const weeksSinceStart = Math.floor(daysSinceStart / 7); // кількість тижнів від початку
-
-      console.log(`Тижнів з початку сесії: ${weeksSinceStart}`);
-      console.log(`Тижнів для виплати: ${paidDays}`);
+      console.log(`Днів з початку сесії: ${daysSinceStart}`);
+      console.log(`Виплачені дні: ${paidDays}`);
       
-      // Визначаємо кількість тижнів, які ще не були виплачені
-      const weeksToPay = weeksSinceStart - paidDays;
+      // Визначаємо кількість днів, які ще не були виплачені
+      const daysToPay = daysSinceStart - paidDays;
 
-      console.log(`Кількість тижнів для виплати: ${weeksToPay}`);
+      console.log(`Кількість днів для виплати: ${daysToPay}`);
 
-      if (weeksToPay > 0) {
-        // Розрахунок винагороди за ці тижні
-        const reward = (amount * (percentage / 100)) * 7 * weeksToPay;
+      if (daysToPay > 0) {
+        // Розрахунок винагороди за ці дні
+        const dailyReward = (amount * (percentage / 100));
+        const reward = dailyReward * daysToPay;
 
         // Отримуємо користувача та його баланс
         const user = await User.findById(userId);
-        console.log(user)
+        console.log(user);
         if (user) {
           const currentBalance = user.balance.get(currency) || 0;
-          console.log('user.balance.USDT', user.balance.get(currency) )
-          console.log('currentBalance', currentBalance )
-          console.log('currency', currency)
-          console.log('user.balance', user.balance )
           console.log('Баланс до оновлення:', currentBalance);
           console.log('Сума для виплати:', reward);
 
           // Оновлюємо баланс
-          // user.balance[currency] = currentBalance + reward;
           user.balance.set(currency, (currentBalance || 0) + reward);
-          console.log( 'user.balance[currency]', user.balance.get(currency))
-          console.log('currentBalance', currentBalance )
           console.log('Оновлений баланс:', user.balance.get(currency));
           
           await user.save();
 
-          // Оновлюємо кількість сплачених тижнів у сесії
-          session.paidDays += weeksToPay;
+          // Оновлюємо кількість сплачених днів у сесії
+          session.paidDays += daysToPay;
 
           // Якщо сесія завершена, встановлюємо isCompleted
-          if (weeksSinceStart >= week) {
+          if (daysSinceStart >= week * 7) {
             session.isCompleted = true;
           }
 
