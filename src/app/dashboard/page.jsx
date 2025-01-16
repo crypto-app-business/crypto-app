@@ -49,6 +49,21 @@ export default function Dashboard() {
     fetchUserData();
   }, [])
 
+    useEffect(() => {
+      const updateMiningBalances = async () => {
+        try {
+          const response = await fetch('/api/mining/complete', { method: 'PATCH', body: JSON.stringify({ userId: user?.id }), });
+          if (!response.ok) {
+            console.error('Ошибка обновления баланса для майнинга.');
+          }
+        } catch (error) {
+          console.error('Ошибка сервера при обновлении баланса:', error);
+          }
+        };
+    
+        updateMiningBalances(); // Додаємо виклик для оновлення балансу
+      }, [user?.id]);
+
     return (
       <div className="p-2">
         <div className="hover:shadow-lg transition-all">
