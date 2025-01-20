@@ -23,6 +23,7 @@ export async function POST(request: NextRequest) {
     for (const session of sessions) {
       const profit = session.amount * 0.003; // 0.3% від суми
       session.amount += profit;
+      session.fullAmount += profit;
       await session.save();
     }
 

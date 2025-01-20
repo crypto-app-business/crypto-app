@@ -15,6 +15,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="h-screen ">
       <Header isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>
       <div className="flex mt-[40px] mr-auto ml-auto sm:mr-[16px] sm:ml-[16px] md:mr-[40px] md:ml-[40px]">
+      {/* <div className="flex mt-[40px] sm:mr-[16px] sm:ml-[16px] md:mr-[40px] md:ml-[40px]"> */}
       {/* <div className="flex mt-[40px]  mr-[112px] ml-[112px]"> */}
         {/* <button 
           onClick={toggleSidebar}
@@ -32,7 +33,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
         <div className="flex flex-col flex-1">
           <DashboardHeader/>
-          <main className="m-4 bg-gray-50 flex-1  overflow-y-auto">
+          <main className="p-[40px] bg-gray-50 flex-1  overflow-hidden">
             {children}
           </main>
         </div>

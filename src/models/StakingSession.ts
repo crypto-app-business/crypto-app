@@ -7,6 +7,7 @@ const StakingSessionSchema = new mongoose.Schema({
   startDate: { type: Date, required: true },
   endDate: { type: Date },
   isCompleted: { type: Boolean, default: false },
+  fullAmount: { type: Number, default:0},
 });
 
 export default mongoose.models.StakingSession ||

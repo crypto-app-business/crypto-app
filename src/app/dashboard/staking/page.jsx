@@ -58,7 +58,7 @@ export default function Dashboard() {
         // <TeamComponent userId={user.id} />
         <>
          <StakingActivation user={user}></StakingActivation>
-         <StakingWithdrawal user={user}></StakingWithdrawal>
+         {/* <StakingWithdrawal user={user}></StakingWithdrawal> */}
         </>
       ) : (
         <p>No user data available</p>

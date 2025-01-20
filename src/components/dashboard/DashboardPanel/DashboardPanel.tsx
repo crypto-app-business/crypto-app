@@ -36,9 +36,9 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
   };
 
   return (
-    <div className="bg-gray-50 p-6 flex flex-wrap sm:flex-row flex-col-reverse gap-[30px] w-full">
+    <div className="bg-gray-50 flex flex-wrap justify-center sm:flex-row flex-col-reverse gap-[65px] w-full">
       {/* User Info Section */}
-      <div className="max-w-[275px]">
+      <div className="">
         <h3 className="text-[24px] font-bold mb-[20px]">Профиль</h3>
         <div className="w-[275px] bg-white shadow-md rounded-[15px] p-4  mb-[35px]">
           <div className="flex items-center gap-4 mb-[20px]">

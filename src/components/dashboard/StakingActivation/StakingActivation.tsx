@@ -1,10 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface User {
   id: string;
   balance: Record<string, number>;
+
+  username: string;
+  email: string;
+  referrer: string;
+  phone: string;
+  registrationDate: string;
 }
 
 interface MiningSession {
@@ -13,6 +20,7 @@ interface MiningSession {
   amount: number;
   startDate: string;
   endDate?: string;
+  fullAmount: number;
 }
 
 interface StakingActivationProps {
@@ -20,7 +28,7 @@ interface StakingActivationProps {
 }
 
 export default function StakingActivation({ user }: StakingActivationProps) {
-  const [currency, setCurrency] = useState<string>('');
+  const [currency] = useState<string>('USDT');
   const [amount, setAmount] = useState<string>('');
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
@@ -34,7 +42,8 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         if (response.ok) {
           const data: { sessions: MiningSession[] } = await response.json();
           console.log('Отримані сесії:', data.sessions);
-          setMiningSessions(data.sessions);
+          const filteredSessions = data.sessions.filter(session => session.currency === 'USDT');
+          setMiningSessions(filteredSessions);
         } else {
           console.error('Ошибка получения даних про стейкинге.');
         }
@@ -46,9 +55,10 @@ export default function StakingActivation({ user }: StakingActivationProps) {
     fetchMiningSessions();
   }, [user?.id]);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>, action:string) => {
     e.preventDefault();
     setError('');
+    setSuccess('');
 
     if ( !currency || !amount) {
       setError('Пожалуйста зполните все поля.');
@@ -69,6 +79,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
           userId: user.id,
           currency,
           amount: numericAmount,
+          action: action,
         }),
       });
 
@@ -76,12 +87,14 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         const updatedBalance = { ...user.balance };
         updatedBalance[currency] -= numericAmount;
 
-        setSuccess('Стейкинг успешно активирован!');
+        if(action==="add") setSuccess('Стейкинг успешно активирован!');
+        if(action==="withdraw") setSuccess('Деньги успешно выведены!');
         const newSession: MiningSession = (await response.json()).data;
         setMiningSessions((prevSessions) => [...prevSessions, newSession]);
       } else {
         const { error: responseError } = await response.json();
-        setError(responseError || 'Не получилось активировать стейкинг.');
+        if(action==="add") setError(responseError || 'Не получилось активировать стейкинг.');
+        if(action==="withdraw") setError(responseError || 'Не получилось вывесты деньги.');
       }
     } catch (error) {
       console.log(error)
@@ -90,7 +103,131 @@ export default function StakingActivation({ user }: StakingActivationProps) {
   };
 
   return (
-    <div className="">
+    <div className="bg-gray-50 flex flex-wrap flex-row gap-[50px] w-full">
+      <div className="bg-blue rounded-[15px] gap-[6px] p-[30px] mb-[30px] w-[325px]">
+      {/* {miningSessions.map((session, index) => (
+              <tr key={`table-row-${index}`} className="hover:bg-gray-50">
+                <td className="border px-4 py-2">{session.currency}</td>
+                <td className="border px-4 py-2">{session.amount}</td>
+                <td className="border px-4 py-2">
+                  {new Date(session.startDate).toLocaleString()}
+                </td>
+                <td className="border px-4 py-2">
+                  {session?.endDate && new Date(session.endDate).toLocaleString()}
+                </td>
+              </tr>
+            ))} */}
+        <div className='flex mb-[15px]'>
+          <div className='text-white'>
+            <div className='flex items-center'>
+              <Image
+                src="/dashboard/mining/safe.svg"
+                alt="Wallet Icon"
+                width={40}
+                height={40}
+                objectFit="cover"
+                priority={false}
+              />
+              <div>
+                <div className='text-[16px] font-semibold uppercase'>Вложено в стейкинг</div>
+              </div>
+            </div>
+            <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
+             {miningSessions[0]?.amount &&<div className='text-[24px] font-bold'>{miningSessions[0].amount}</div>}
+             {miningSessions[0]?.amount &&<div className='text-[14px]'>{miningSessions[0].currency}</div>}
+            </div>
+          </div>
+        </div>
+        <div className='flex mb-[35px]'>
+          <div className='text-white'>
+            <div className='flex items-center'>
+              <Image
+                src="/dashboard/mining/coins.svg"
+                alt="Wallet Icon"
+                width={40}
+                height={40}
+                objectFit="cover"
+                priority={false}
+              />
+              <div>
+                <div className='text-[16px] font-semibold uppercase'>Баланс</div>
+              </div>
+            </div>
+            <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
+             <div className='text-[24px] font-bold'>{user.balance.USDT}</div>
+             <div className='text-[14px]'>USDT</div>
+            </div>
+          </div>
+        </div>
+        <div className='flex mb-[30px]'>
+          <div className='text-[#00163A]'>
+            <div className='flex items-center'>
+              <Image
+                src="/dashboard/mining/shield.svg"
+                alt="Wallet Icon"
+                width={40}
+                height={40}
+                objectFit="cover"
+                priority={false}
+              />
+              <div>
+                <div className='text-[16px] font-semibold uppercase'>Заработано</div>
+              </div>
+            </div>
+            <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
+             <div className='text-[24px] font-bold'>{miningSessions[0]?.fullAmount || 0}</div>
+             <div className='text-[14px]'>{miningSessions[0]?.currency}</div>
+            </div>
+          </div>
+        </div>
+        <div className='flex justify-end'>
+
+        <div className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] text-white text-[16px] bold'>Обмен валюты</div>
+        </div>
+      </div>
+
+
+      <div className="bg-[#00163A] rounded-[15px] gap-[6px] p-[30px] mb-[30px] w-[325px] max-h-[345px]">
+        <div className='flex justify-center flex-col items-center mb-[15px] text-white h-full text-[16px] max-w-[210px] ml-auto mr-auto'>
+              <Image
+                src="/dashboard/staking/Coin_gif.gif"
+                alt="Wallet Icon"
+                width={73}
+                height={73}
+                objectFit="cover"
+                priority={false}
+              />
+
+              <button onClick={(e)=>handleSubmit(e,"add")} className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] font-bold mb-[20px]'>Вложить в стейкинг</button>
+              <input 
+                type="text" 
+                placeholder='Сумма' 
+                className='mb-[20px] rounded pl-[15px] py-[5px] text-[black]'
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (/^\d*\.?\d*$/.test(value)) {
+                    setAmount(value);
+                  }
+                }} 
+              />
+              {error && <div className="text-red-500 w-max mb-[20px]">{error}</div>}
+              {success && !error && <div className="text-green-500 w-max mb-[20px]">{success}</div>}
+              <button onClick={(e)=>handleSubmit(e,"withdraw")} className='px-[25px] py-[10px] rounded-full bg-[#4b5b75] font-bold'>Вывести вложение</button>
+
+              <Image
+                src="/dashboard/staking/Dolar_gif.gif"
+                alt="Wallet Icon"
+                width={73}
+                height={73}
+                objectFit="cover"
+                priority={false}
+              />
+        </div>
+      </div>
+
+
+      {/* Wallet Section
+      <div className="">
       <h2 className="text-xl font-bold mb-4">Активировать стейкинг</h2>
       {error && <p className="text-red-500">{error}</p>}
       {success && <p className="text-green-500">{success}</p>}
@@ -196,6 +333,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
     <p className="text-gray-500 mt-2">Нет активних сессий.</p>
   )}
 </div>
+    </div> */}
     </div>
   );
 }

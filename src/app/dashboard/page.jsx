@@ -65,8 +65,8 @@ export default function Dashboard() {
       }, [user?.id]);
 
     return (
-      <div className="p-2">
-        <div className="hover:shadow-lg transition-all">
+      <div className="">
+        <div className="">
           {user?.role ==="admin"&& <AdminDeposits user={user}/>}
           <DashboardPanel user={user}></DashboardPanel>
           {/* <p className="text-gray-500 mt-2">Баланс</p>       
