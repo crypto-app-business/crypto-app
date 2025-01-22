@@ -27,7 +27,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
     },
     {
       text: "Листинг",
-      href: "#",
+      href: "/dashboard/listing",
       icon: "/dashboard/sidebar-icon/mnemonic.svg",
     },
     {

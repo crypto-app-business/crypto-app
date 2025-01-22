@@ -64,6 +64,21 @@ export default function Dashboard() {
         updateMiningBalances(); // Додаємо виклик для оновлення балансу
       }, [user?.id]);
 
+      useEffect(() => {
+        const updateMiningBalances = async () => {
+          try {
+            const response = await fetch('/api/listing/complete', { method: 'PATCH', body: JSON.stringify({ userId: user?.id }), });
+            if (!response.ok) {
+              console.error('Ошибка обновления баланса для майнинга.');
+            }
+          } catch (error) {
+            console.error('Ошибка сервера при обновлении баланса:', error);
+            }
+          };
+      
+          updateMiningBalances(); // Додаємо виклик для оновлення балансу
+        }, [user?.id]);
+
     return (
       <div className="">
         <div className="">

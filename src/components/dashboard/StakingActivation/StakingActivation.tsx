@@ -154,7 +154,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
               </div>
             </div>
             <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-             <div className='text-[24px] font-bold'>{user.balance.USDT}</div>
+             <div className='text-[24px] font-bold'>{user?.balance?.USDT}</div>
              <div className='text-[14px]'>USDT</div>
             </div>
           </div>

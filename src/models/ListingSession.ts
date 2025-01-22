@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
-const MiningSessionSchema = new mongoose.Schema({
+const ListingSessionSchema = new mongoose.Schema({
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-  week: { type: Number, required: true },
+  day: { type: Number, required: true },
   currency: { type: String, required: true },
   amount: { type: Number, required: true },
   percentage: { type: Number, required: true },
@@ -13,5 +13,5 @@ const MiningSessionSchema = new mongoose.Schema({
   fullAmount: { type: Number, default:0},
 });
 
-export default mongoose.models.MiningSession ||
-  mongoose.model('MiningSession', MiningSessionSchema);
+export default mongoose.models.ListingSession ||
+  mongoose.model('ListingSession', ListingSessionSchema);
