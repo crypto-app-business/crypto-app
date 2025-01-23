@@ -9,15 +9,6 @@ interface User {
   role: string;
 }
 
-interface MiningSession {
-  id: string;
-  currency: string;
-  amount: number;
-  startDate: string;
-  endDate: string;
-  percentage: number[];
-}
-
 interface MiningActivationProps {
   user: User;
 }
@@ -78,7 +69,6 @@ const DepositInput = ({
 };
 
 export default function MiningActivation({ user }: MiningActivationProps) {
-  const [miningSessions, setMiningSessions] = useState<MiningSession[]>([]);
   const [week, setWeek] = useState('');
   const [percentage, setPercentage] = useState('');
   const [currency, setCurrency] = useState('');
@@ -86,56 +76,6 @@ export default function MiningActivation({ user }: MiningActivationProps) {
   const [error, setError] = useState<string>('');;
   const availableContracts = Object.entries(ContractData());
   const [selectedSessionIndex, setSelectedSessionIndex] = useState<number>(0);
-
-  // useEffect(() => {
-  //   const fetchMiningSessions = async () => {
-  //     if (!user?.id) return;
-  //     try {
-  //       const response = await fetch(`/api/mining?userId=${user?.id}`);
-  //       if (response.ok) {
-  //         const data: { sessions: MiningSession[] } = await response.json();
-  //         setMiningSessions(data.sessions);
-  //       } else {
-  //         console.error('Ошибка получения данных о майнинге.');
-  //       }
-  //     } catch (error) {
-  //       console.error('Ошибка сервера:', error);
-  //     }
-  //   };
-
-  //   fetchMiningSessions();
-  // }, [user?.id]);
-
-  useEffect(() => {
-    const fetchMiningSessions = async () => {
-      if (!user?.id) return;
-      try {
-        const response = await fetch(`/api/mining?userId=${user?.id}`);
-        if (response.ok) {
-          const data: { sessions: MiningSession[] } = await response.json();
-          setMiningSessions(data.sessions);
-        } else {
-          console.error('Ошибка получения данных о майнинге.');
-        }
-      } catch (error) {
-        console.error('Ошибка сервера:', error);
-      }
-    };
-  
-    const updateMiningBalances = async () => {
-      try {
-        const response = await fetch('/api/mining/complete', { method: 'PATCH', body: JSON.stringify({ userId: user?.id }), });
-        if (!response.ok) {
-          console.error('Ошибка обновления баланса для майнинга.');
-        }
-      } catch (error) {
-        console.error('Ошибка сервера при обновлении баланса:', error);
-        }
-      };
-  
-      fetchMiningSessions();
-      updateMiningBalances(); // Додаємо виклик для оновлення балансу
-    }, [user?.id]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -173,8 +113,6 @@ export default function MiningActivation({ user }: MiningActivationProps) {
         updatedBalance[currency] -= numericAmount;
 
         alert('Майнинг успешно активирован!');
-        const newSession: MiningSession = (await response.json()).data;
-        setMiningSessions((prevSessions) => [...prevSessions, newSession]);
       } else {
         const { error: responseError } = await response.json();
         setError(responseError || 'Не получилось активировать майнинг.');
@@ -201,8 +139,6 @@ export default function MiningActivation({ user }: MiningActivationProps) {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        setMiningSessions(data.updatedSessions);
         alert('Time simulated successfully!');
       } else {
         console.error('Failed to simulate time.');
@@ -221,9 +157,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
         {user?.role === "admin" &&<button
           onClick={handleSimulateTime}
           className="bg-blue text-white px-4 py-2 rounded mb-4"
-          // disabled={isLoading}
         >
-          {/* {isLoading ? 'Simulating...' : 'Simulate Time'} */}
           Симулировать майнинг
         </button>}
         <div className='flex flex-col gap-[15px]'>
@@ -351,39 +285,6 @@ export default function MiningActivation({ user }: MiningActivationProps) {
         </div>
       </div>
     </div>
-    <h3 className="text-xl font-bold mt-10 text-gray-800">Активные майнинговые сессии</h3>
-
-    {miningSessions?.length > 0 ? (
-  <div className="flex flex-wrap gap-6 mt-6">
-    {miningSessions.map((session, index) => (
-      <div
-        key={index}
-        className="p-6 bg-white border rounded-lg shadow-md hover:shadow-lg"
-      >
-        <p>
-          <strong className="text-gray-700">Криптовалюта:</strong> {session.currency}
-        </p>
-        <p>
-          <strong className="text-gray-700">Сумма:</strong> {session.amount}
-        </p>
-        <p>
-          <strong className="text-gray-700">Дата создания:</strong>{' '}
-          {new Date(session.startDate).toLocaleString()}
-        </p>
-        <p>
-          <strong className="text-gray-700">Дата завершения:</strong>{' '}
-          {new Date(session.endDate).toLocaleString()}
-        </p>
-        <p>
-          <strong className="text-gray-700">Проценти:</strong>{' '}
-          {session.percentage}%
-        </p>
-      </div>
-    ))}
-  </div>
-) : (
-  <p className="text-gray-500 mt-4">Нет активных сессий.</p>
-)}
     </>
   );
 }

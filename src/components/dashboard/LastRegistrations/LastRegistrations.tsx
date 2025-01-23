@@ -40,12 +40,13 @@ export default function LastRegistrations({ userId }) {
 
   return (
     <div className="flex flex-col gap-[17px]">
+      <h3 className="text-[24px] font-bold mb-[25px]">Регистрация партнеров</h3>
       {lastRegistrations.length > 0 && (
         lastRegistrations.map(({ username, line, registrationDate, firstName}, index) => (
           <div key={index} className="flex flex-wrap justify-around border py-[7px] rounded-[5px] text-[16px]">
             <div>{firstName}</div>
             <div className="font-bold">линия: {line}</div>
-            <div>{registrationDate}</div>
+            <div>{new Date(registrationDate.split('.').reverse().join('-')).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}</div>
             <div>{username}</div>
           </div>
         ))

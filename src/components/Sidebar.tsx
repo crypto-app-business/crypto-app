@@ -47,7 +47,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar }) {
     },
     {
       text: "Отчет",
-      href: "#",
+      href: "/dashboard/report",
       icon: "/dashboard/sidebar-icon/calendar.svg",
     },
     {

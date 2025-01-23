@@ -122,7 +122,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
           </div>
         </div>
         )}
-        <h3 className="text-[24px] font-bold mb-[25px]">Регистрация партнеров</h3>
+        {/* <h3 className="text-[24px] font-bold mb-[25px]">Регистрация партнеров</h3> */}
         <LastRegistrations userId={user?.id || ""} />
       </div>
 
