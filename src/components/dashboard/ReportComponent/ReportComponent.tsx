@@ -35,59 +35,41 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
   const [miningSessions, setMiningSessions] = useState<MiningSession[]>([]);
   const [stakingSessions, setStakingSessions] = useState<MiningSession[]>([]);
   const [listingSessions, setListingSessions] = useState<MiningSession[]>([]);
+  const [activeTab, setActiveTab] = useState<string>('mining');
 
   useEffect(() => {
-    const fetchMiningSessions = async () => {
+    const fetchData = async () => {
       if (!userId) return;
+
       try {
-        const response = await fetch(`/api/mining?userId=${userId}`);
-        if (response.ok) {
-          const data: { sessions: MiningSession[] } = await response.json();
-          setMiningSessions(data.sessions);
-          setLoading(false)
-        } else {
-          console.error('Ошибка получения данных о майнинге.');
+        const [miningRes, stakingRes, listingRes] = await Promise.all([
+          fetch(`/api/mining?userId=${userId}`),
+          fetch(`/api/staking?userId=${userId}`),
+          fetch(`/api/listing?userId=${userId}`),
+        ]);
+
+        if (miningRes.ok) {
+          const miningData: { sessions: MiningSession[] } = await miningRes.json();
+          setMiningSessions(miningData.sessions);
         }
-      } catch (error) {
-        console.error('Ошибка сервера:', error);
-      }
-    };
-    const fetchStakingSessions = async () => {
-      if (!userId) return;
-      try {
-        const response = await fetch(`/api/staking?userId=${userId}`);
-        if (response.ok) {
-          const data: { sessions: MiningSession[] } = await response.json();
-          console.log('Отримані сесії:', data.sessions);
-          const filteredSessions = data.sessions.filter(session => session.currency === 'USDT');
-          setStakingSessions(filteredSessions);
-        } else {
-          console.error('Ошибка получения даних про стейкинге.');
+
+        if (stakingRes.ok) {
+          const stakingData: { sessions: MiningSession[] } = await stakingRes.json();
+          setStakingSessions(stakingData.sessions.filter((session) => session.currency === 'USDT'));
         }
-      } catch (error) {
-        console.error('Ошибка сервера:', error);
-      }
-    };
-    const fetchListingSessions = async () => {
-      if (!userId) return;
-      try {
-        const response = await fetch(`/api/listing?userId=${userId}`);
-        if (response.ok) {
-          const data: { sessions: MiningSession[] } = await response.json();
-          console.log('Отримані сесії:', data.sessions);
-          const filteredSessions = data.sessions.filter(session => session.currency === 'USDT');
-          setListingSessions(filteredSessions);
-        } else {
-          console.error('Ошибка получения даних про стейкинге.');
+
+        if (listingRes.ok) {
+          const listingData: { sessions: MiningSession[] } = await listingRes.json();
+          setListingSessions(listingData.sessions.filter((session) => session.currency === 'USDT'));
         }
+
+        setLoading(false);
       } catch (error) {
-        console.error('Ошибка сервера:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    fetchMiningSessions();
-    fetchStakingSessions();
-    fetchListingSessions();
+    fetchData();
   }, [userId]);
 
   return (
@@ -96,12 +78,17 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
         <p>Loading...</p>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 sm:justify-center justify-start">
-            <div>
-              <div className="flex items-center gap-[12px] sm:justify-center justify-start mb-[15px]">
-                <div className="text-[#00163A] text-[24px] font-bold uppercase">Майнинг</div>
+          {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 sm:justify-center justify-start"> */}
+          <div className="flex flex-wrap sm:justify-between justify-center">
+            <div className='mb-[15px]'>
+              <div onClick={() => setActiveTab('mining')} className={`flex items-center gap-[12px] justify-center w-[316px] h-[65px]
+                ${
+                  activeTab === 'mining' ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]' : 'text-[#00163A]'
+                }
+                `}>
+                <div className=" text-[24px] font-bold uppercase">Майнинг</div>
                 <Image
-                  src="/dashboard/report/node-3-connections.svg"
+                  src={`${activeTab === 'mining' && window.innerWidth <= 640 ?"/dashboard/report/node-3-connections-white.svg":"/dashboard/report/node-3-connections.svg"}`}
                   alt="Wallet Icon"
                   width={45}
                   height={45}
@@ -109,7 +96,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   priority={false}
                 />
               </div>
-              <div className='flex flex-col gap-[15px]'>
+              <div className=' flex-col gap-[15px] hidden sm:flex '>
                 {miningSessions.map((session, index) => (
                   <div
                     key={index}
@@ -138,11 +125,15 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                 ))}
               </div>
             </div>
-            <div>
-              <div className="flex items-center gap-[12px] justify-center mb-[15px]">
-                <div className="text-[#00163A] text-[24px] font-bold uppercase">Стейкинг</div>
+            <div className='mb-[15px]'>
+              <div onClick={() => setActiveTab('staking')} className={`flex items-center gap-[12px] justify-center mb-[15px] w-[316px] h-[65px]
+                ${
+                  activeTab === 'staking' ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]' : 'text-[#00163A]'
+                }
+                `}>
+                <div className="text-[24px] font-bold uppercase">Стейкинг</div>
                 <Image
-                  src="/dashboard/report/invoice.svg"
+                  src={`${activeTab === 'staking' && window.innerWidth <= 640 ?"/dashboard/report/invoice-white.svg":"/dashboard/report/invoice.svg"}`}
                   alt="Wallet Icon"
                   width={45}
                   height={47}
@@ -150,7 +141,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   priority={false}
                 />
               </div>
-              <div className='flex flex-col gap-[15px]'>
+              <div className='flex-col gap-[15px] hidden sm:flex'>
                 {stakingSessions.map((session, index) => (
                   <div
                     key={index}
@@ -180,11 +171,15 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                 ))}
               </div>
             </div>
-            <div>
-              <div className="flex items-center gap-[12px] justify-center mb-[15px]">
-                <div className="text-[#00163A] text-[24px] font-bold uppercase">Листининг</div>
+            <div className='mb-[15px]'>
+              <div onClick={() => setActiveTab('listing')} className={`flex items-center gap-[12px] justify-center w-[316px] h-[65px]
+                ${
+                  activeTab === 'listing' ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]' : 'text-[#00163A]'
+                }
+                `}>
+                <div className="text-[24px] font-bold uppercase">Листининг</div>
                 <Image
-                  src="/dashboard/report/mnemonic.svg"
+                  src={`${activeTab === 'listing' && window.innerWidth <= 640 ?"/dashboard/report/mnemonic-white.svg":"/dashboard/report/mnemonic.svg"}`}
                   alt="Wallet Icon"
                   width={45}
                   height={45}
@@ -192,8 +187,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   priority={false}
                 />
               </div>
-              <div className='flex flex-col gap-[15px]'>
-              {listingSessions.map((session, index) => (
+              <div className='flex-col gap-[15px] hidden sm:flex'>
+                {listingSessions.map((session, index) => (
                   <div
                     key={index}
                     className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#00163A] rounded-[15px] w-[264px]"
@@ -222,7 +217,98 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
             </div>
           </div>
           <div className='flex flex-wrap sm:flex-nowrap fap-[20px] sm:gap-[30px]'>
-
+            <div>
+              {activeTab === 'mining' &&
+                <div className='flex flex-col gap-[15px] sm:hidden'>
+                  {miningSessions.map((session, index) => (
+                    <div
+                      key={index}
+                      className="flex gap-[18px] px-[20px] py-[10px] border border-[#00163A] rounded-[15px] w-[264px]"
+                    >
+                      <div className='text-[20px] font-bold'>#{index + 1}</div>
+                      <div className='min-w-[160px]'>
+                        <div className='flex justify-between text-[14px] font-bold mb-[5px]'>
+                          <div className="">Вложено:</div>
+                          <div>${session.amount}</div>
+                        </div>
+                        <div className='flex justify-between text-[14px] font-semibold'>
+                          <div className="">Открыт:</div>
+                          <div>{new Date(session.startDate).toLocaleDateString()}</div>
+                        </div>
+                        <div className='flex justify-between text-[14px] font-semibold mb-[5px]'>
+                          <div className="">Закрывается:</div>
+                          <div>{new Date(session.endDate).toLocaleDateString()}</div>
+                        </div>
+                        <div className='flex justify-between text-[14px] font-bold text-[#3581FF]'>
+                          <div className="">Заработано:</div>
+                          <div>{session.fullAmount}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              }
+              {activeTab === 'staking' &&
+                <div className='flex flex-col gap-[15px] sm:hidden'>
+                  {stakingSessions.map((session, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#3581FF] rounded-[15px] w-[264px]"
+                    >
+                      {/* <div className='text-[20px] font-bold'>#{index + 1}</div> */}
+                      <div className='min-w-[205px]'>
+                        <div className='flex justify-between text-[16px] font-bold mb-[5px]'>
+                          <div className="">Контракт {index + 1}</div>
+                          <div>${session.amount}</div>
+                        </div>
+                        <div className='flex justify-between text-[14px] font-semibold'>
+                          <div className="">Открыт:</div>
+                          <div>{new Date(session.startDate).toLocaleDateString()}</div>
+                        </div>
+                        <div className='flex justify-between text-[14px] font-semibold mb-[5px]'>
+                          <div className="">Закрывается:</div>
+                          {/* <div>{new Date(session.endDate).toLocaleDateString()}</div> */}
+                          <div>-</div>
+                        </div>
+                        <div className='flex justify-between text-[14px] font-bold text-white'>
+                          <div className="">Заработано:</div>
+                          <div>{session.fullAmount}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              }
+              {activeTab === 'listing' &&
+                <div className='flex flex-col gap-[15px] sm:hidden'>
+                  {listingSessions.map((session, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#00163A] rounded-[15px] w-[264px]"
+                    >
+                      <div className='min-w-[205px]'>
+                        <div className='flex justify-between text-[16px] font-bold mb-[5px] text-white'>
+                          <div className="">Контракт {index + 1}</div>
+                          <div>${session.amount}</div>
+                        </div>
+                        <div className='flex justify-between text-[14px] font-semibold text-white'>
+                          <div className="">Открыт:</div>
+                          <div>{new Date(session.startDate).toLocaleDateString()}</div>
+                        </div>
+                        <div className='flex justify-between text-[14px] font-semibold mb-[5px] text-white'>
+                          <div className="">Закрывается:</div>
+                          <div>{new Date(session.endDate).toLocaleDateString()}</div>
+                        </div>
+                        <div className='flex justify-between text-[14px] font-bold text-[#3581FF]'>
+                          <div className="">Заработано:</div>
+                          <div>{session.fullAmount}</div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>  
+              }
+            </div>
           </div>
         </>
       )}
