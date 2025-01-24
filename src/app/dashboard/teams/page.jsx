@@ -16,7 +16,6 @@ export default function Dashboard() {
         if (res.ok) {
           const userData = await res.json();
           setUser(userData);
-          console.log(userData)
         } else {
           router.push('/login'); // Перенаправлення на вхід
         }
@@ -29,7 +28,6 @@ export default function Dashboard() {
     };
     checkAuth();
   }, [router]);
-  console.log(user)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -41,14 +39,12 @@ export default function Dashboard() {
       if (response.ok) {
         const data = await response.json();
         setUser((prev) => ({ ...prev, balance: data.data.balance }));
-        console.log('User data:', data.data);
       } else {
         console.error('Error fetching user data:', await response.json());
       }
     };
     fetchUserData();
   }, [])
-  console.log(user)
     return (
       <div className="">
         <div className="">

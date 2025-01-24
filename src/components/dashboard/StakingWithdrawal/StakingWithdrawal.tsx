@@ -1,19 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface User {
   id: string;
   balance: Record<string, number>;
 }
 
-interface MiningSession {
-  id: string;
-  currency: string;
-  amount: number;
-  startDate: string;
-  endDate?: string;
-}
+// interface MiningSession {
+//   id: string;
+//   currency: string;
+//   amount: number;
+//   startDate: string;
+//   endDate?: string;
+// }
 
 interface StakingWithdrawalProps {
   user: User;
@@ -26,25 +26,24 @@ export default function StakingWithdrawal({ user }: StakingWithdrawalProps) {
   const [success, setSuccess] = useState<string>('');
   // const [miningSessions, setMiningSessions] = useState<MiningSession[]>([]);
 
-  useEffect(() => {
-    const fetchMiningSessions = async () => {
-      if (!user?.id) return;
-      try {
-        const response = await fetch(`/api/staking?userId=${user.id}`);
-        if (response.ok) {
-          const data: { sessions: MiningSession[] } = await response.json();
-          console.log('Отримані сесії:', data.sessions);
-          // setMiningSessions(data.sessions);
-        } else {
-          console.error('Ошибка получения даних про стейкинге.');
-        }
-      } catch (error) {
-        console.error('Ошибка сервера:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchMiningSessions = async () => {
+  //     if (!user?.id) return;
+  //     try {
+  //       const response = await fetch(`/api/staking?userId=${user.id}`);
+  //       if (response.ok) {
+  //         const data: { sessions: MiningSession[] } = await response.json();
+  //         // setMiningSessions(data.sessions);
+  //       } else {
+  //         console.error('Ошибка получения даних про стейкинге.');
+  //       }
+  //     } catch (error) {
+  //       console.error('Ошибка сервера:', error);
+  //     }
+  //   };
 
-    fetchMiningSessions();
-  }, [user?.id]);
+  //   fetchMiningSessions();
+  // }, [user?.id]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

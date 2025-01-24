@@ -19,8 +19,6 @@ export default function DepositComponent({ id, selectedWallet }) {
     BTC: 0.001,
   };
 
-  console.log(selectedWallet, selectedWallet)
-
   const handleDeposit = async () => {
     if (!selectedWallet || !amount) {
       alert('Please select a currency and enter an amount.');

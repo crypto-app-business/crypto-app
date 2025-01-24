@@ -45,7 +45,6 @@ export default function AdminDeposits({ user }: AdminDepositsProps) {
   }, []);
 
   const confirmDeposit = async (depositId: string, userId: string, adminId: string) => {
-    console.log(depositId, userId)
     try {
       const response = await fetch('/api/confirm-deposit', {
         method: 'POST',

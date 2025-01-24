@@ -5,9 +5,7 @@ import connectDB from '@/utils/connectDB';
 export async function GET(request: Request) {
   try {
     // Підключення до бази даних
-    console.log('Connecting to MongoDB...');
     await connectDB();
-    console.log('Connected to MongoDB.');
 
     // Отримання параметрів із запиту
     const url = new URL(request.url);
@@ -22,7 +20,6 @@ export async function GET(request: Request) {
 
     // Отримання поповнень зі статусом "pending" для цього користувача
     const deposits = await Deposit.find({ id, status: 'pending' });
-    console.log('Deposits fetched:', deposits);
 
     return NextResponse.json({ success: true, deposits }, { status: 200 });
   } catch (error) {

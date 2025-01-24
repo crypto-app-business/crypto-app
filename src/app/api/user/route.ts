@@ -26,9 +26,7 @@ export async function GET() {
     }
 
     // Підключення до MongoDB
-    console.log('Connecting to MongoDB...');
     await connectDB();
-    console.log('Connected to MongoDB.');
 
     // Пошук користувача
     const user = await User.findById(decoded.id); // `decoded.id` повинен відповідати ID користувача в базі

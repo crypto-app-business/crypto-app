@@ -19,9 +19,8 @@ interface HeroProps {
 
 
 export function HeroSection({ hero }: HeroProps) {
-  const item = hero[0];
+  // const item = hero[0];
   // const descriptionParts = item.description;
-  console.log(item)
   return (
     <motion.section
       className="bg-primary bg-opacity-5 relative px-32 pt-72 pb-24"

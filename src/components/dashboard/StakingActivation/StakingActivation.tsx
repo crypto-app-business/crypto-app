@@ -41,7 +41,6 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         const response = await fetch(`/api/staking?userId=${user.id}`);
         if (response.ok) {
           const data: { sessions: MiningSession[] } = await response.json();
-          console.log('Отримані сесії:', data.sessions);
           const filteredSessions = data.sessions.filter(session => session.currency === 'USDT');
           setMiningSessions(filteredSessions);
         } else {
@@ -133,7 +132,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
               </div>
             </div>
             <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-             {miningSessions[0]?.amount &&<div className='text-[24px] font-bold'>{miningSessions[0].amount}</div>}
+             {miningSessions[0]?.amount &&<div className='text-[24px] font-bold'>{miningSessions[0].amount?.toFixed(2)}</div>}
              {miningSessions[0]?.amount &&<div className='text-[14px]'>{miningSessions[0].currency}</div>}
             </div>
           </div>
@@ -154,7 +153,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
               </div>
             </div>
             <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-             <div className='text-[24px] font-bold'>{user?.balance?.USDT}</div>
+             <div className='text-[24px] font-bold'>{user?.balance?.USDT?.toFixed(2)}</div>
              <div className='text-[14px]'>USDT</div>
             </div>
           </div>
@@ -175,7 +174,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
               </div>
             </div>
             <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-             <div className='text-[24px] font-bold'>{miningSessions[0]?.fullAmount || 0}</div>
+             <div className='text-[24px] font-bold'>{miningSessions[0]?.fullAmount?.toFixed(2) || 0}</div>
              <div className='text-[14px]'>{miningSessions[0]?.currency}</div>
             </div>
           </div>

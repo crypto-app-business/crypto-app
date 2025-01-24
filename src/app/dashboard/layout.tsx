@@ -6,6 +6,8 @@ import { useState } from 'react';
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("Главная");
+
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -29,10 +31,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
           md:translate-x-0 md:static md:z-0
         `}>
-          <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+          <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} setActiveTab={setActiveTab} activeTab={activeTab} />
         </div>
         <div className="flex flex-col flex-1">
-          <DashboardHeader/>
+          <DashboardHeader activeTab={activeTab}/>
           <main className="p-[40px] bg-gray-50 flex-1  overflow-hidden">
             {children}
           </main>

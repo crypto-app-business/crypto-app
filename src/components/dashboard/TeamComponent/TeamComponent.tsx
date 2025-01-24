@@ -53,7 +53,6 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
         }
         const data: RawUserData[] = await response.json();
         const flattenedData = flattenTree(data);
-        console.log(flattenedData)
         setTeam(flattenedData);
       } catch (error) {
         console.error('Error fetching team data:', error);

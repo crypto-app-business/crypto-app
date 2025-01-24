@@ -26,13 +26,9 @@ export async function POST(request) {
     if (currentBalance < amount) {
       return NextResponse.json({ error: 'Недостаточно денег' }, { status: 400 });
     }
-    console.log(amount)
-    console.log(user.balance.get(currency))
     // Оновлюємо баланс
     user.balance.set(currency, currentBalance - amount);
-    console.log(user.balance.get(currency))
     await user.save();
-    console.log(user.balance.get(currency))
 
     const newSession = await ListingSession.create({
       userId,
@@ -44,7 +40,6 @@ export async function POST(request) {
       endDate: new Date(Date.now() + day * 24 * 60 * 60 * 1000),
       paidDays: 0,
     });
-    console.log(newSession)
     return NextResponse.json({ success: true, data: newSession });
   } catch (error) {
     console.error(error);

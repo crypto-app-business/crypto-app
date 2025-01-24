@@ -14,9 +14,7 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log('Connecting to MongoDB...');
     await connectDB();
-    console.log('Connected to MongoDB.');
 
     // Отримання адміністратора
     const adminUser = await User.findOne({ _id: adminId });

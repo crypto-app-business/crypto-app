@@ -40,30 +40,22 @@ export default function RegisterPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('referrer');
-    console.log(ref)
     if(ref)setReferrer(ref);
   }, []);
 
   const validatePassword = (password: string): boolean | string => {
-    console.log("asdjhsgd")
     let strength = 0;
     if (/[a-z]/.test(password)) strength++; // Нижній регістр
-    console.log(strength)
     if (/[A-Z]/.test(password)) strength++; // Верхній регістр
-    console.log(strength)
     if (/[0-9]/.test(password)) strength++; // Числа
-    console.log(strength)
     if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++; // Спецсимволи
-    console.log(strength)
   
     setPasswordStrength(strength); // Оновлюємо стан сили пароля
   
     // Мінімальна довжина та сила
-    console.log(passwordStrength)
     if (password.length < 8 || strength < 4) {
       return 'Пароль має містити щонайменше 8 символів, великі й малі літери, цифри та спецсимволи.';
     }
-    console.log(passwordStrength)
     return true; // Пароль валідний
   };
   

@@ -25,13 +25,9 @@ export async function POST(request) {
     if (currentBalance < amount) {
       return NextResponse.json({ error: 'Недостаточно денег' }, { status: 400 });
     }
-    console.log(amount)
-    console.log(user.balance.get(currency))
     // Оновлюємо баланс
     user.balance.set(currency, currentBalance - amount);
-    console.log(user.balance.get(currency))
     await user.save();
-    console.log(user.balance.get(currency))
 
     // Генерація відсотків для кожного тижня
     // const percentage = [];
@@ -49,7 +45,6 @@ export async function POST(request) {
       endDate: new Date(Date.now() + week * 7 * 24 * 60 * 60 * 1000),
       paidDays: 0,
     });
-    console.log(newSession)
     return NextResponse.json({ success: true, data: newSession });
   } catch (error) {
     console.error(error);

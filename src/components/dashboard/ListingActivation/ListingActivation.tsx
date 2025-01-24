@@ -60,12 +60,12 @@ export default function ListingActivation({ user }: ListingActivationProps) {
         setSuccess('Листинг успешно активирован');
       } else {
         const { error: responseError } = await response.json();
-        console.log(responseError)
         setError( 'Ошибка сервера');
+        console.log(responseError)
       }
     } catch (error) {
+      setError(`Ошибка сервера. Попробуйте позже.`);
       console.log(error)
-      setError('Ошибка сервера. Попробуйте позже.');
     }
   };
 

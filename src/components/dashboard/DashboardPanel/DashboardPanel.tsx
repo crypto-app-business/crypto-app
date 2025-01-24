@@ -132,11 +132,11 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
       <h3 className="text-[24px] font-bold mb-[20px]">Баланс</h3>
       <div className="flex flex-wrap gap-4 mb-[30px]">
         {user?.balance && (
-          <div className="bg-blue rounded-[15px] shadow-md w-[294px] min-h-[203px]">
+          <div className="bg-blue rounded-[15px] shadow-md min-w-[294px] min-h-[203px]">
             <div className="text-white rounded-[15px] pt-[31px] pl-[27px] pr-[27px]">
               <div className="flex justify-between items-baseline">
                 <div className="flex items-baseline gap-[5px]">
-                  <h4 className="text-[48px] font-bold">{user.balance[selectedWallet]}</h4>
+                  <h4 className="text-[48px] font-bold">{user.balance[selectedWallet]?.toFixed(2)}</h4>
                   <h4 className="text-[14px] font-regular">{selectedWallet}</h4>
                 </div>
                 <Image
