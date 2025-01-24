@@ -167,14 +167,13 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
               ))}
             </div>
 
-            {selectedLine !== null && (
+            {selectedLine !== null && team.length > 0 && (
               <div className="bg-[#3581FF] rounded-[25px] w-[270px] pb-[21px] hidden sm:block">
                 <h4 className="text-[16px] font-bold mb-[10px] text-white text-center mt-[15px]">Линии {selectedLine}</h4>
                 {renderLineInfo(selectedLine)}
               </div>
             )}
-            {/* <h3 className="text-[24px] font-bold mb-[25px]">Регистрация партнеров</h3> */}
-            <LastRegistrations userId={userId || ""} />
+            {team.length > 0 && <LastRegistrations userId={userId || ""} />}
           </div>
         </>
       )}
