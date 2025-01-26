@@ -33,7 +33,8 @@ export async function POST() {
       { success: true, message: 'База даних оновлена успішно.' },
       { status: 200 }
     );
-  } catch (error) {
+  // } catch (error) {
+  } catch () {
     // logger.error(`Error updating database: ${error}`);
     return NextResponse.json(
       { error: 'Помилка сервера.' },
