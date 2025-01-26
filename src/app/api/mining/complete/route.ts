@@ -17,7 +17,7 @@ export async function PATCH(request) {
 
     // Обробка кожної сесії
     for (const session of miningSessions) {
-      const { startDate, percentage, currency, amount, paidDays, week, fullAmount } = session;
+      const { startDate, percentage, currency, amount, paidDays, week } = session;
 
       const now = new Date();
       const daysSinceStart = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));

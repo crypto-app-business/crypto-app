@@ -17,7 +17,7 @@ export async function PATCH(request) {
     }
 
     for (const session of listingSession) {
-      const { startDate, percentage, currency, amount, paidDays, day, fullAmount } = session;
+      const { startDate, percentage, currency, amount, paidDays, day } = session;
       const now = new Date();
       const daysSinceStart = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
       const daysToPay = daysSinceStart - paidDays;

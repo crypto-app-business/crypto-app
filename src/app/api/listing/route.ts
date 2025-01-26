@@ -5,7 +5,7 @@ import connectDB from '@/utils/connectDB';
 
 export async function POST(request) {
   try {
-    const { userId, day, currency, amount, percentage, incomeAtEnd } = await request.json();
+    const { userId, day, currency, amount, percentage } = await request.json();
     // const { userId, week, currency, amount, percentage } = await request.json();
 
     if (!userId || !day || !currency || !amount ) {
