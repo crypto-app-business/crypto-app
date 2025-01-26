@@ -33,9 +33,9 @@ export async function POST() {
       { success: true, message: 'База даних оновлена успішно.' },
       { status: 200 }
     );
-  // } catch (error) {
-  } catch () {
+  } catch (error) {
     // logger.error(`Error updating database: ${error}`);
+    console.log(error)
     return NextResponse.json(
       { error: 'Помилка сервера.' },
       { status: 500 }
