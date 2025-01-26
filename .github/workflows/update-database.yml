@@ -20,12 +20,17 @@ jobs:
       - name: Log STAKING_SECRET_KEY
         run: echo "STAKING_SECRET_KEY=${{ secrets.STAKING_SECRET_KEY }}" # УВАГА: Це лише для тесту, уникайте друку секретних ключів!
 
+      - name: Log Environment Variables
+        run: |
+          echo "VERCEL_URL=$VERCEL_URL"
+          echo "STAKING_SECRET_KEY=$STAKING_SECRET_KEY"
+
       # Викликаємо API вашого Next.js проекту
       - name: Call Next.js API
         env:
           VERCEL_URL: ${{ secrets.VERCEL_URL }}
           STAKING_SECRET_KEY: ${{ secrets.STAKING_SECRET_KEY }}
         run: |
-          curl -L -X POST https://${VERCEL_URL}/api/updateStaking \
+          curl -v --max-time 10 -L -X POST https://${VERCEL_URL}/api/updateStaking \
           -H "Content-Type: application/json" \
           -H "x-secret-key: ${STAKING_SECRET_KEY}"
