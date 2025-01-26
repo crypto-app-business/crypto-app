@@ -118,7 +118,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       </div>
                       <div className='flex justify-between text-[14px] font-bold text-[#3581FF]'>
                         <div className="">Заработано:</div>
-                        <div>{session.fullAmount}</div>
+                        <div>{session?.fullAmount.toFixed(2)}</div>
                       </div>
                     </div>
                   </div>
@@ -164,7 +164,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       </div>
                       <div className='flex justify-between text-[14px] font-bold text-white'>
                         <div className="">Заработано:</div>
-                        <div>{session.fullAmount}</div>
+                        <div>{session?.fullAmount.toFixed(2)}</div>
                       </div>
                     </div>
                   </div>
@@ -208,7 +208,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       </div>
                       <div className='flex justify-between text-[14px] font-bold text-[#3581FF]'>
                         <div className="">Заработано:</div>
-                        <div>{session.fullAmount}</div>
+                        <div>{session?.fullAmount.toFixed(2)}</div>
                       </div>
                     </div>
                   </div>
@@ -241,7 +241,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         </div>
                         <div className='flex justify-between text-[14px] font-bold text-[#3581FF]'>
                           <div className="">Заработано:</div>
-                          <div>{session.fullAmount}</div>
+                          <div>{session?.fullAmount.toFixed(2)}</div>
                         </div>
                       </div>
                     </div>
@@ -272,7 +272,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         </div>
                         <div className='flex justify-between text-[14px] font-bold text-white'>
                           <div className="">Заработано:</div>
-                          <div>{session.fullAmount}</div>
+                          <div>{session?.fullAmount.toFixed(2)}</div>
                         </div>
                       </div>
                     </div>
@@ -301,7 +301,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         </div>
                         <div className='flex justify-between text-[14px] font-bold text-[#3581FF]'>
                           <div className="">Заработано:</div>
-                          <div>{session.fullAmount}</div>
+                          <div>{session?.fullAmount.toFixed(2)}</div>
                         </div>
                       </div>
                     </div>

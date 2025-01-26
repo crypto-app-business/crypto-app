@@ -8,7 +8,7 @@ export async function POST(request) {
     const { userId, day, currency, amount, percentage, incomeAtEnd } = await request.json();
     // const { userId, week, currency, amount, percentage } = await request.json();
 
-    if (!userId || !day || !currency || !amount || !incomeAtEnd) {
+    if (!userId || !day || !currency || !amount ) {
       return NextResponse.json({ error: 'Усі поля обов’язкові.' }, { status: 400 });
     }
 

@@ -5,7 +5,7 @@ import { useState } from 'react';
 interface User {
   id: string;
   balance: Record<string, number>;
-
+  role: string,
   username: string;
   email: string;
   referrer: string;
@@ -41,7 +41,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
     setError('');
     setSuccess('');
     setlistingIndex(index)
-    
+
     try {
       const response = await fetch('/api/listing', {
         method: 'POST',
@@ -60,7 +60,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
         setSuccess('Листинг успешно активирован');
       } else {
         const { error: responseError } = await response.json();
-        setError( 'Ошибка сервера');
+        setError('Ошибка сервера');
         console.log(responseError)
       }
     } catch (error) {
@@ -79,8 +79,34 @@ export default function ListingActivation({ user }: ListingActivationProps) {
     { amount: 500000, duration: "1 день", day: 1, percentage: 125 },
   ];
 
+  const handleSimulateTime = async () => {
+    if (!confirm('Are you sure you want to simulate time?')) return;
+
+    try {
+      const response = await fetch('/api/admin/simulate-listing', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id }),
+      });
+
+      if (response.ok) {
+        alert('Time simulated successfully!');
+      } else {
+        console.error('Failed to simulate time.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <div className="bg-gray-50 flex flex-wrap flex-row sm:gap-[35px] gap-[25px] w-full">
+      {user?.role === "admin" && <button
+        onClick={handleSimulateTime}
+        className="bg-blue text-white px-4 py-2 rounded mb-4"
+      >
+        Симулировать листинг
+      </button>}
       {data.map((item, index) => {
         const isHovered = hoveredIndex === index; // Перевіряємо, чи ховер для цього елемента
         const strokeDashoffset = isHovered
@@ -90,9 +116,9 @@ export default function ListingActivation({ user }: ListingActivationProps) {
           <div key={index} className="bg-[#0d316d] text-white rounded-[15px] gap-[6px] px-[30px] py-[25px] mb-[30px] sm:min-w-[370px] min-w-[316px] relative">
             <div className='text-[#3581FF] sm:text-[40px] text-[36px] bold'>${item.amount}</div>
             <div className='text-white text-[24px] bold mb-[30px]'>на {item.duration}</div>
-            <div className='text-white text-[16px] mb-[10px] max-w-[200px]'>{item.incomeAtEnd? "Доход вместе с депозитом в конце срока": "Ежедневно  и Включен возврат тела в ежедневные начисления"}</div>
+            <div className='text-white text-[16px] mb-[10px] max-w-[200px]'>{item.incomeAtEnd ? "Доход вместе с депозитом в конце срока" : "Ежедневно  и Включен возврат тела в ежедневные начисления"}</div>
             <div className='flex justify-end'>
-              <button onClick={(e)=> handleSubmit(e, index)} className='px-[25px] py-[10px] rounded-full bg-[#576f9b] hover:bg-[#3581FF]'>Вложить</button>
+              <button onClick={(e) => handleSubmit(e, index)} className='px-[25px] py-[10px] rounded-full bg-[#576f9b] hover:bg-[#3581FF]'>Вложить</button>
             </div>
             {index === listingIndex && error && <div className="text-red-500">{error}</div>}
             {index === listingIndex && success && <div className="text-green-500">{success}</div>}
@@ -138,10 +164,10 @@ export default function ListingActivation({ user }: ListingActivationProps) {
                   className="transition-all duration-500 ease-out"
                 />
               </svg>
-                <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[24px] font-bold'>{item.percentage}%</div>
+              <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[24px] font-bold'>{item.percentage}%</div>
             </div>
-            <div className="flex items-center justify-center absolute top-[15px] right-[15px] sm:hidden" 
-            style={{ transform: "scale(0.8)" }}
+            <div className="flex items-center justify-center absolute top-[15px] right-[15px] sm:hidden"
+              style={{ transform: "scale(0.8)" }}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
             >
@@ -181,7 +207,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
                   className="transition-all duration-500 ease-out"
                 />
               </svg>
-                <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[24px] font-bold'>{item.percentage}%</div>
+              <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[24px] font-bold'>{item.percentage}%</div>
             </div>
           </div>
         );

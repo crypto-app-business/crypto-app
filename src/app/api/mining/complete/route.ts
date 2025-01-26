@@ -17,7 +17,7 @@ export async function PATCH(request) {
 
     // Обробка кожної сесії
     for (const session of miningSessions) {
-      const { startDate, percentage, currency, amount, paidDays, week } = session;
+      const { startDate, percentage, currency, amount, paidDays, week, fullAmount } = session;
 
       const now = new Date();
       const daysSinceStart = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
@@ -44,10 +44,13 @@ export async function PATCH(request) {
 
           // Оновлюємо кількість сплачених днів у сесії
           session.paidDays += daysToPay;
+          session.fullAmount += reward;
 
           // Якщо сесія завершена, встановлюємо isCompleted
           if (daysSinceStart >= week * 7) {
+            const currentBalance = user.balance.get(currency) || 0;
             session.isCompleted = true;
+            user.balance.set(currency, (currentBalance || 0) + amount);
           }
 
           await session.save();

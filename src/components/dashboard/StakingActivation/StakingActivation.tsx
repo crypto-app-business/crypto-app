@@ -6,7 +6,7 @@ import Image from 'next/image';
 interface User {
   id: string;
   balance: Record<string, number>;
-
+  role: string;
   username: string;
   email: string;
   referrer: string;
@@ -26,6 +26,26 @@ interface MiningSession {
 interface StakingActivationProps {
   user: User;
 }
+
+const handleSimulateTime = async () => {
+  if (!confirm('Are you sure you want to simulate time?')) return;
+
+  try {
+    const response = await fetch('/api/updateStaking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      // body: JSON.stringify({ userId: user.id }),
+    });
+
+    if (response.ok) {
+      alert('Time simulated successfully!');
+    } else {
+      console.error('Failed to simulate time.');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
 
 export default function StakingActivation({ user }: StakingActivationProps) {
   const [currency] = useState<string>('USDT');
@@ -54,12 +74,12 @@ export default function StakingActivation({ user }: StakingActivationProps) {
     fetchMiningSessions();
   }, [user?.id]);
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>, action:string) => {
+  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>, action: string) => {
     e.preventDefault();
     setError('');
     setSuccess('');
 
-    if ( !currency || !amount) {
+    if (!currency || !amount) {
       setError('Пожалуйста зполните все поля.');
       return;
     }
@@ -86,14 +106,14 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         const updatedBalance = { ...user.balance };
         updatedBalance[currency] -= numericAmount;
 
-        if(action==="add") setSuccess('Стейкинг успешно активирован!');
-        if(action==="withdraw") setSuccess('Деньги успешно выведены!');
+        if (action === "add") setSuccess('Стейкинг успешно активирован!');
+        if (action === "withdraw") setSuccess('Деньги успешно выведены!');
         const newSession: MiningSession = (await response.json()).data;
         setMiningSessions((prevSessions) => [...prevSessions, newSession]);
       } else {
         const { error: responseError } = await response.json();
-        if(action==="add") setError(responseError || 'Не получилось активировать стейкинг.');
-        if(action==="withdraw") setError(responseError || 'Не получилось вывесты деньги.');
+        if (action === "add") setError(responseError || 'Не получилось активировать стейкинг.');
+        if (action === "withdraw") setError(responseError || 'Не получилось вывесты деньги.');
       }
     } catch (error) {
       console.log(error)
@@ -103,8 +123,14 @@ export default function StakingActivation({ user }: StakingActivationProps) {
 
   return (
     <div className="bg-gray-50 flex flex-wrap flex-row gap-[50px] w-full">
+      {user?.role === "admin" && <button
+        onClick={handleSimulateTime}
+        className="bg-blue text-white px-4 py-2 rounded mb-4"
+      >
+        Симулировать стейкинг
+      </button>}
       <div className="bg-blue rounded-[15px] gap-[6px] p-[30px] mb-[30px] w-[325px]">
-      {/* {miningSessions.map((session, index) => (
+        {/* {miningSessions.map((session, index) => (
               <tr key={`table-row-${index}`} className="hover:bg-gray-50">
                 <td className="border px-4 py-2">{session.currency}</td>
                 <td className="border px-4 py-2">{session.amount}</td>
@@ -132,8 +158,8 @@ export default function StakingActivation({ user }: StakingActivationProps) {
               </div>
             </div>
             <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-             {miningSessions[0]?.amount &&<div className='text-[24px] font-bold'>{miningSessions[0].amount?.toFixed(2)}</div>}
-             {miningSessions[0]?.amount &&<div className='text-[14px]'>{miningSessions[0].currency}</div>}
+              {miningSessions[0]?.amount && <div className='text-[24px] font-bold'>{miningSessions[0].amount?.toFixed(2)}</div>}
+              {miningSessions[0]?.amount && <div className='text-[14px]'>{miningSessions[0].currency}</div>}
             </div>
           </div>
         </div>
@@ -153,8 +179,8 @@ export default function StakingActivation({ user }: StakingActivationProps) {
               </div>
             </div>
             <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-             <div className='text-[24px] font-bold'>{user?.balance?.USDT?.toFixed(2)}</div>
-             <div className='text-[14px]'>USDT</div>
+              <div className='text-[24px] font-bold'>{user?.balance?.USDT?.toFixed(2)}</div>
+              <div className='text-[14px]'>USDT</div>
             </div>
           </div>
         </div>
@@ -174,53 +200,53 @@ export default function StakingActivation({ user }: StakingActivationProps) {
               </div>
             </div>
             <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-             <div className='text-[24px] font-bold'>{miningSessions[0]?.fullAmount?.toFixed(2) || 0}</div>
-             <div className='text-[14px]'>{miningSessions[0]?.currency}</div>
+              <div className='text-[24px] font-bold'>{miningSessions[0]?.fullAmount?.toFixed(2) || 0}</div>
+              <div className='text-[14px]'>{miningSessions[0]?.currency}</div>
             </div>
           </div>
         </div>
         <div className='flex justify-end'>
 
-        <div className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] text-white text-[16px] bold'>Обмен валюты</div>
+          <div className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] text-white text-[16px] bold'>Обмен валюты</div>
         </div>
       </div>
 
 
       <div className="bg-[#00163A] rounded-[15px] gap-[6px] p-[30px] mb-[30px] w-[325px] max-h-[345px]">
         <div className='flex justify-center flex-col items-center mb-[15px] text-white h-full text-[16px] max-w-[210px] ml-auto mr-auto'>
-              <Image
-                src="/dashboard/staking/Coin_gif.gif"
-                alt="Wallet Icon"
-                width={73}
-                height={73}
-                objectFit="cover"
-                priority={false}
-              />
+          <Image
+            src="/dashboard/staking/Coin_gif.gif"
+            alt="Wallet Icon"
+            width={73}
+            height={73}
+            objectFit="cover"
+            priority={false}
+          />
 
-              <button onClick={(e)=>handleSubmit(e,"add")} className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] font-bold mb-[20px]'>Вложить в стейкинг</button>
-              <input 
-                type="text" 
-                placeholder='Сумма' 
-                className='mb-[20px] rounded pl-[15px] py-[5px] text-[black]'
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (/^\d*\.?\d*$/.test(value)) {
-                    setAmount(value);
-                  }
-                }} 
-              />
-              {error && <div className="text-red-500 w-max mb-[20px]">{error}</div>}
-              {success && !error && <div className="text-green-500 w-max mb-[20px]">{success}</div>}
-              <button onClick={(e)=>handleSubmit(e,"withdraw")} className='px-[25px] py-[10px] rounded-full bg-[#4b5b75] font-bold'>Вывести вложение</button>
+          <button onClick={(e) => handleSubmit(e, "add")} className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] font-bold mb-[20px]'>Вложить в стейкинг</button>
+          <input
+            type="text"
+            placeholder='Сумма'
+            className='mb-[20px] rounded pl-[15px] py-[5px] text-[black]'
+            onChange={(e) => {
+              const value = e.target.value;
+              if (/^\d*\.?\d*$/.test(value)) {
+                setAmount(value);
+              }
+            }}
+          />
+          {error && <div className="text-red-500 w-max mb-[20px]">{error}</div>}
+          {success && !error && <div className="text-green-500 w-max mb-[20px]">{success}</div>}
+          <button onClick={(e) => handleSubmit(e, "withdraw")} className='px-[25px] py-[10px] rounded-full bg-[#4b5b75] font-bold'>Вывести вложение</button>
 
-              <Image
-                src="/dashboard/staking/Dolar_gif.gif"
-                alt="Wallet Icon"
-                width={73}
-                height={73}
-                objectFit="cover"
-                priority={false}
-              />
+          <Image
+            src="/dashboard/staking/Dolar_gif.gif"
+            alt="Wallet Icon"
+            width={73}
+            height={73}
+            objectFit="cover"
+            priority={false}
+          />
         </div>
       </div>
 

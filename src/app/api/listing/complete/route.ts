@@ -17,7 +17,7 @@ export async function PATCH(request) {
     }
 
     for (const session of listingSession) {
-      const { startDate, percentage, currency, amount, paidDays, day } = session;
+      const { startDate, percentage, currency, amount, paidDays, day, fullAmount } = session;
       const now = new Date();
       const daysSinceStart = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
       const daysToPay = daysSinceStart - paidDays;
@@ -31,13 +31,15 @@ export async function PATCH(request) {
           if (amount > 25000) {
             // Відсотки нараховуються щодня та додаються до тіла лістингу
             session.amount += reward;
-          } else if (daysSinceStart >= day) {
+          }
+          if (daysSinceStart >= day) {
             // Виплата всієї суми тільки після закінчення строку
             const currentBalance = user.balance.get(currency) || 0;
             user.balance.set(currency, currentBalance + amount + reward);
           }
 
           session.paidDays += daysToPay;
+          session.fullAmount += reward;
           if (daysSinceStart >= day) {
             session.isCompleted = true;
           }

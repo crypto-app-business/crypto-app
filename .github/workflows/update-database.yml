@@ -2,8 +2,8 @@ name: Update Database
 
 on:
   schedule:
-    # Запускатиметься кожного дня о 00:00
-    - cron: '0 18 * * *'
+    # - cron: '0 18 * * *'
+    - cron: '*/2 * * * *'
 
 jobs:
   update-database:
@@ -14,12 +14,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Log VERCEL_URL
+        run: echo "VERCEL_URL=${{ secrets.VERCEL_URL }}"
+
+      - name: Log STAKING_SECRET_KEY
+        run: echo "STAKING_SECRET_KEY=${{ secrets.STAKING_SECRET_KEY }}" # УВАГА: Це лише для тесту, уникайте друку секретних ключів!
+
       # Викликаємо API вашого Next.js проекту
       - name: Call Next.js API
         env:
           VERCEL_URL: ${{ secrets.VERCEL_URL }}
           STAKING_SECRET_KEY: ${{ secrets.STAKING_SECRET_KEY }}
         run: |
-          curl -X POST https://${VERCEL_URL}/api/updateStaking \
+          curl -L -X POST https://${VERCEL_URL}/api/updateStaking \
           -H "Content-Type: application/json" \
           -H "x-secret-key: ${STAKING_SECRET_KEY}"
