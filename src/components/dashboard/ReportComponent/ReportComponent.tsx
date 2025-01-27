@@ -79,9 +79,9 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
       ) : (
         <>
           {/* <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 sm:justify-center justify-start"> */}
-          <div className="flex flex-wrap sm:justify-between justify-center">
+          <div className="flex flex-wrap gap-[15px] sm:mr-[-15px] sm:ml-[-15px] sm:justify-start justify-center">
             <div className='mb-[15px]'>
-              <div onClick={() => setActiveTab('mining')} className={`flex items-center gap-[12px] justify-center w-[316px] h-[65px]
+              <div onClick={() => setActiveTab('mining')} className={`flex items-center gap-[12px] justify-center w-[257px] h-[65px]
                 ${
                   activeTab === 'mining' ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]' : 'text-[#00163A]'
                 }
@@ -126,7 +126,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
               </div>
             </div>
             <div className='mb-[15px]'>
-              <div onClick={() => setActiveTab('staking')} className={`flex items-center gap-[12px] justify-center mb-[15px] w-[316px] h-[65px]
+              <div onClick={() => setActiveTab('staking')} className={`flex items-center gap-[12px] justify-center mb-[15px] w-[254px] h-[65px]
                 ${
                   activeTab === 'staking' ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]' : 'text-[#00163A]'
                 }
@@ -145,22 +145,22 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                 {stakingSessions.map((session, index) => (
                   <div
                     key={index}
-                    className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#3581FF] rounded-[15px] w-[264px]"
+                    className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#3581FF] rounded-[15px] w-[254px]"
                   >
                     {/* <div className='text-[20px] font-bold'>#{index + 1}</div> */}
                     <div className='min-w-[205px]'>
                       <div className='flex justify-between text-[16px] font-bold mb-[5px]'>
-                        <div className="">Контракт {index + 1}</div>
-                        <div>${session.amount}</div>
+                        <div className="">Контракт</div>
+                        <div>${session?.amount.toFixed(2)}</div>
                       </div>
                       <div className='flex justify-between text-[14px] font-semibold'>
                         <div className="">Открыт:</div>
                         <div>{new Date(session.startDate).toLocaleDateString()}</div>
                       </div>
                       <div className='flex justify-between text-[14px] font-semibold mb-[5px]'>
-                        <div className="">Закрывается:</div>
-                        {/* <div>{new Date(session.endDate).toLocaleDateString()}</div> */}
-                        <div>-</div>
+                        {/* <div className="">Закрывается:</div>
+                        <div>{new Date(session.endDate).toLocaleDateString()}</div>
+                        <div>-</div> */}
                       </div>
                       <div className='flex justify-between text-[14px] font-bold text-white'>
                         <div className="">Заработано:</div>
@@ -172,7 +172,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
               </div>
             </div>
             <div className='mb-[15px]'>
-              <div onClick={() => setActiveTab('listing')} className={`flex items-center gap-[12px] justify-center w-[316px] h-[65px]
+              <div onClick={() => setActiveTab('listing')} className={`flex items-center gap-[12px] justify-center w-[257px] h-[65px]
                 ${
                   activeTab === 'listing' ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]' : 'text-[#00163A]'
                 }
@@ -191,7 +191,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                 {listingSessions.map((session, index) => (
                   <div
                     key={index}
-                    className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#00163A] rounded-[15px] w-[264px]"
+                    className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#00163A] rounded-[15px] w-[257px]"
                   >
                     <div className='min-w-[205px]'>
                       <div className='flex justify-between text-[16px] font-bold mb-[5px] text-white'>
@@ -216,7 +216,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
               </div>
             </div>
           </div>
-          <div className='flex flex-wrap sm:flex-nowrap fap-[20px] sm:gap-[30px]'>
+          <div className='flex flex-wrap sm:flex-nowrap fap-[20px] sm:gap-[30px] sm:justify-start justify-center'>
             <div>
               {activeTab === 'mining' &&
                 <div className='flex flex-col gap-[15px] sm:hidden'>
@@ -253,7 +253,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   {stakingSessions.map((session, index) => (
                     <div
                       key={index}
-                      className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#3581FF] rounded-[15px] w-[264px]"
+                      className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#3581FF] rounded-[15px] w-[254px]"
                     >
                       {/* <div className='text-[20px] font-bold'>#{index + 1}</div> */}
                       <div className='min-w-[205px]'>
@@ -284,7 +284,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   {listingSessions.map((session, index) => (
                     <div
                       key={index}
-                      className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#00163A] rounded-[15px] w-[264px]"
+                      className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#00163A] rounded-[15px] w-[257px]"
                     >
                       <div className='min-w-[205px]'>
                         <div className='flex justify-between text-[16px] font-bold mb-[5px] text-white'>

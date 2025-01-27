@@ -8,7 +8,7 @@ export default function RegisterPage() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm({mode: 'onChange'});
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState(0);
+  // const [passwordStrength, setPasswordStrength] = useState(0);
   const [referrer, setReferrer] = useState<string>("none");
   // const searchParams = useSearchParams();
   const [isUsernameUnique, setIsUsernameUnique] = useState(true);
@@ -32,32 +32,11 @@ export default function RegisterPage() {
   
   ///register?referrer=ABCD1234 для створення реферального посилання
 
-  // useEffect(() => {
-  //   // Отримання реферального параметра з URL
-  //   const ref = searchParams.get('referrer');
-  //   if (ref) setReferrer(ref);
-  // }, [searchParams]);
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('referrer');
     if(ref)setReferrer(ref);
   }, []);
-
-  const validatePassword = (password: string): boolean | string => {
-    let strength = 0;
-    if (/[a-z]/.test(password)) strength++; // Нижній регістр
-    if (/[A-Z]/.test(password)) strength++; // Верхній регістр
-    if (/[0-9]/.test(password)) strength++; // Числа
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++; // Спецсимволи
-  
-    setPasswordStrength(strength); // Оновлюємо стан сили пароля
-  
-    // Мінімальна довжина та сила
-    if (password.length < 8 || strength < 4) {
-      return 'Пароль має містити щонайменше 8 символів, великі й малі літери, цифри та спецсимволи.';
-    }
-    return true; // Пароль валідний
-  };
   
   const validatePassword2 = (password2: string): boolean | string => {
     if (password2 !== watch('password')) {
@@ -80,17 +59,6 @@ export default function RegisterPage() {
     }
   };
 
-  useEffect(() => {
-    const password = watch('password', '');
-    let strength = 0;
-  
-    if (/[a-z]/.test(password)) strength++;
-    if (/[A-Z]/.test(password)) strength++;
-    if (/[0-9]/.test(password)) strength++;
-    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
-  
-    setPasswordStrength(strength);
-  }, [watch('password')]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -127,7 +95,7 @@ export default function RegisterPage() {
       <div className='flex sm:gap-[15px] flex-col sm:flex-row'>
         <div className="relative w-full">
           <input {...register('password', {
-            validate: validatePassword, 
+            // validate: validatePassword, 
             required: 'Пароль обязателен',
           })} type={showPassword ? 'text' : 'password'} placeholder="Пароль" required className="w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]" />
           <button
@@ -137,22 +105,12 @@ export default function RegisterPage() {
           >
             {showPassword ? '🙈' : '👁️'}
           </button>
-          <div className="flex my-2 gap-[7px]">
-          {['bg-red', 'bg-[#f97216]', 'bg-[#facc16]', 'bg-green']
-            .map((color, idx) => (
-              <div
-                key={idx}
-                className={`h-1 w-full ${idx < passwordStrength ? color : 'bg-[#d1d6da]'} rounded-full `}
-              />
-          ))}
-        </div>
         </div>
         <input {...register('password2',{
           validate: validatePassword2, 
           required: 'Потдверджения пароля обязательно.',
         })} placeholder="Подтвердите пароль" type={showPassword ? 'text' : 'password'} required className="max-h-[40px] mb-4 w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]" />
       </div>
-      {(passwordStrength <4) &&<div className='text-[#8190b1] text-[9px] mr-[3px] text-center mb-2'>Используй 8 или больше литер с миксом из букв, чисел, символов, заглавних букв</div>}
       {referrer &&<div className='flex mb-[15px]'>
         <div className='text-[#8190b1] text-[13px] mr-[3px]'>Приглашен:</div>
         <div className='text-[#8190b1] text-[13px] font-bold'>{referrer}</div>

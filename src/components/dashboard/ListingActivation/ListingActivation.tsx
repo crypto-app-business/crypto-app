@@ -30,6 +30,9 @@ export default function ListingActivation({ user }: ListingActivationProps) {
   const [success, setSuccess] = useState<string>('');
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [listingIndex, setlistingIndex] = useState<number>(0);
+  const [amount, setAmount] = useState<number>(0);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [selectedSessionIndex, setSelectedSessionIndex] = useState<number>(0);
   const initialPercentage = 20;
   const finalPercentage = 100;
 
@@ -37,35 +40,62 @@ export default function ListingActivation({ user }: ListingActivationProps) {
   const circumference = 2 * Math.PI * radius;
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-    setlistingIndex(index)
+    if (isOpen) {
+      e.preventDefault();
+      setError('');
+      setSuccess('');
+      setlistingIndex(index)
 
-    try {
-      const response = await fetch('/api/listing', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: user.id,
-          day: data[index].day,
-          currency: "USDT",
-          amount: data[index].amount,
-          incomeAtEnd: data[index].incomeAtEnd,
-          percentage: data[index].percentage
-        }),
-      });
-
-      if (response.ok) {
-        setSuccess('Листинг успешно активирован');
-      } else {
-        const { error: responseError } = await response.json();
-        setError('Ошибка сервера');
-        console.log(responseError)
+      if(!(data[index].amount <= amount)){
+        setError('Сумма меньше листинга');
+        return;
       }
-    } catch (error) {
-      setError(`Ошибка сервера. Попробуйте позже.`);
-      console.log(error)
+
+
+      if((data[index+1]?.amount <= amount && !(data.length === index) )){
+        setError('Виберите следующий листинг');
+        return;
+      }
+
+      if (!amount) {
+        setError('Пожалуйста зполните все поля.');
+        return;
+      }
+  
+      // const numericAmount = parseFloat(amount);
+      // if (isNaN(numericAmount) || numericAmount <= 0) {
+      //   setError('Введите корректное количество.');
+      //   return;
+      // }
+
+      try {
+        const response = await fetch('/api/listing', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: user.id,
+            day: data[index].day,
+            currency: "USDT",
+            amount: amount,
+            incomeAtEnd: data[index].incomeAtEnd,
+            percentage: data[index].percentage
+          }),
+        });
+
+        if (response.ok) {
+          setSuccess('Листинг успешно активирован');
+          setIsOpen(false)
+        } else {
+          const { error: responseError } = await response.json();
+          setError(responseError || 'Ошибка сервера'); 
+        }
+      } catch (error) {
+        setError(`Ошибка сервера. Попробуйте позже.`);
+        console.log(error)
+      }
+    } else {
+      setSelectedSessionIndex(index);
+      setIsOpen(true)
     }
   };
 
@@ -100,7 +130,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
   };
 
   return (
-    <div className="bg-gray-50 flex flex-wrap flex-row sm:gap-[35px] gap-[25px] w-full">
+    <div className="bg-gray-50 flex flex-wrap flex-row sm:gap-[35px] gap-[25px] w-full sm:justify-start justify-center">
       {user?.role === "admin" && <button
         onClick={handleSimulateTime}
         className="bg-blue text-white px-4 py-2 rounded mb-4"
@@ -117,6 +147,24 @@ export default function ListingActivation({ user }: ListingActivationProps) {
             <div className='text-[#3581FF] sm:text-[40px] text-[36px] bold'>${item.amount}</div>
             <div className='text-white text-[24px] bold mb-[30px]'>на {item.duration}</div>
             <div className='text-white text-[16px] mb-[10px] max-w-[200px]'>{item.incomeAtEnd ? "Доход вместе с депозитом в конце срока" : "Ежедневно  и Включен возврат тела в ежедневные начисления"}</div>
+            {isOpen && selectedSessionIndex === index && (
+              <label className="block mb-2">
+                <div className="text-[16px] mb-[5px] text-white">Сумма листинга:</div>
+                <input
+                  type="number"
+                  value={amount}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (/^\d*\.?\d*$/.test(value)) {
+                      setAmount(parseFloat(value) || 0);
+                    }
+                  }}
+                  className="w-full max-w-[300px] p-2 border rounded text-black"
+                // placeholder={`от ${availableContracts[selectedSessionIndex][0]}$`}
+                />
+
+              </label>
+            )}
             <div className='flex justify-end'>
               <button onClick={(e) => handleSubmit(e, index)} className='px-[25px] py-[10px] rounded-full bg-[#576f9b] hover:bg-[#3581FF]'>Вложить</button>
             </div>

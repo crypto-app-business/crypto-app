@@ -108,7 +108,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar, setActiveTab, ac
         <div className="w-full pt-[32px] pb-[32px]">
           <ul className="w-max mr-auto ml-auto">
             {links.map((elem, index) => (
-              <Link href={elem.href} key={index} onClick={() => setActiveTab(elem.text)}>
+              <Link href={elem.href} key={index} onClick={() => { setActiveTab(elem.text); toggleSidebar(); }}>
                 <li className={`mb-[17px] cursor-pointer flex items-center  space-x-2 transition-all  gap-[20px]
                     ${activeTab === elem.text ? "text-[#3581FF]" : ""}
                   `}>

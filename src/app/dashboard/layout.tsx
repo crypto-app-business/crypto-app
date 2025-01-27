@@ -14,11 +14,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   };
 
   return (
-    <div className="h-screen ">
+    <div className="min-h-screen !bg-none"
+    style={{
+      // background: 'linear-gradient(180.00deg, rgb(255, 255, 255),rgba(113, 156, 228, 0) 100%)',
+      background: 'linear-gradient(to bottom, rgb(255, 255, 255), rgba(113, 156, 228, 0) 100%)'
+    }}
+    >
+      {/* <div className='bg-[#FBFCFF] w-full h-[500px]'>
+      <div className='w-full h-[500px]'
+          style={{
+            // background: 'linear-gradient(180deg, rgb(255, 255, 255),rgba(113, 156, 228, 0) 100%)',
+            // background: 'linear-gradient(180deg, rgba(53, 191, 255, 0) 33.1%, rgba(53, 191, 255, 0.74) 100%)',
+            // background: 'linear-gradient(180.00deg, rgb(113, 156, 228, ), rgba(255, 255, 255, 0) 100%)'
+          }}
+      >
+      </div>
+      </div> */}
       <Header isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar}/>
-      <div className="flex mt-[40px] mr-auto ml-auto sm:mr-[16px] sm:ml-[16px] md:mr-[40px] md:ml-[40px]">
-      {/* <div className="flex mt-[40px] sm:mr-[16px] sm:ml-[16px] md:mr-[40px] md:ml-[40px]"> */}
-      {/* <div className="flex mt-[40px]  mr-[112px] ml-[112px]"> */}
+      <div className="flex mt-[40px] mr-auto ml-auto sm:mr-[16px] sm:ml-[16px] md:mr-[115px] md:ml-[115px]"
+
+                >
+        {/* <div className="flex mt-[40px] sm:mr-[16px] sm:ml-[16px] md:mr-[40px] md:ml-[40px]"> */}
+        {/* <div className="flex mt-[40px]  mr-[112px] ml-[112px]"> */}
         {/* <button 
           onClick={toggleSidebar}
           className="p-2 hover:bg-gray-100 rounded-lg"
@@ -35,7 +52,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
         <div className="flex flex-col flex-1">
           <DashboardHeader activeTab={activeTab}/>
-          <main className="p-[40px] bg-gray-50 flex-1  overflow-hidden">
+          <main className="sm:p-[40px] sm:pr-0 pt-[40px] mx-auto sm:mx-0  flex-1  overflow-hidden">
             {children}
           </main>
         </div>

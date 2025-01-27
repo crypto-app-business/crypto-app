@@ -54,23 +54,23 @@ export default function StakingActivation({ user }: StakingActivationProps) {
   const [success, setSuccess] = useState<string>('');
   const [miningSessions, setMiningSessions] = useState<MiningSession[]>([]);
 
-  useEffect(() => {
-    const fetchMiningSessions = async () => {
-      if (!user?.id) return;
-      try {
-        const response = await fetch(`/api/staking?userId=${user.id}`);
-        if (response.ok) {
-          const data: { sessions: MiningSession[] } = await response.json();
-          const filteredSessions = data.sessions.filter(session => session.currency === 'USDT');
-          setMiningSessions(filteredSessions);
-        } else {
-          console.error('Ошибка получения даних про стейкинге.');
-        }
-      } catch (error) {
-        console.error('Ошибка сервера:', error);
+  const fetchMiningSessions = async () => {
+    if (!user?.id) return;
+    try {
+      const response = await fetch(`/api/staking?userId=${user.id}`);
+      if (response.ok) {
+        const data: { sessions: MiningSession[] } = await response.json();
+        const filteredSessions = data.sessions.filter(session => session.currency === 'USDT');
+        setMiningSessions(filteredSessions);
+      } else {
+        console.error('Ошибка получения даних про стейкинге.');
       }
-    };
+    } catch (error) {
+      console.error('Ошибка сервера:', error);
+    }
+  };
 
+  useEffect(() => {
     fetchMiningSessions();
   }, [user?.id]);
 
@@ -87,6 +87,11 @@ export default function StakingActivation({ user }: StakingActivationProps) {
     const numericAmount = parseFloat(amount);
     if (isNaN(numericAmount) || numericAmount <= 0) {
       setError('Введите корректное количество.');
+      return;
+    }
+
+    if (action ==="withdraw" && miningSessions[0].amount < numericAmount) {
+      setError('Введеная сумма больше баланса.');
       return;
     }
 
@@ -110,6 +115,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         if (action === "withdraw") setSuccess('Деньги успешно выведены!');
         const newSession: MiningSession = (await response.json()).data;
         setMiningSessions((prevSessions) => [...prevSessions, newSession]);
+        await fetchMiningSessions();
       } else {
         const { error: responseError } = await response.json();
         if (action === "add") setError(responseError || 'Не получилось активировать стейкинг.');
@@ -122,7 +128,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
   };
 
   return (
-    <div className="bg-gray-50 flex flex-wrap flex-row gap-[50px] w-full">
+    <div className="bg-gray-50 flex flex-wrap flex-row sm:gap-[50px] sm:justify-start justify-center w-full">
       {user?.role === "admin" && <button
         onClick={handleSimulateTime}
         className="bg-blue text-white px-4 py-2 rounded mb-4"
@@ -212,7 +218,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
       </div>
 
 
-      <div className="bg-[#00163A] rounded-[15px] gap-[6px] p-[30px] mb-[30px] w-[325px] max-h-[345px]">
+      <div className="bg-[#00163A] rounded-[15px] gap-[6px] p-[30px] mb-[30px] w-[325px] sm:w-[400px] max-h-[345px]">
         <div className='flex justify-center flex-col items-center mb-[15px] text-white h-full text-[16px] max-w-[210px] ml-auto mr-auto'>
           <Image
             src="/dashboard/staking/Coin_gif.gif"

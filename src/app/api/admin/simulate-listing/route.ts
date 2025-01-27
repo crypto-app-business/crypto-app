@@ -17,7 +17,7 @@ export async function PATCH(request) {
 
     // Зміщуємо дати для всіх майнінг-контрактів
     const sessions = await ListingSession.find({});
-    const oneDayInMs = 24 * 60 * 60 * 1000;
+    const oneDayInMs = 24 * 60 * 60 * 1000 * 21;
     for (const session of sessions) {
       session.startDate = new Date(session.startDate.getTime() - oneDayInMs);
       session.endDate = new Date(session.endDate.getTime() - oneDayInMs);

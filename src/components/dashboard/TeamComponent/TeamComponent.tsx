@@ -99,7 +99,7 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
         <p>Loading...</p>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 sm:justify-center justify-start">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
             <div className="flex items-center gap-[12px] sm:justify-center justify-start">
               <Image
                 src="/dashboard/teams/file-person.svg"

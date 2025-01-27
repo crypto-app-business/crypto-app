@@ -151,7 +151,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
 
   return (
     <>
-    <div className="bg-gray-50 flex justify-center flex-wrap sm:flex-row flex-col-reverse gap-[70px] w-full">
+    <div className="bg-gray-50 flex flex-wrap sm:flex-row flex-col-reverse gap-[70px] w-full sm:ml-[45px]">
       <div className='max-w-[300px]'>
         <h3 className="text-[24px] font-bold mb-[20px]">Майнинговые сессии</h3>
         {user?.role === "admin" &&<button
