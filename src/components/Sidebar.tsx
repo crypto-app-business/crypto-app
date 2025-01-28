@@ -22,7 +22,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar, setActiveTab, ac
     },
     {
       text: "Настройки",
-      href: "#",
+      href: "/dashboard/settings",
       icon: "/dashboard/sidebar-icon/gear.svg",
       iconBlue: "/dashboard/sidebar-icon/blue/gear.svg",
     },
