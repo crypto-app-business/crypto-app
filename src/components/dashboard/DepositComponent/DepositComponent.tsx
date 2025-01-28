@@ -66,40 +66,44 @@ export default function DepositComponent({ id, selectedWallet }) {
   };
 
   return (
-    <div style={{ }}>
-      {!isOpen &&<button onClick={()=>{setIsOpen(true)}} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
-        Пополнить
-      </button>}
-    {isOpen &&<>
-      <h2>Пополнения депозита</h2>
-      <div className='mb-[10px]'>
-        <label htmlFor="amount">Выбрать сумму:</label>
-        <input
-          id="amount"
-          type="number"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          placeholder={`Минимально: ${selectedWallet ? minAmounts[selectedWallet] : '...'} ${selectedWallet}`}
-          className='text-blue'
-        />
+    <div className='w-full'>
+      <div className='flex justify-end w-full'>
+        {!isOpen && <button onClick={() => { setIsOpen(true) }} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
+          Пополнить
+        </button>}
       </div>
-      {!isPending && (
-        <button onClick={handleDeposit} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
-          Оплатить
-        </button>
-      )}
-      {isPending && (
-        <div>
-          <p>{message}</p>
-          <p>
-            <strong>Кошелек:</strong> {wallet}
-          </p>
-          <button onClick={handlePaid} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
-            Оплачено
-          </button>
+      {isOpen && <div className=' flex flex-col'>
+        <h2>Пополнения депозита</h2>
+        <div className='mb-[10px] flex flex-col gap-[10px]'>
+          <label htmlFor="amount">Выбрать сумму:</label>
+          <input
+            id="amount"
+            type="number"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            placeholder={`Минимально: ${selectedWallet ? minAmounts[selectedWallet] : '...'} ${selectedWallet}`}
+            className='text-black pl-[5px] rounded-[5px] w-max'
+          />
         </div>
-      )}
-    </>}
+        <div className='flex justify-end'>
+          {!isPending && (
+            <button onClick={handleDeposit} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
+              Оплатить
+            </button>
+          )}
+          {isPending && (
+            <div>
+              <p>{message}</p>
+              <p>
+                <strong>Кошелек:</strong> {wallet}
+              </p>
+              <button onClick={handlePaid} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
+                Оплачено
+              </button>
+            </div>
+          )}
+        </div>
+      </div>}
     </div>
   );
 }

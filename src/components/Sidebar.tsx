@@ -105,7 +105,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar, setActiveTab, ac
             </div>
           )}
         </div>
-        <div className="w-full pt-[32px] pb-[32px]">
+        <div className="w-full pt-[32px] pb-[32px] min-h-[100vh]">
           <ul className="w-max mr-auto ml-auto">
             {links.map((elem, index) => (
               <Link href={elem.href} key={index} onClick={() => { setActiveTab(elem.text); toggleSidebar(); }}>

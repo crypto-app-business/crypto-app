@@ -204,7 +204,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
                             }}
                             className="w-full max-w-[300px] p-2 border rounded text-black"
                           >
-                            <option value="">Вибрать</option>
+                            <option value="">Выбрать</option>
                             {availableContracts[selectedSessionIndex][1].weeks.map((elem, index) => (
                               <option key={`week-${index}`} value={`${elem.weekNumber}-${elem.percentage}`}>
                                 {elem.weekNumber} неделя - {elem.percentage}%
@@ -256,7 +256,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
                       }}
                       className="w-full max-w-[300px] p-2 border rounded text-black"
                     >
-                      <option value="">Вибрать</option>
+                      <option value="">Выбрать</option>
                       {availableContracts[selectedSessionIndex][1].weeks.map((elem, index) => (
                         <option key={`week-${index}`} value={`${elem.weekNumber}-${elem.percentage}`}>
                           {elem.weekNumber} неделя - {elem.percentage}%

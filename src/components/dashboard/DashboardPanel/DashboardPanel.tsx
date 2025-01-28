@@ -150,7 +150,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
             >
               <div className="flex justify-between items-baseline">
                 <div className="flex items-baseline gap-[5px]">
-                  <h4 className="text-[48px] font-bold">{user.balance[selectedWallet]?.toFixed(2)}</h4>
+                  <h4 className="text-[48px] font-bold">{user.balance[selectedWallet]?.toFixed(2) || 0}</h4>
                   <h4 className="text-[14px] font-regular">{selectedWallet}</h4>
                 </div>
                 <Image
@@ -162,7 +162,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
                   priority={false}
                 />
               </div>
-              <div className="flex justify-end mb-[31px]">
+              <div className="flex pb-[31px] w-full">
                 <DepositComponent id={user?.id} selectedWallet={selectedWallet}></DepositComponent>
               </div>
             </div>

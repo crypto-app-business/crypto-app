@@ -33,7 +33,6 @@ export default function ListingActivation({ user }: ListingActivationProps) {
   const [amount, setAmount] = useState<number>(0);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedSessionIndex, setSelectedSessionIndex] = useState<number>(0);
-  const initialPercentage = 20;
   const finalPercentage = 100;
 
   const radius = 55;
@@ -141,7 +140,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
         const isHovered = hoveredIndex === index; // Перевіряємо, чи ховер для цього елемента
         const strokeDashoffset = isHovered
           ? circumference - (finalPercentage / 100) * circumference
-          : circumference - (initialPercentage / 100) * circumference;
+          : circumference - (item.percentage >100 ? 1 : item.percentage / 100) * circumference;
         return (
           <div key={index} className="bg-[#0d316d] text-white rounded-[15px] gap-[6px] px-[30px] py-[25px] mb-[30px] sm:min-w-[370px] min-w-[316px] relative">
             <div className='text-[#3581FF] sm:text-[40px] text-[36px] bold'>${item.amount}</div>

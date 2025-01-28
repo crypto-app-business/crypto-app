@@ -271,7 +271,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
             onChange={(e) => setCurrency(e.target.value)}
             className="w-full max-w-[300px] p-2 border rounded"
           >
-            <option value="">Вибрать</option>
+            <option value="">Выбрать</option>
             {user?.balance &&
               Object.keys(user.balance).map((curr) => (
                 <option key={`balance-${curr}`} value={curr}>
