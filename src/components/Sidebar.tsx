@@ -87,7 +87,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar, setActiveTab, ac
     className={`fixed inset-0 z-50 bg-gradient-to-b from-gray-800 to-gray-900 text-white flex flex-col transition-all duration-300 ease-in-out ${
       isSidebarOpen
         ? "w-full h-full sm:w-[384px] sm:h-auto rounded-none"
-        : "w-[370px] h-auto rounded-[15px]"
+        : "w-[370px] h-max rounded-[15px]"
     }`}
   >
       <nav className="flex-grow text-white bg-[#293953] w-full rounded-none sm:rounded-[15px]">
@@ -105,7 +105,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar, setActiveTab, ac
             </div>
           )}
         </div>
-        <div className="w-full pt-[32px] pb-[32px] min-h-[100vh]">
+        <div className="w-full pt-[32px] pb-[32px] min-h-[100vh] sm:min-h-max">
           <ul className="w-max mr-auto ml-auto">
             {links.map((elem, index) => (
               <Link href={elem.href} key={index} onClick={() => { setActiveTab(elem.text); toggleSidebar(); }}>

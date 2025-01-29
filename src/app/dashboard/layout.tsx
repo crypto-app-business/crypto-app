@@ -47,7 +47,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </button> */}
         <div className={`
           fixed top-0 left-0 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-30
-          ${isSidebarOpen ? 'translate-x-0 w-full h-full sm:w-[384px] sm:h-auto rounded-none' : '-translate-x-full w-[370px] h-auto rounded-[15px]'}
+          ${isSidebarOpen ? 'translate-x-0 w-full h-full sm:w-[384px] sm:h-auto rounded-none' : '-translate-x-full w-[370px] h-max rounded-[15px]'}
           md:translate-x-0 md:static md:z-0
         `}>
           <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} setActiveTab={setActiveTab} activeTab={activeTab} />
