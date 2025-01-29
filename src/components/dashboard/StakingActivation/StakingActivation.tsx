@@ -90,7 +90,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
       return;
     }
 
-    if (action ==="withdraw" && miningSessions[0].amount < numericAmount) {
+    if (action === "withdraw" && miningSessions[0].amount < numericAmount) {
       setError('Введеная сумма больше баланса.');
       return;
     }
@@ -128,26 +128,19 @@ export default function StakingActivation({ user }: StakingActivationProps) {
   };
 
   return (
-    <div className="bg-gray-50 flex flex-wrap flex-row sm:gap-[50px] sm:justify-start justify-center w-full">
+    <div className="bg-gray-50 flex flex-wrap flex-row sm:gap-[4%] sm:justify-start justify-center w-full">
       {user?.role === "admin" && <button
         onClick={handleSimulateTime}
         className="bg-blue text-white px-4 py-2 rounded mb-4"
       >
         Симулировать стейкинг
       </button>}
-      <div className="bg-blue rounded-[15px] gap-[6px] p-[30px] mb-[30px] w-[325px]">
-        {/* {miningSessions.map((session, index) => (
-              <tr key={`table-row-${index}`} className="hover:bg-gray-50">
-                <td className="border px-4 py-2">{session.currency}</td>
-                <td className="border px-4 py-2">{session.amount}</td>
-                <td className="border px-4 py-2">
-                  {new Date(session.startDate).toLocaleString()}
-                </td>
-                <td className="border px-4 py-2">
-                  {session?.endDate && new Date(session.endDate).toLocaleString()}
-                </td>
-              </tr>
-            ))} */}
+      <div className=" rounded-[15px] gap-[6px] p-[30px] mb-[30px] min-w-[325px] w-full sm:w-[45%]"
+        style={{
+          boxShadow: '8px 10px 18.5px 0px rgba(0, 22, 58, 0.25)',
+          background: 'linear-gradient(180.00deg, rgba(53, 191, 255, 0) 33%,rgba(53, 191, 255, 0.74) 100%),rgb(53, 129, 255)'
+        }}
+      >
         <div className='flex mb-[15px]'>
           <div className='text-white'>
             <div className='flex items-center'>
@@ -213,12 +206,20 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         </div>
         <div className='flex justify-end'>
 
-          <div className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] text-white text-[16px] bold'>Обмен валюты</div>
+          <div className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] text-white text-[16px] bold'
+          style={{
+            background: 'rgba(255, 255, 255, 0.3)',
+          }}
+          >Обмен валюты</div>
         </div>
       </div>
 
 
-      <div className="bg-[#00163A] rounded-[15px] gap-[6px] p-[30px] mb-[30px] w-[325px] sm:w-[400px] max-h-[345px]">
+      <div className="bg-[#00163A] rounded-[15px] gap-[6px] p-[30px] mb-[30px] min-w-[325px] sm:min-w-[400px] w-full sm:w-[47%] max-h-[345px]"
+        style={{
+          boxShadow: '8px 10px 18.5px 0px rgba(0, 22, 58, 0.25)',
+        }}
+      >
         <div className='flex justify-center flex-col items-center mb-[15px] text-white h-full text-[16px] max-w-[210px] ml-auto mr-auto'>
           <Image
             src="/dashboard/staking/Coin_gif.gif"
@@ -229,7 +230,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
             priority={false}
           />
 
-          <button onClick={(e) => handleSubmit(e, "add")} className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] font-bold mb-[20px]'>Вложить в стейкинг</button>
+          <button onClick={(e) => handleSubmit(e, "add")} className='px-[25px] py-[10px] rounded-full bg-[#3581FF4D] font-bold mb-[20px]'>Вложить в стейкинг</button>
           <input
             type="text"
             placeholder='Сумма'

@@ -10,6 +10,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
 
   const toggleSidebar = () => {
+    if (window.innerWidth > 768) return
     setIsSidebarOpen(!isSidebarOpen);
   };
 
@@ -17,7 +18,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="min-h-screen !bg-none"
     style={{
       // background: 'linear-gradient(180.00deg, rgb(255, 255, 255),rgba(113, 156, 228, 0) 100%)',
-      background: 'linear-gradient(to bottom, rgb(255, 255, 255), rgba(113, 156, 228, 0) 100%)'
+      // background: 'linear-gradient(to bottom, rgb(255, 255, 255), rgba(113, 156, 228, 0) 100%)'
+      background: 'linear-gradient(180.00deg, rgb(255, 255, 255),rgba(113, 156, 228, 0) 100%),rgb(251, 252, 255)'
     }}
     >
       {/* <div className='bg-[#FBFCFF] w-full h-[500px]'>
@@ -44,8 +46,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {isSidebarOpen ? <CloseIcon /> : <MenuIcon />}
         </button> */}
         <div className={`
-          fixed top-0 left-0 w-full sm:w-[384px] bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-30
-          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+          fixed top-0 left-0 bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-30
+          ${isSidebarOpen ? 'translate-x-0 w-full h-full sm:w-[384px] sm:h-auto rounded-none' : '-translate-x-full w-[370px] h-auto rounded-[15px]'}
           md:translate-x-0 md:static md:z-0
         `}>
           <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} setActiveTab={setActiveTab} activeTab={activeTab} />

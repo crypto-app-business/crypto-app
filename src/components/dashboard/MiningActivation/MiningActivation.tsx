@@ -60,7 +60,7 @@ const DepositInput = ({
               setAmount(value);
             }
           }}
-          className="w-full max-w-[300px] p-2 border rounded text-black"
+          className="w-full max-w-[300px] p-2 rounded text-black"
           placeholder={`от ${availableContracts[selectedSessionIndex][0]}$`}
         />
       )}
@@ -153,7 +153,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
     <>
     <div className="bg-gray-50 flex flex-wrap sm:flex-row flex-col-reverse gap-[70px] w-full sm:ml-[45px]">
       <div className='max-w-[300px]'>
-        <h3 className="text-[24px] font-bold mb-[20px]">Майнинговые сессии</h3>
+        <h3 className="text-[24px] font-bold mb-[20px] uppercase">Майнинговые сессии</h3>
         {user?.role === "admin" &&<button
           onClick={handleSimulateTime}
           className="bg-blue text-white px-4 py-2 rounded mb-4"
@@ -162,9 +162,10 @@ export default function MiningActivation({ user }: MiningActivationProps) {
         </button>}
         <div className='flex flex-col gap-[15px]'>
         {availableContracts.map(([amountRange, { weeks }], index) => (
-          <div key={amountRange}>
+          <div key={amountRange} className='flex gap-[10px] h-[82px] justify-end'>
+          {selectedSessionIndex === index &&<div className='w-[5px] bg-[#3581FF] min-h-[54px] h-[100%] rounded-full'></div>}
           <div
-            className={`px-[15px] py-[10px] border rounded-[15px] cursor-pointer ${
+            className={`px-[15px] py-[10px] border rounded-[15px] cursor-pointer w-full max-w-[284px] ${
               selectedSessionIndex === index ? 'bg-blue text-white' : ''
             }`}
             onClick={() => handleSelectSession(index, { weeks })}
@@ -202,7 +203,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
                               setWeek(weekValue);
                               setPercentage(percentageValue);
                             }}
-                            className="w-full max-w-[300px] p-2 border rounded text-black"
+                            className="w-full max-w-[300px] p-2 rounded text-black"
                           >
                             <option value="">Выбрать</option>
                             {availableContracts[selectedSessionIndex][1].weeks.map((elem, index) => (
@@ -238,7 +239,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
 
       </div>
       <div className='max-w-[330px] sm:block hidden'>
-        <h3 className="text-[24px] font-bold mb-[20px] text-blue">Активировать майнинг</h3>
+        <h3 className="text-[24px] font-bold mb-[20px] text-blue uppercase">Активировать майнинг</h3>
         <div className="flex flex-wrap gap-4 mb-[30px] ">       
           <div className="bg-blue rounded-[15px] shadow-md w-[330px] min-h-[203px]">
             <div className="text-white rounded-[15px] pt-[31px] pl-[27px] pr-[27px]">
@@ -254,7 +255,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
                         setWeek(weekValue);
                         setPercentage(percentageValue);
                       }}
-                      className="w-full max-w-[300px] p-2 border rounded text-black"
+                      className="w-full max-w-[300px] p-2 rounded text-black"
                     >
                       <option value="">Выбрать</option>
                       {availableContracts[selectedSessionIndex][1].weeks.map((elem, index) => (

@@ -11,7 +11,7 @@ export default {
   ],
   theme: {
     fontFamily: {
-      poppins: ["Poppins", "sans-serif"],
+      segoeui: ["Segoeui", "sans-serif"],
     },
     colors: {
       primary: "#468EF9",

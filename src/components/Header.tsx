@@ -4,7 +4,7 @@ import Image from 'next/image';
 export default function Header({isSidebarOpen, toggleSidebar}) {
 
   return (
-    <header className="bg-[#00163A] text-white max-h-[125px] shadow-md p-4 flex justify-between items-center">
+    <header className="bg-[url('/header.png')] bg-cover text-white max-h-[125px] shadow-md p-4 flex justify-between items-center">
       <div className='flex justify-between w-full max-w-[1149px] mr-auto ml-auto'
         // style={{
         //   background: 'linear-gradient(90.00deg, rgba(41, 57, 84, 0) 38.6%,rgba(41, 57, 84, 0.5) 100%)',

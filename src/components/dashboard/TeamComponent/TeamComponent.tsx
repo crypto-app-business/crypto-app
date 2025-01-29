@@ -150,9 +150,13 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                 <button
                   key={line}
                   onClick={() => setSelectedLine(line)}
-                  className={`text-[16px] font-bold w-full sm:w-[190px]  h-[41px] py-2 px-4 rounded-full shadow
+                  className={`text-[16px] font-bold w-full sm:w-[190px]  h-[41px] py-2 px-4 rounded-full
                     ${selectedLine === line ? "bg-[#3581FF] text-white" : "bg-[#aac8fa] text-[#00163A]"}
-                  `}                >
+                  `}
+                  // style={{
+                  //   background: `${selectedLine === line ? "#3581FF" : "rgba(53, 129, 255, 0.3);"}`,
+                  // }}
+                  >
                   Линия {line}
                 </button>
                   {selectedLine === line && (

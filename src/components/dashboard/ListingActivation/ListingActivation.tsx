@@ -45,13 +45,13 @@ export default function ListingActivation({ user }: ListingActivationProps) {
       setSuccess('');
       setlistingIndex(index)
 
-      if(!(data[index].amount <= amount)){
+      if (!(data[index].amount <= amount)) {
         setError('Сумма меньше листинга');
         return;
       }
 
 
-      if((data[index+1]?.amount <= amount && !(data.length === index) )){
+      if ((data[index + 1]?.amount <= amount && !(data.length === index))) {
         setError('Виберите следующий листинг');
         return;
       }
@@ -60,7 +60,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
         setError('Пожалуйста зполните все поля.');
         return;
       }
-  
+
       // const numericAmount = parseFloat(amount);
       // if (isNaN(numericAmount) || numericAmount <= 0) {
       //   setError('Введите корректное количество.');
@@ -86,7 +86,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
           setIsOpen(false)
         } else {
           const { error: responseError } = await response.json();
-          setError(responseError || 'Ошибка сервера'); 
+          setError(responseError || 'Ошибка сервера');
         }
       } catch (error) {
         setError(`Ошибка сервера. Попробуйте позже.`);
@@ -140,9 +140,14 @@ export default function ListingActivation({ user }: ListingActivationProps) {
         const isHovered = hoveredIndex === index; // Перевіряємо, чи ховер для цього елемента
         const strokeDashoffset = isHovered
           ? circumference - (finalPercentage / 100) * circumference
-          : circumference - (item.percentage >100 ? 1 : item.percentage / 100) * circumference;
+          : circumference - (item.percentage > 100 ? 1 : item.percentage / 100) * circumference;
         return (
-          <div key={index} className="bg-[#0d316d] text-white rounded-[15px] gap-[6px] px-[30px] py-[25px] mb-[30px] sm:min-w-[370px] min-w-[316px] relative">
+          <div key={index} className="bg-[#0d316d] text-white rounded-[15px] gap-[6px] px-[30px] py-[25px] mb-[30px] sm:min-w-[370px] min-w-[316px] relative"
+            style={{
+              background: 'linear-gradient(180.00deg, rgba(53, 129, 255, 0),rgba(53, 129, 255, 0.35) 100%),rgb(0, 22, 58)',
+              boxShadow: '8px 10px 18.5px 0px rgba(0, 22, 58, 0.25)'
+            }}
+          >
             <div className='text-[#3581FF] sm:text-[40px] text-[36px] bold'>${item.amount}</div>
             <div className='text-white text-[24px] bold mb-[30px]'>на {item.duration}</div>
             <div className='text-white text-[16px] mb-[10px] max-w-[200px]'>{item.incomeAtEnd ? "Доход вместе с депозитом в конце срока" : "Ежедневно  и Включен возврат тела в ежедневные начисления"}</div>
@@ -181,6 +186,13 @@ export default function ListingActivation({ user }: ListingActivationProps) {
                 viewBox="0 0 131 131"
                 className="cursor-pointer "
               >
+                  <defs>
+    <linearGradient id="gradientStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="25%" stopColor="rgb(255, 0, 247)" />
+      <stop offset="50%" stopColor="rgba(53, 129, 255, 0.57)" />
+      <stop offset="75%" stopColor="rgb(53, 129, 255)" />
+    </linearGradient>
+  </defs>
                 <circle
                   cx="65.5"
                   cy="65.5"
@@ -201,7 +213,9 @@ export default function ListingActivation({ user }: ListingActivationProps) {
                   cx="65.5"
                   cy="65.5"
                   r={radius}
-                  stroke="#3B82F6"
+                  stroke="url(#gradientStroke)"
+                  // stroke="linear-gradient(225.00deg, rgb(255, 0, 247) 24.874%,rgba(53, 129, 255, 0.57) 50%,rgb(53, 129, 255) 75.126%),rgb(255, 255, 255)"
+                  // background: linear-gradient(225.00deg, rgb(255, 0, 247) 24.874%,rgba(53, 129, 255, 0.57) 50%,rgb(53, 129, 255) 75.126%),rgb(255, 255, 255);
                   strokeWidth="17"
                   fill="transparent"
                   strokeDasharray={circumference}
