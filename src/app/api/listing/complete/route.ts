@@ -104,6 +104,7 @@ export async function PATCH(request) {
           // Виплата всієї суми одним платежем після закінчення терміну
           const totalPayout = amount + (amount * (percentage / 100));
           user.balance.set(currency, currentBalance + totalPayout);
+          session.fullAmount = currentBalance + totalPayout
         }
 
         // Оновлення сесії
