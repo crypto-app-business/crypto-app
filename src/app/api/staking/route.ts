@@ -23,11 +23,11 @@ export async function POST(request) {
     }
 
     const currentBalance = user.balance.get(currency);
-    if (currentBalance < amount) {
-      return NextResponse.json({ error: 'Недостаточно денег.' }, { status: 400 });
-    }
     let stakingSession;
     if(action==="add"){
+      if (currentBalance < amount) {
+        return NextResponse.json({ error: 'Недостаточно денег.' }, { status: 400 });
+      }
       // Віднімаємо суму з балансу користувача
       user.balance.set(currency, currentBalance - amount);
       await user.save();
