@@ -55,7 +55,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
 
         if (stakingRes.ok) {
           const stakingData: { sessions: MiningSession[] } = await stakingRes.json();
-          setStakingSessions(stakingData.sessions.filter((session) => session.currency === 'USDT'));
+          setStakingSessions(stakingData.sessions.filter((session) => session.currency === 'CC'));
         }
 
         if (listingRes.ok) {

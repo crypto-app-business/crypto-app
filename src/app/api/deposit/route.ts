@@ -22,18 +22,18 @@ export async function POST(request: Request) {
     }
 
     // Мінімальні суми для кожної валюти
-    const minAmounts: Record<string, number> = {
-      USDT: 10,
-      ETH: 1,
-      BTC: 0.001,
-    };
+    // const minAmounts: Record<string, number> = {
+    //   USDT: 10,
+    //   ETH: 1,
+    //   BTC: 0.001,
+    // };
 
-    if (amount < (minAmounts[currency] || 0)) {
-      return NextResponse.json(
-        { error: `Мінімальна сума для ${currency}: ${minAmounts[currency]}` },
-        { status: 400 }
-      );
-    }
+    // if (amount < (minAmounts[currency] || 0)) {
+    //   return NextResponse.json(
+    //     { error: `Мінімальна сума для ${currency}: ${minAmounts[currency]}` },
+    //     { status: 400 }
+    //   );
+    // }
 
     // Підключення до бази даних
     await connectDB();

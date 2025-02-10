@@ -70,7 +70,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar, setActiveTab, ac
     },
     {
       text: "Статистика",
-      href: "#",
+      href: "/dashboard/statistics",
       icon: "/dashboard/sidebar-icon/graph.svg",
       iconBlue: "/dashboard/sidebar-icon/blue/graph.svg",
     },

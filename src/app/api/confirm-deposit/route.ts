@@ -47,7 +47,8 @@ export async function POST(request: Request) {
 
 
     // Оновлення балансу
-    user.balance.set(deposit.currency, (user.balance.get(deposit.currency) || 0) + deposit.amount);
+    // user.balance.set(deposit.currency, (user.balance.get(deposit.currency) || 0) + deposit.amount);
+    user.balance.set("USDT", (user.balance.get("USDT") || 0) + deposit.amount);
 
     // Зберігаємо користувача без змін інших полів
     await user.save();

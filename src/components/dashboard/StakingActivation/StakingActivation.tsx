@@ -50,9 +50,13 @@ const handleSimulateTime = async () => {
 export default function StakingActivation({ user }: StakingActivationProps) {
   const [currency] = useState<string>('USDT');
   const [amount, setAmount] = useState<string>('');
+  const [usdtAmount, setUSDTAmount] = useState("");
+  const [ccAmount, setCCAmount] = useState("");
+  const [isUSDTActive, setIsUSDTActive] = useState(true);
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [miningSessions, setMiningSessions] = useState<MiningSession[]>([]);
+  const [balance, setBalance] = useState<number>(0)
 
   const fetchMiningSessions = async () => {
     if (!user?.id) return;
@@ -60,7 +64,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
       const response = await fetch(`/api/staking?userId=${user.id}`);
       if (response.ok) {
         const data: { sessions: MiningSession[] } = await response.json();
-        const filteredSessions = data.sessions.filter(session => session.currency === 'USDT');
+        const filteredSessions = data.sessions.filter(session => session.currency === 'CC');
         setMiningSessions(filteredSessions);
       } else {
         console.error('Ошибка получения даних про стейкинге.');
@@ -73,6 +77,10 @@ export default function StakingActivation({ user }: StakingActivationProps) {
   useEffect(() => {
     fetchMiningSessions();
   }, [user?.id]);
+
+  useEffect(() => {
+    setBalance(+user?.balance?.CC?.toFixed(2))
+  }, [user]);
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>, action: string) => {
     e.preventDefault();
@@ -101,7 +109,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: user.id,
-          currency,
+          currency: "CC",
           amount: numericAmount,
           action: action,
         }),
@@ -111,8 +119,14 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         const updatedBalance = { ...user.balance };
         updatedBalance[currency] -= numericAmount;
 
-        if (action === "add") setSuccess('Стейкинг успешно активирован!');
-        if (action === "withdraw") setSuccess('Деньги успешно выведены!');
+        if (action === "add") {
+          setSuccess('Стейкинг успешно активирован!');
+          setBalance(balance - +amount)
+        }
+        if (action === "withdraw") {
+          setSuccess('Деньги успешно выведены!');
+          setBalance(balance + +amount)
+        }
         const newSession: MiningSession = (await response.json()).data;
         setMiningSessions((prevSessions) => [...prevSessions, newSession]);
         await fetchMiningSessions();
@@ -122,7 +136,66 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         if (action === "withdraw") setError(responseError || 'Не получилось вывесты деньги.');
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
+      setError('Ошибка сервера. Попробуйте позже.');
+    }
+  };
+
+  const handleSwap = () => {
+    setIsUSDTActive((prev) => !prev);
+    setUSDTAmount(ccAmount);
+    setCCAmount(usdtAmount);
+  };
+
+  const handleUSDTChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d*$/.test(value)) {
+      setUSDTAmount(value);
+      setCCAmount(value ? (parseFloat(value) * 10).toString() : "");
+    }
+  };
+
+  const handleCCChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (/^\d*\.?\d*$/.test(value)) {
+      setCCAmount(value);
+      setUSDTAmount(value ? (parseFloat(value) / 10).toString() : "");
+    }
+  };
+
+  const handleExchange = async () => {
+    setError('');
+    setSuccess('');
+
+    const amount = parseFloat(isUSDTActive ? usdtAmount : ccAmount);
+    if (isNaN(amount) || amount <= 0) {
+      setError('Введите корректную сумму для обмена.');
+      return;
+    }
+
+    const fromCurrency = isUSDTActive ? 'USDT' : 'CC';
+    const toCurrency = isUSDTActive ? 'CC' : 'USDT';
+
+    try {
+      const response = await fetch('/api/staking-exchange', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: user.id,
+          fromCurrency,
+          toCurrency,
+          amount,
+        }),
+      });
+
+      if (response.ok) {
+        setSuccess('Обмен успешно выполнен!');
+      } else {
+        const { error: responseError } = await response.json();
+        setError(responseError || 'Ошибка при обмене валюты.');
+      }
+    } catch (error) {
+      console.error(error)
       setError('Ошибка сервера. Попробуйте позже.');
     }
   };
@@ -178,8 +251,8 @@ export default function StakingActivation({ user }: StakingActivationProps) {
               </div>
             </div>
             <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-              <div className='text-[24px] font-bold'>{user?.balance?.USDT?.toFixed(2)}</div>
-              <div className='text-[14px]'>USDT</div>
+              <div className='text-[24px] font-bold'>{balance || 0.00}</div>
+              <div className='text-[14px]'>CC</div>
             </div>
           </div>
         </div>
@@ -200,17 +273,53 @@ export default function StakingActivation({ user }: StakingActivationProps) {
             </div>
             <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
               <div className='text-[24px] font-bold'>{miningSessions[0]?.fullAmount?.toFixed(2) || 0}</div>
-              <div className='text-[14px]'>{miningSessions[0]?.currency}</div>
+              <div className='text-[14px]'>CC</div>
             </div>
           </div>
         </div>
+        <div>
+          <div className="text-[14px] font-semibold text-[#00163A] mb-[5px]">
+            Обменять
+          </div>
+          <div className="flex gap-[10px] items-center">
+            <input
+              type="text"
+              placeholder="Сумма"
+              className="mb-[10px] rounded pl-[15px] py-[5px] text-[black] min-w-[209px]"
+              onChange={isUSDTActive ? handleUSDTChange : handleCCChange}
+              value={isUSDTActive ? usdtAmount : ccAmount}
+            />
+            <div className="text-[14px] mb-[10px]">{isUSDTActive ? "USDT" : "CC"}</div>
+          </div>
+          <div className="flex justify-between items-center max-w-[208px]">
+            <div className="text-[14px] font-semibold text-[#00163A] mb-[10px]">на</div>
+            <Image
+              src="/dashboard/staking/arrow-2-svgrepo-com.svg"
+              alt="Wallet Icon"
+              width={24}
+              height={24}
+              className="rotate-90 mb-[10px] cursor-pointer"
+              onClick={handleSwap}
+            />
+          </div>
+          <div className="flex gap-[10px] items-center">
+            <input
+              type="text"
+              placeholder="Сумма"
+              className="mb-[20px] rounded pl-[15px] py-[5px] text-[black] min-w-[209px]"
+              onChange={isUSDTActive ? handleCCChange : handleUSDTChange}
+              value={!isUSDTActive ? usdtAmount : ccAmount}
+              disabled={true}
+            />
+            <div className="text-[14px] mb-[20px]">{isUSDTActive ? "CC" : "USDT"}</div>
+          </div>
+        </div>
         <div className='flex justify-end'>
-
-          <div className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] text-white text-[16px] bold'
-          style={{
-            background: 'rgba(255, 255, 255, 0.3)',
-          }}
-          >Обмен валюты</div>
+          <button onClick={handleExchange} className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] text-white text-[16px] bold'
+            style={{
+              background: 'rgba(255, 255, 255, 0.3)',
+            }}
+          >Обмен валюты</button>
         </div>
       </div>
 
@@ -231,17 +340,20 @@ export default function StakingActivation({ user }: StakingActivationProps) {
           />
 
           <button onClick={(e) => handleSubmit(e, "add")} className='px-[25px] py-[10px] rounded-full bg-[#3581FF4D] font-bold mb-[20px]'>Вложить в стейкинг</button>
-          <input
-            type="text"
-            placeholder='Сумма'
-            className='mb-[20px] rounded pl-[15px] py-[5px] text-[black]'
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^\d*\.?\d*$/.test(value)) {
-                setAmount(value);
-              }
-            }}
-          />
+          <div className='flex gap-[10px] items-center'>
+            <input
+              type="text"
+              placeholder='Сумма'
+              className='mb-[20px] rounded pl-[15px] py-[5px] text-[black]'
+              onChange={(e) => {
+                const value = e.target.value;
+                if (/^\d*\.?\d*$/.test(value)) {
+                  setAmount(value);
+                }
+              }}
+            />
+            <div className='text-[14px] mb-[20px]'>CC</div>
+          </div>
           {error && <div className="text-red-500 w-max mb-[20px]">{error}</div>}
           {success && !error && <div className="text-green-500 w-max mb-[20px]">{success}</div>}
           <button onClick={(e) => handleSubmit(e, "withdraw")} className='px-[25px] py-[10px] rounded-full bg-[#4b5b75] font-bold'>Вывести вложение</button>

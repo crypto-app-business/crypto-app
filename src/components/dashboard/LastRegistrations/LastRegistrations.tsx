@@ -39,7 +39,7 @@ export default function LastRegistrations({ userId }) {
   }, [userId]);
 
   return (
-    <div className="flex flex-col gap-[17px]">
+    <div className="flex flex-col gap-[17px] max-w-[275px]">
       <h3 className="text-[24px] font-bold mb-[25px] uppercase">Последнии регистрации</h3>
       {lastRegistrations.length > 0 && (
         lastRegistrations.map(({ username, line, registrationDate, firstName}, index) => (

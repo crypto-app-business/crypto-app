@@ -1,0 +1,15 @@
+<svg width="34.000000" height="34.000000" viewBox="0 0 34 34" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+	<desc>
+			Created with Pixso.
+	</desc>
+	<defs>
+		<clipPath id="clip363_6321">
+			<rect id="pie-chart" rx="0.000000" width="33.000000" height="33.000000" transform="translate(0.500000 0.500000)" fill="white" fill-opacity="0"/>
+		</clipPath>
+	</defs>
+	<rect id="pie-chart" rx="0.000000" width="33.000000" height="33.000000" transform="translate(0.500000 0.500000)" fill="#FFFFFF" fill-opacity="0"/>
+	<g clip-path="url(#clip363_6321)">
+		<path id="Vector" d="M28 15C28 13.68 27.74 12.38 27.23 11.17C26.73 9.95 26 8.85 25.07 7.92C24.14 7 23.03 6.26 21.82 5.76C20.61 5.25 19.31 5 18 5L18 15L28 15Z" fill="#00163A" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M15.5 7C13.42 7 11.39 7.61 9.66 8.76C7.93 9.92 6.59 11.56 5.79 13.48C5 15.4 4.79 17.51 5.2 19.54C5.6 21.58 6.6 23.45 8.07 24.92C9.54 26.39 11.41 27.39 13.45 27.79C15.48 28.2 17.59 27.99 19.51 27.2C21.43 26.4 23.07 25.06 24.23 23.33C25.38 21.6 26 19.57 26 17.5L15.5 17.5L15.5 7Z" fill="#00163A" fill-opacity="1.000000" fill-rule="nonzero"/>
+	</g>
+</svg>
