@@ -2,6 +2,7 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface Balance {
   USDT?: number;
@@ -53,6 +54,24 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
     fetchUserData();
   }, []);
 
+  const handleLogout = async (redirect) => {
+    try {
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include', // Для передачі cookies
+      });
+
+      if (res.ok) {
+        setUser(null);
+        router.push(redirect); // Перенаправлення після виходу
+      } else {
+        console.error('Error logging out:', await res.json());
+      }
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   return (
     <header className="bg-[url('/header.png')] bg-cover text-white max-h-[125px] shadow-md p-4 flex justify-between items-center">
       <div className='flex justify-between w-full max-w-[1149px] mr-auto ml-auto items-center'>
@@ -80,7 +99,7 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
                 priority={false}
               />
             </button>
-            <div className="relative">
+            {/* <div className="relative">
               <button className="flex items-center justify-center rounded-full bg-gray-700 hover:bg-gray-600">
                 <Image
                   src="/dashboard/bell.svg"
@@ -94,10 +113,20 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
               <span className="absolute top-0 right-0 flex items-center justify-center w-[25px] h-[25px] bg-white text-[#00163A] text-[16px] font-bold rounded-full">
                 2
               </span>
-            </div>
-            <button className="flex items-center justify-center rounded-full hover:bg-gray-600">
+            </div> */}
+            <Link href='/dashboard/profile'  className="flex items-center justify-center rounded-full hover:bg-gray-600">
               <Image
                 src="/dashboard/contacts.svg"
+                alt="Your image description"
+                width={45}
+                height={45}
+                style={{ objectFit: "cover" }}
+                priority={false}
+              />
+            </Link>
+            <button onClick={() => handleLogout('/')} className="flex items-center justify-center rounded-full hover:bg-gray-600">
+              <Image
+                src="/dashboard/exit.svg"
                 alt="Your image description"
                 width={45}
                 height={45}

@@ -20,12 +20,12 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar, setActiveTab, ac
       icon: "/dashboard/sidebar-icon/node-3-connections.svg",
       iconBlue: "/dashboard/sidebar-icon/blue/node-3-connections.svg",
     },
-    {
-      text: "Настройки",
-      href: "/dashboard/settings",
-      icon: "/dashboard/sidebar-icon/gear.svg",
-      iconBlue: "/dashboard/sidebar-icon/blue/gear.svg",
-    },
+    // {
+    //   text: "Настройки",
+    //   href: "/dashboard/settings",
+    //   icon: "/dashboard/sidebar-icon/gear.svg",
+    //   iconBlue: "/dashboard/sidebar-icon/blue/gear.svg",
+    // },
     {
       text: "Стейкинг",
       href: "/dashboard/staking",
@@ -38,21 +38,21 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar, setActiveTab, ac
       icon: "/dashboard/sidebar-icon/mnemonic.svg",
       iconBlue: "/dashboard/sidebar-icon/blue/mnemonic.svg",
     },
-    {
-      text: "NFT",
-      href: "#",
-      icon: "/dashboard/sidebar-icon/photo.svg",
-      iconBlue: "/dashboard/sidebar-icon/blue/photo.svg",
-    },
-    {
-      text: "Монета",
-      href: "#",
-      icon: "/dashboard/sidebar-icon/coins.svg",
-      iconBlue: "/dashboard/sidebar-icon/blue/coins.svg",
-    },
+    // {
+    //   text: "NFT",
+    //   href: "#",
+    //   icon: "/dashboard/sidebar-icon/photo.svg",
+    //   iconBlue: "/dashboard/sidebar-icon/blue/photo.svg",
+    // },
+    // {
+    //   text: "Монета",
+    //   href: "#",
+    //   icon: "/dashboard/sidebar-icon/coins.svg",
+    //   iconBlue: "/dashboard/sidebar-icon/blue/coins.svg",
+    // },
     {
       text: "Профиль",
-      href: "#",
+      href: "/dashboard/profile",
       icon: "/dashboard/sidebar-icon/contacts.svg",
       iconBlue: "/dashboard/sidebar-icon/blue/contacts.svg",
     },

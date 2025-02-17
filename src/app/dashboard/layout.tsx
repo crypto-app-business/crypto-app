@@ -54,7 +54,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
         <div className="flex flex-col flex-1">
           <DashboardHeader activeTab={activeTab}/>
-          <main className="sm:p-[40px] sm:pr-0 pt-[40px] mx-auto sm:mx-0  flex-1  overflow-hidden">
+          <main className="sm:p-[35px] sm:pr-0 pt-[30px] mx-auto sm:mx-0  flex-1  overflow-hidden">
             {children}
           </main>
         </div>
