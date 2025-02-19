@@ -18,6 +18,6 @@ const WithdrawalSchema = new Schema<WithdrawalSchema>({
   waletId: { type: String, required: true },
 });
 
-const Withdrawal = models.Deposit || model<WithdrawalSchema>('Withdrawal', WithdrawalSchema);
+const Withdrawal = models.Withdrawal || model<WithdrawalSchema>('Withdrawal', WithdrawalSchema);
 
 export default Withdrawal;

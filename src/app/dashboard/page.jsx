@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import DepositComponent from '@/components/dashboard/DepositComponent/DepositComponent';
 import PendingDeposits from '@/components/dashboard/PendingDeposits/PendingDeposits';
 import AdminDeposits from '@/components/dashboard/AdminDeposits/AdminDeposits';
+import AdminWithdrawal from '@/components/dashboard/AdminWithdrawal/AdminWithdrawal';
 import MiningActivation from '@/components/dashboard/MiningActivation/MiningActivation';
 import DashboardPanel from '@/components/dashboard/DashboardPanel/DashboardPanel';
 
@@ -83,6 +84,7 @@ export default function Dashboard() {
       <div className="">
         <div className="">
           {user?.role ==="admin"&& <AdminDeposits user={user}/>}
+          {user?.role ==="admin"&& <AdminWithdrawal user={user}/>}
           <DashboardPanel user={user}></DashboardPanel>
           {/* <p className="text-gray-500 mt-2">Баланс</p>       
           {user?.balance && Object.keys(user.balance).length > 0 ? (

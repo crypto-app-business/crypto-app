@@ -14,6 +14,6 @@ const WalletSchema = new Schema<WalletSchema>({
   createdAt: { type: Date, default: Date.now },
 });
 
-const Wallets = models.Wallets || model<WalletSchema>('Wallet', WalletSchema);
+const Wallets = models.Wallet || model<WalletSchema>('Wallet', WalletSchema);
 
 export default Wallets;

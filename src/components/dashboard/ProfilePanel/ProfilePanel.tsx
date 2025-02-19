@@ -1,5 +1,5 @@
 'use client';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // import DepositComponent from "../DepositComponent/DepositComponent";
 import Image from 'next/image';
 import { cryptoOptions } from "./data"
@@ -17,6 +17,19 @@ interface User {
 
 interface AdminDepositsProps {
   user: User;
+}
+
+interface Wallet {
+  _id?: string;
+  network: string;
+  wallet: string;
+  createdAt?: string;
+}
+
+interface WalletFormated {
+  currency: string;
+  address: string;
+  logo?: string;
 }
 
 const CustomSelect = ({ options, selectedWallet, onSelect }) => {
@@ -37,13 +50,13 @@ const CustomSelect = ({ options, selectedWallet, onSelect }) => {
       >
         {selectedCrypto ? (
           <>
-            <Image
+            {selectedCrypto.logo && <Image
               src={selectedCrypto.logo}
               alt={selectedCrypto.currency}
               width={24}
               height={24}
               className="mr-2 rounded-full"
-            />
+            />}
             {selectedCrypto.currency}
           </>
         ) : (
@@ -66,19 +79,19 @@ const CustomSelect = ({ options, selectedWallet, onSelect }) => {
       {
         isOpen && (
           <div className="absolute z-10 w-full mt-1 bg-white border rounded-[5px] shadow-lg">
-            {options.map((crypto) => (
+            {options.map((crypto, index) => (
               <div
-                key={crypto.currency}
+                key={`${crypto.currency}-${index}`}
                 onClick={() => handleSelect(crypto.currency)}
                 className="flex items-center p-2 hover:bg-gray-100 cursor-pointer text-[#A0A5AD]"
               >
-                <Image
+                {crypto.logo &&<Image
                   src={crypto.logo}
                   alt={crypto.currency}
                   width={24}
                   height={24}
                   className="mr-2 rounded-full"
-                />
+                />}
                 {crypto.currency}
               </div>
             ))}
@@ -90,73 +103,186 @@ const CustomSelect = ({ options, selectedWallet, onSelect }) => {
 };
 
 export default function ProfilePanel({ user }: AdminDepositsProps) {
-  const [selectedWallet, setSelectedWallet] = useState<string>("");
+  const [selectedSaveWallet, setSelectedSaveWallet] = useState<string>("");
   const [amount, setAmount] = useState('');
-  const [wallet, setWallet] = useState('');
+  const [amountWallet, setAmountWallet] = useState('');
   const [message, setMessage] = useState('');
-  const [isPending, setIsPending] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-console.log(wallet)
+  const [messageWallet, setMessageWallet] = useState('');
+  const [walletsAdded, setWalletsAdded] = useState<Wallet[]>([]);
+  const [formattedWallets, setFormattedWalletsd] = useState<WalletFormated[]>([]);
+  const [outputNetwork, setOutputNetwork] = useState<WalletFormated[]>([]);
+  const [outputNetworkValue, setOutputNetworkValue] = useState<string>('');
+  const [walletSelection, setWalletSelection] = useState<string>('');
 
-  const handleDeposit = async () => {
-    setMessage("")
-    if (!amount) {
-      setMessage("Введите сумму");
+  const [userName, setUserName] = useState<string>('');
+  const [userAmount, setUserAmount] = useState<string>('');
+
+  const handleSaveWallet = async () => {
+    setMessageWallet("")
+    if (!amountWallet) {
+      setMessageWallet("Введите сумму");
       return;
     }
 
-    if (!selectedWallet) {
-      setMessage("Выберите криптовалюту");
+    if (!selectedSaveWallet) {
+      setMessageWallet("Выберите криптовалюту");
       return;
     }
 
-    // setMessage(`Для оформления баланса, отправтье ${amount} ${selectedWallet} на кошелек ниже`);
-    // setWallet(wallets[selectedWallet]);
-    setIsOpen(true);
-    console.log(isPending)
-    setIsPending(true);
-
-    const selectedCrypto = findSelectedCrypto();
-
-    if (selectedCrypto) {
-      console.log(selectedCrypto)
-      setWallet(selectedCrypto.qr); // Зберігаємо лого вибраної криптовалюти
-    }
-  };
-
-  const handlePaid = async () => {
     try {
-      const response = await fetch('/api/deposit', {
+      const response = await fetch('/api/wallet', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           id: user?.id,
-          currency: selectedWallet,
-          amount: parseFloat(amount),
+          network: selectedSaveWallet,
+          wallet: amountWallet,
         }),
       });
 
       const data = await response.json();
       if (data.success) {
-        setIsOpen(false)
         alert('Deposit created successfully! Waiting for confirmation.');
-        setIsPending(false);
-        setAmount('');
-        setMessage('');
-        setWallet('');
+        setMessageWallet('');
       } else {
         alert('Failed to create deposit. Try again later.');
       }
     } catch (error) {
+      setMessageWallet(`${error}`);
       console.error('Error creating deposit:', error);
     }
   };
 
-  const findSelectedCrypto = () => {
-    return cryptoOptions.find(crypto => crypto.currency === selectedWallet);
+  const handleWithdrawBalance = async () => {
+    setMessageWallet("")
+    if (!amount) {
+      setMessageWallet("Введите сумму");
+      return;
+    }
+
+    if (!outputNetworkValue) {
+      setMessageWallet("Выберите сеть");
+      return;
+    }
+
+    if (!walletSelection) {
+      setMessageWallet("Выберите кошелек");
+      return;
+    }
+    console.log(walletSelection)
+
+    try {
+      const response = await fetch('/api/withdrawBalance', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id: user?.id,
+          amount: amount,
+          currency: outputNetworkValue,
+          waletId: walletSelection,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Deposit created successfully! Waiting for confirmation.');
+        setMessageWallet('');
+      } else {
+        alert('Failed to create deposit. Try again later.');
+      }
+    } catch (error) {
+      setMessageWallet(`${error}`);
+      console.error('Error creating deposit:', error);
+    }
   };
+
+  const handleTransfer = async () => {
+    setMessageWallet("")
+  
+    if (!userAmount) {
+      setMessageWallet("Введите сумму");
+      return;
+    }
+
+    if (!userName) {
+      setMessageWallet("Введите юзернейм");
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/transfer', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: user?.id,
+          amount: userAmount,
+          receiverUsername: userName,
+          currency: "USDT" 
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Deposit created successfully! Waiting for confirmation.');
+        setMessageWallet('');
+      } else {
+        alert('Failed to create deposit. Try again later.');
+      }
+    } catch (error) {
+      setMessageWallet(`${error}`);
+      console.error('Error creating deposit:', error);
+    }
+  };
+
+  useEffect(() => {
+    const fetchWallets = async () => {
+      if (!user) return; // Якщо користувач не встановлений, виходимо
+      setMessage('')
+      try {
+        const res = await fetch(`/api/wallet?id=${user.id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setWalletsAdded(data.wallets);
+        } else {
+          console.error('Помилка отримання гаманців');
+        }
+      } catch (error) {
+        console.error('Помилка сервера:', error);
+      }
+    };
+
+    fetchWallets();
+  }, [user]);
+
+  useEffect(() => {
+    const formattedWallets = walletsAdded.map(wallet => {
+      // Знайти відповідний об'єкт у cryptoOptions за currency
+      const foundCrypto = cryptoOptions.find(option => option.currency === wallet.network);
+    
+      return {
+        currency: wallet.network, // Назва валюти
+        address: wallet.wallet, // Адреса гаманця
+        logo: foundCrypto ? foundCrypto.logo : "/dashboard/crypto-logos/default.svg", // Якщо не знайдено, ставимо дефолтне лого
+      };
+    });
+    const formattedWallets2 = walletsAdded.map(wallet => {
+    
+      return {
+        currency: wallet.wallet, // Назва валюти
+        address: wallet.wallet, // Адреса гаманця
+      };
+    });
+    setFormattedWalletsd(formattedWallets)
+    setOutputNetwork(formattedWallets2)
+  }, [walletsAdded]);
+
+
 
   return (
     <div className="bg-gray-50 flex flex-wrap sm:flex-row flex-col gap-[18px] w-full font-segoeui px-[30px] sm:px-0">
@@ -274,8 +400,8 @@ console.log(wallet)
                     <input
                       id="amount"
                       type="number"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
+                      value={userAmount}
+                      onChange={(e) => setUserAmount(e.target.value)}
                       placeholder={`0`}
                       className='pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]'
                     />
@@ -285,8 +411,8 @@ console.log(wallet)
                     <input
                       id="amount"
                       type="text"
-                      value={amount}
-                      onChange={(e) => setAmount(e.target.value)}
+                      value={userName}
+                      onChange={(e) => setUserName(e.target.value)}
                       placeholder={`den`}
                       className='pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]'
                     />
@@ -294,14 +420,9 @@ console.log(wallet)
 
                   <div>{message}</div>
                   <div className='flex justify-end w-full'>
-                    {!isOpen && <button onClick={handleDeposit} className="mt-4 bg-[#FFFFFF4D] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
+                    <button onClick={handleTransfer} className="mt-4 bg-[#FFFFFF4D] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
                       Перевод
-                    </button>}
-                    {isOpen && (
-                      <button onClick={handlePaid} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
-                        Оплачено
-                      </button>
-                    )}
+                    </button>
                   </div>
                 </div>
               </div>
@@ -328,33 +449,27 @@ console.log(wallet)
                   <div className="flex w-full">
                     <div className='w-full'>
                       <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">Сеть:</label>
-                      {!isOpen && <CustomSelect
+                      <CustomSelect
                         options={cryptoOptions}
-                        selectedWallet={selectedWallet}
-                        onSelect={setSelectedWallet}
-                      />}
-                      {!isOpen && (<div className='flex flex-col gap-[5px]'>
+                        selectedWallet={selectedSaveWallet}
+                        onSelect={setSelectedSaveWallet}
+                      />
+                      <div className='flex flex-col gap-[5px]'>
                         <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">Кошелёк:</label>
                         <input
                           id="amount"
                           type="text"
-                          value={amount}
-                          onChange={(e) => setAmount(e.target.value)}
+                          value={amountWallet}
+                          onChange={(e) => setAmountWallet(e.target.value)}
                           placeholder={`987кен6547`}
                           className='pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]'
                         />
-                      </div>)}
-
-                      <div>{message}</div>
+                      </div>
+                      <div>{messageWallet}</div>
                       <div className='flex justify-center w-full'>
-                        {!isOpen && <button onClick={handleDeposit} className="w-[199px] h-[41px] mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
+                        <button onClick={handleSaveWallet} className="w-[199px] h-[41px] mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
                           Добавить кошелёк
-                        </button>}
-                        {isOpen && (
-                          <button onClick={handlePaid} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
-                            Оплачено
-                          </button>
-                        )}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -380,36 +495,32 @@ console.log(wallet)
                         <input
                           id="amount"
                           type="number"
-                          value={amount}
+                          value={amount} 
                           onChange={(e) => setAmount(e.target.value)}
-                          placeholder={`987кен6547`}
+                          placeholder={`100`}
                           className='pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]'
                         />
                       </div>
                       <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">Сеть вывода:</label>
                       <CustomSelect
-                        options={cryptoOptions}
-                        selectedWallet={selectedWallet}
-                        onSelect={setSelectedWallet}
+                        options={formattedWallets}
+                        selectedWallet={outputNetworkValue}
+                        onSelect={setOutputNetworkValue}
                       />
-                      <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">Выбор кошелька::</label>
+
+                      <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">Выбор кошелька:</label>
                       <CustomSelect
-                        options={cryptoOptions}
-                        selectedWallet={selectedWallet}
-                        onSelect={setSelectedWallet}
+                        options={outputNetwork}
+                        selectedWallet={walletSelection}
+                        onSelect={setWalletSelection}
                       />
 
 
                       <div>{message}</div>
                       <div className='flex justify-end w-full'>
-                        {!isOpen && <button onClick={handleDeposit} className=" mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
+                        <button onClick={handleWithdrawBalance} className=" mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
                           Вывод
-                        </button>}
-                        {isOpen && (
-                          <button onClick={handlePaid} className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
-                            Оплачено
-                          </button>
-                        )}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -420,30 +531,29 @@ console.log(wallet)
 
         </div >
 
-        {/* <div className="flex flex-col gap-[17px] max-w-[275px]">
-              <h3 className="text-[24px] font-bold mb-[25px] uppercase">Последнии регистрации</h3>
-              {lastRegistrations.length > 0 && (
-                lastRegistrations.map(({ username, line, registrationDate, firstName}, index) => (
-                  <div key={index} className="flex flex-wrap justify-around border py-[7px] rounded-[5px] text-[16px]">
-                    <div>{firstName}</div>
-                    <div className="font-bold">линия: {line}</div>
-                    <div>{new Date(registrationDate.split('.').reverse().join('-')).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}</div>
-                    <div>{username}</div>
-                  </div>
-                ))
-              )}
-            </div> */}
         <div className="flex flex-col gap-[20px] max-w-[315px] sm:max-w-[380px] mb-[30px]">
           <div className="flex flex-wrap justify-between py-[7px] rounded-[5px] text-[16px] w-full font-bold">
             <div>Дата добавления</div>
             <div>Кошелёк</div>
             <div className="pr-[60px]">Сеть</div>
           </div>
-          <div className="flex flex-wrap justify-around border py-[7px] rounded-[5px] text-[16px] w-full">
-            <div>18.04.2024 17:08</div>
-            <div className="font-bold">{"987кен6547"}</div>
-            <div>USDT TRC20</div>
-          </div>
+          {walletsAdded.map((wallet, index) => (
+            <div key={`wallet-${index}`} className="flex flex-wrap justify-around border py-[7px] rounded-[5px] text-[16px] w-full">
+              <div>
+                {wallet.createdAt &&
+                  new Date(wallet.createdAt).toLocaleString("uk-UA", {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false,
+                  })}
+              </div>
+              <div className="font-bold">{wallet.wallet}</div>
+              <div>{wallet.network}</div>
+            </div>
+          ))}
         </div>
       </div>
     </div >
