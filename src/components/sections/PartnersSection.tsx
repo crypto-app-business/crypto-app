@@ -16,7 +16,7 @@ const partners = [
       "description": "We're partners with countless major organisations around the globe",
       "_id": "4675d7a8-cfe4-4fd7-82ff-d2773feb1016",
       "title": {
-          "text1": "Trusted Partners Worldwide"
+          "text1": "Биржи"
       },
       "_updatedAt": "2023-08-29T14:38:13Z",
       "partner": [

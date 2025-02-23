@@ -1,57 +1,47 @@
 "use client"
-// import { client } from "@/lib/sanity";
-// import { useNextSanityImage } from "next-sanity-image";
 import Image from "next/image";
 import { SecondButton } from "../buttons/SecondButton";
 import { SelectCurrencyButton } from "../buttons/SelectCurrencyButton";
-// import { useState } from "react";
+import { useState } from "react";
 // import { Buy as BuyComponent } from "@/types/sections/buy";
 import { motion } from "framer-motion";
 import { fadeIn } from "@/utils/motion";
+import Link from "next/link";
 
 // interface BuyProps {
 //   buy: BuyComponent[];
 // }
 
-// const formHandler = (e: any) => {
-//   e.preventDefault();
-// };
-
-// const inputChangeHandler = (e: any) => {
-//   console.log(e.target.value);
-// };
-
 const buy = [
-            {
-                "_type": "buy",
-                "description": [
-                    "Buy now and get 40% extra bonus Minimum pre-sale amount",
-                    "25 Crypto Coin. We accept BTC crypto-currency"
-                ],
-                "_id": "e45717cd-2a64-49c6-918e-4b46dad47b4b",
-                "title": {
-                    "text1": "Buy & trade on the",
-                    "text2": "original crypto exchange."
-                },
-                "_updatedAt": "2023-08-03T02:31:28Z",
-                "image": {
-                    "asset": {
-                        "_type": "reference",
-                        "_ref": "image-8a307543e65df66898c2c1da156b4d13b7ab069d-669x625-png"
-                    },
-                    "_type": "image",
-                    "alt": "buy crypto"
-                },
-                "_createdAt": "2023-08-03T02:31:28Z",
-                "_rev": "tKuZUEA2mvrrqefebNcxmT"
-            }
-        ]
+  {
+    "_type": "buy",
+    "description": [
+      "Купи на присейте нашу монету и заработай на листинге от 1000%",
+    ],
+    "_id": "e45717cd-2a64-49c6-918e-4b46dad47b4b",
+    "title": {
+      "text1": "Покупай , меняй,",
+      "text2": "выдерживай и зарабатывай!"
+    },
+    "_updatedAt": "2023-08-03T02:31:28Z",
+    "image": {
+      "asset": {
+        "_type": "reference",
+        "_ref": "image-8a307543e65df66898c2c1da156b4d13b7ab069d-669x625-png"
+      },
+      "_type": "image",
+      "alt": "buy crypto"
+    },
+    "_createdAt": "2023-08-03T02:31:28Z",
+    "_rev": "tKuZUEA2mvrrqefebNcxmT"
+  }
+]
 
 export function BuyAndTradeSection() {
   // const [selectedCurrency, setSelectedCurrency] = useState<any[]>([]);
-  // const [inputFirstValue, setInputFirstValue] = useState<string>("5,000");
-  // const [inputSecondValue, setInputSecondValue] = useState<string>("0.10901");
-  
+  const [inputFirstValue, setInputFirstValue] = useState<string>('1000');
+  const [inputSecondValue, setInputSecondValue] = useState<string>('10000');
+
   const item = buy[0];
   const descriptionParts = item.description;
 
@@ -59,10 +49,25 @@ export function BuyAndTradeSection() {
   //   setSelectedCurrency(selectedCurrency);
   // };
 
-  // useEffect(() => {
-  //   setInputFirstValue("5,000");
-  //   setInputSecondValue("0.10901");
-  // }, []);
+  const handleFirstInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/,/g, '');
+    if (!isNaN(Number(value))) {
+      setInputFirstValue(value);
+      setInputSecondValue((Number(value) * 10).toString());
+    }
+  };
+
+  const handleSecondInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/,/g, '');
+    if (!isNaN(Number(value))) {
+      setInputSecondValue(value);
+      setInputFirstValue((Number(value) / 10).toString());
+    }
+  };
+
+  const formatNumber = (value: string) => {
+    return Number(value).toLocaleString('en-US');
+  };
 
   return (
     <motion.section
@@ -87,33 +92,26 @@ export function BuyAndTradeSection() {
               <br />
               {descriptionParts[1]}
             </p>
-            <form onSubmit={()=>{}}>
-            {/* <form onSubmit={formHandler}> */}
+
+            <form onSubmit={(e) => e.preventDefault()}>
               <div className="flex justify-between gap-4 md:gap-6 mb-6">
                 <div className="border border-primary rounded-2xl py-3 md:py-4 px-4 md:px-6 flex items-center w-full">
                   <div className="border-r border-primary pr-4 md:pr-6">
                     <small className="text-primary">Amount</small>
                   </div>
-                  {/* <label htmlFor="firstvalue"> */}
-                    {/* <input
+                  <label htmlFor="firstvalue">
+                    <input
                       type="text"
                       id="firstvalue"
-                      value={inputFirstValue}
-                      onChange={()=> {}}
-                      // onChange={(e)=>setInputFirstValue(e.target.value)}
+                      value={formatNumber(inputFirstValue)}
+                      onChange={handleFirstInputChange}
                       className="text-right outline-none w-full"
-                    /> */}
-                    {/* <input
-                      // id="firstvalue"
-                      className="text-right outline-none w-full"
-                    >
-                    </input> */}
-                  {/* </label> */}
+                    />
+                  </label>
+
                 </div>
                 <SelectCurrencyButton
-                  value="BTC"
-                  // onChange={handleCurrencyChange}
-                  onChange={()=>{}}
+                  value="USD"
                 />
               </div>
 
@@ -122,26 +120,26 @@ export function BuyAndTradeSection() {
                   <div className="border-r border-primary pr-4 md:pr-14">
                     <small className="text-primary">Get</small>
                   </div>
-                  {/* <label htmlFor="secondvalue">
+                  <label htmlFor="secondvalue">
                     <input
                       type="text"
                       id="secondvalue"
-                      value={inputSecondValue}
-                      onChange={(e)=>setInputSecondValue(e.target.value)}
+                      value={formatNumber(inputSecondValue)}
+                      onChange={handleSecondInputChange}
                       className="text-right outline-none w-full"
                     />
-                  </label> */}
+                  </label>
                 </div>
                 <SelectCurrencyButton
-                  value="USD"
-                  // onChange={handleCurrencyChange}
-                  onChange={()=>{}}
+                  value="CC"
                 />
               </div>
             </form>
-            <SecondButton className="w-full" onClick={undefined}>
-              Buy Now
-            </SecondButton>
+            <Link href='/login'>
+              <SecondButton className="w-full" onClick={() => { }}>
+                Купить
+              </SecondButton>
+            </Link>
           </motion.div>
         </div>
         <motion.figure
@@ -149,7 +147,7 @@ export function BuyAndTradeSection() {
           variants={fadeIn("left", "tween", 0.3, 2)}
         >
           <Image
-            src="/coins/buySection/main.avif" 
+            src="/coins/buySection/main.avif"
             alt={item.image.alt}
             width={800}
             height={800}

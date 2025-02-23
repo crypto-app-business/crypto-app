@@ -16,7 +16,7 @@ const step = [
       "_type": "step",
       "_id": "a8bd72f2-1d89-451d-b1c6-401b2aff9dba",
       "title": {
-          "text1": "Get started in just a few minutes"
+          "text1": "Начни зарабатывать прямо сейчас"
       },
       "_updatedAt": "2023-09-02T15:57:15Z",
       "arrowImage": {
@@ -25,14 +25,14 @@ const step = [
       },
       "article": [
           {
-              "content": "Buy Bitcoin or Ethereum, then securely store it in your Wallet or send it on easily to friends",
+              "content": "Создайте аккаунт за пару минут. Простая и быстрая верификация. 🔑",
               "image": {
                   "alt": "mouse clicking on cryptocurrency",
                   "src": "/step/1.avif"
               },
               "_type": "article",
               "_key": "2abf8f8d4ef3",
-              "title": "Sign Up"
+              "title": "Регистрация"
           },
           {
               "image": {
@@ -41,12 +41,12 @@ const step = [
               },
               "_type": "article",
               "_key": "263ab02a6649",
-              "title": "Fund",
-              "content": "Choose your preferred payment method such as bank transfer or credit card to top up your NEFA Wallet"
+              "title": "Пополнение",
+              "content": "Внесите средства удобным способом: криптовалютой или фиатом. 💰"
           },
           {
-              "title": "Buy Crypto",
-              "content": "Sign up for your free NEFA Wallet on web, iOS or Android and follow our easy process to set up your profile",
+              "title": "Зарабатывайте",
+              "content": "Трейдинг, стейкинг, майнинг, NFT – выбирайте свой путь к прибыли! 📈",
               "image": {
                   "alt": "hand holding cryptocurrency",
                   "src": "/step/3.avif"

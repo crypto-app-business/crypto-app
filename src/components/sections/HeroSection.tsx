@@ -2,8 +2,8 @@
 // import { useNextSanityImage } from "next-sanity-image";
 "use client"
 import Image from "next/image";
-import { FaWindows, FaLinux, FaAppStore, FaAndroid } from "react-icons/fa";
-import { DropdownButton } from "../buttons/DropdownButton";
+// import { FaWindows, FaLinux, FaAppStore, FaAndroid } from "react-icons/fa";
+// import { DropdownButton } from "../buttons/DropdownButton";
 import { SecondButton } from "../buttons/SecondButton";
 import { Hero as HeroComponent } from "@/types/sections/hero";
 import StarParticle from "../particles/StarParticle";
@@ -12,6 +12,7 @@ import PurpleCircleParticle from "../particles/PurpleCircleParticle";
 import OrangeCircleParticle from "../particles/OrangeCircleParticle";
 import { motion } from "framer-motion";
 import { fadeIn } from "@/utils/motion";
+import Link from "next/link";
 
 interface HeroProps {
   hero: HeroComponent[];
@@ -34,7 +35,7 @@ export function HeroSection({ hero }: HeroProps) {
             className="text-primary text-2xl"
             variants={fadeIn("right", "tween", 0.3, 2)}
           >
-            SIGN UP TODAY
+            Всё так просто, что аж прибыльно!
           </motion.h6>
           <StarParticle
             className="absolute top-36 right-2/4 w-32"
@@ -44,26 +45,33 @@ export function HeroSection({ hero }: HeroProps) {
             className="text-4xl md:text-5xl lg:text-6xl font-bold leading-normal"
             variants={fadeIn("right", "tween", 0.3, 2)}
           >
-            The World’s
+            Добро пожаловать в
             <br />
-            <span className="text-blue-gradient">Fastest Growing</span>
+            <span className="text-blue">Crypto Corporation</span>
             <br />
-            Crypto Web App
+            — будущее уже здесь! 🚀
           </motion.h1>
           <motion.div
             className="mt-4 mb-8"
             variants={fadeIn("right", "tween", 0.3, 2)}
           >
-            <p className="text-gray">Buy and sell 200+ cryptocurrencies with 20+ flat currencies using bank transfers or your credit/debit card.</p>
+            <p className="text-gray">Мы создаём новые возможности в мире блокчейна, криптовалют и децентрализованных технологий. Наша миссия — дать каждому доступ к инновационным финансовым инструментам, обеспечивая безопасность, прозрачность и свободу.</p>
           </motion.div>
           <motion.div
             className="col-span-2 lg:flex gap-4 lg:mb-12 w-max"
             variants={fadeIn("right", "tween", 0.3, 2)}
           >
-            <SecondButton className="w-full lg:w-auto mb-2" onClick={undefined}>
-              Get Started
-            </SecondButton>
-            <DropdownButton name="Download App" className="w-full lg:w-auto">
+            <Link className="w-full" href="/login">
+              <SecondButton className="w-full lg:w-auto mb-2" onClick={undefined}>
+                Web Defi
+              </SecondButton>
+            </Link>
+            <Link className="w-full" href="/login">
+              <SecondButton className="w-full lg:w-auto mb-2" onClick={undefined}>
+                TradingBot
+              </SecondButton>
+            </Link>
+            {/* <DropdownButton name="Download App" className="w-full lg:w-auto">
               <a
                 href="/download/windows"
                 target="_blank"
@@ -92,7 +100,7 @@ export function HeroSection({ hero }: HeroProps) {
               >
                 <FaAppStore className="inline mr-2" /> IOS
               </a>
-            </DropdownButton>
+            </DropdownButton> */}
           </motion.div>
           <PurpleCircleParticle
             className="absolute bottom-24 left-20"
@@ -106,11 +114,11 @@ export function HeroSection({ hero }: HeroProps) {
           />
           <motion.figure variants={fadeIn("left", "tween", 0.3, 2)}>
             <Image
-              src="/hero-section/hero.avif" 
-              alt="Your image description" 
-              width={1920} 
-              height={1595} 
-              objectFit="cover" 
+              src="/hero-section/hero.avif"
+              alt="Your image description"
+              width={1920}
+              height={1595}
+              objectFit="cover"
               priority={false}
             />
           </motion.figure>
@@ -120,6 +128,6 @@ export function HeroSection({ hero }: HeroProps) {
           />
         </motion.article>
       </div>
-    </motion.section>
+    </motion.section >
   );
 }
