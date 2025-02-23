@@ -76,7 +76,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar, setActiveTab, ac
     },
     {
       text: "Операции",
-      href: "#",
+      href: "/dashboard/operations",
       icon: "/dashboard/sidebar-icon/credit-card.svg",
       iconBlue: "/dashboard/sidebar-icon/blue/credit-card.svg",
     },

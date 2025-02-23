@@ -3,6 +3,8 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/utils/connectDB';
 import StakingSession from '@/models/StakingSession';
 // import logger from '@/utils/logger';
+import Operations from '@/models/Operations';
+
 
 export async function POST() {
 // export async function POST(request: NextRequest) {
@@ -26,6 +28,16 @@ export async function POST() {
       session.amount += profit;
       session.fullAmount += profit;
       await session.save();
+
+      const newOperation = new Operations({
+        id: session.userId,
+        description: `Проценти со стейкинга`,
+        amount: session.amount,
+        currency: "CC",
+        type: 'staking',
+        createdAt: new Date(),
+      });
+      await newOperation.save();
     }
 
     // logger.info('Database successfully updated');

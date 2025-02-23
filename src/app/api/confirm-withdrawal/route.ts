@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Withdrawal from '@/models/Withdrawal';
 import User from '@/models/User';
 import connectDB from '@/utils/connectDB';
+import Operations from '@/models/Operations';
 
 
 export async function POST(request: Request) {
@@ -53,6 +54,16 @@ export async function POST(request: Request) {
     // Оновлення статусу поповнення
     deposit.status = 'confirmed';
     await deposit.save();
+
+    const newOperation = new Operations({
+      id: userId,
+      description: `Снятие баланса`,
+      amount: deposit.amount,
+      currency: "USDT",
+      type: 'deposit',
+      createdAt: new Date(),
+    });
+    await newOperation.save();
 
     return NextResponse.json({ success: true, message: 'Withdrawal  confirmed' }, { status: 200 });
   } catch (error) {

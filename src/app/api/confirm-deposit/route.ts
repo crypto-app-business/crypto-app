@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import Deposit from '@/models/Deposit';
 import User from '@/models/User';
 import connectDB from '@/utils/connectDB';
+import Operations from '@/models/Operations';
 
 
 export async function POST(request: Request) {
@@ -57,6 +58,15 @@ export async function POST(request: Request) {
     deposit.status = 'confirmed';
     await deposit.save();
 
+    const newOperation = new Operations({
+      id: userId,
+      description: `Пополнения баланса`,
+      amount: deposit.amount,
+      currency: "USDT",
+      type: 'deposit',
+      createdAt: new Date(),
+    });
+    await newOperation.save();
     return NextResponse.json({ success: true, message: 'Deposit confirmed' }, { status: 200 });
   } catch (error) {
     console.error('Error confirming deposit:', error);

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import StakingSession from '@/models/StakingSession';
 import User from '@/models/User';
 import connectDB from '@/utils/connectDB';
+import Operations from '@/models/Operations';
 
 export async function POST(request) {
   try {
@@ -32,6 +33,16 @@ export async function POST(request) {
       user.balance.set(currency, currentBalance - amount);
       await user.save();
 
+      const newOperation = new Operations({
+        id: userId,
+        description: `Вложенно в стейкинг`,
+        amount: amount,
+        currency: "CC",
+        type: 'staking',
+        createdAt: new Date(),
+      });
+      await newOperation.save();
+
       // Перевіряємо, чи існує активна сесія стейкінгу для цієї криптовалюти
       stakingSession = await StakingSession.findOne({ userId, currency, isCompleted: false });
 
@@ -54,6 +65,16 @@ export async function POST(request) {
       // Віднімаємо суму з балансу користувача
       user.balance.set(currency, currentBalance + amount);
       await user.save();
+
+      const newOperation = new Operations({
+        id: userId,
+        description: `Снято со стейкинга`,
+        amount: amount,
+        currency: "CC",
+        type: 'staking',
+        createdAt: new Date(),
+      });
+      await newOperation.save();
 
       // Перевіряємо, чи існує активна сесія стейкінгу для цієї криптовалюти
       stakingSession = await StakingSession.findOne({ userId, currency, isCompleted: false });

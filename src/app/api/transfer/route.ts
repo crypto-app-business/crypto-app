@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import User from '@/models/User';
 import connectDB from '@/utils/connectDB';
+import Operations from '@/models/Operations';
+
 
 interface TransferRequest {
   userId: string; // Відправник
@@ -44,6 +46,26 @@ export async function POST(request: Request) {
     // Виконуємо трансфер
     sender.balance.set(currency, senderBalance - amount);
     receiver.balance.set(currency, (Number(receiver.balance.get(currency)) || 0) + +amount);
+
+    const newOperationSender = new Operations({
+      id: userId,
+      description: `Отправлено юзеру ${receiver.username}`,
+      amount: amount,
+      currency: "USDT",
+      type: 'transfer',
+      createdAt: new Date(),
+    });
+    await newOperationSender.save();
+
+    const newOperationReceiver = new Operations({
+      id: receiver.id,
+      description: `Получено от ${sender.username}`,
+      amount: amount,
+      currency: "USDT",
+      type: 'transfer',
+      createdAt: new Date(),
+    });
+    await newOperationReceiver.save();
 
     // Зберігаємо оновлені баланси
     await sender.save();

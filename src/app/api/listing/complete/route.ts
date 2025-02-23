@@ -63,6 +63,8 @@ import { NextResponse } from 'next/server';
 import ListingSession from '@/models/ListingSession';
 import User from '@/models/User';
 import connectDB from '@/utils/connectDB';
+import Operations from '@/models/Operations';
+
 
 export async function PATCH(request) {
   try {
@@ -100,11 +102,31 @@ export async function PATCH(request) {
           user.balance.set(currency, currentBalance + totalReward);
           session.fullAmount += totalReward;
 
+          const newOperation = new Operations({
+            id: userId,
+            description: `Пришло с листинга`,
+            amount: totalReward,
+            currency: "USDT",
+            type: 'listing',
+            createdAt: new Date(),
+          });
+          await newOperation.save();
+
         } else if (daysSinceStart >= day) {
           // Виплата всієї суми одним платежем після закінчення терміну
           const totalPayout = amount + (amount * (percentage / 100));
           user.balance.set(currency, currentBalance + totalPayout);
           session.fullAmount = currentBalance + totalPayout
+
+          const newOperation = new Operations({
+            id: userId,
+            description: `Пришло с листинга`,
+            amount: totalPayout,
+            currency: "USDT",
+            type: 'listing',
+            createdAt: new Date(),
+          });
+          await newOperation.save();
         }
 
         // Оновлення сесії

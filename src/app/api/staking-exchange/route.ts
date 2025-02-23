@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import User from '@/models/User';
 import connectDB from '@/utils/connectDB';
+import Operations from '@/models/Operations';
 
 const EXCHANGE_RATE = 10; // Приклад: 1 USDT = 10 CC
 
@@ -29,8 +30,46 @@ export async function POST(request) {
     let exchangedAmount;
     if (fromCurrency === 'CC' && toCurrency === 'USDT') {
       exchangedAmount = amount / EXCHANGE_RATE;
+      const newOperation = new Operations({
+        id: userId,
+        description: `Пополнения баланса`,
+        amount: amount,
+        currency: "USDT",
+        type: 'staking',
+        createdAt: new Date(),
+      });
+      await newOperation.save();
+
+      const newOperation2 = new Operations({
+        id: userId,
+        description: `Снятие баланса`,
+        amount: amount*10,
+        currency: "CC",
+        type: 'staking',
+        createdAt: new Date(),
+      });
+      await newOperation2.save();
     } else if (fromCurrency === 'USDT' && toCurrency === 'CC') {
       exchangedAmount = amount * EXCHANGE_RATE;
+      const newOperation = new Operations({
+        id: userId,
+        description: `Снятие баланса`,
+        amount: amount,
+        currency: "USDT",
+        type: 'staking',
+        createdAt: new Date(),
+      });
+      await newOperation.save();
+
+      const newOperation2 = new Operations({
+        id: userId,
+        description: `Пополнения баланса`,
+        amount: amount*10,
+        currency: "CC",
+        type: 'staking',
+        createdAt: new Date(),
+      });
+      await newOperation2.save();
     } else {
       return NextResponse.json({ error: 'Некоректна пара валют.' }, { status: 400 });
     }

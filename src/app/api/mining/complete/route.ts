@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import MiningSession from '@/models/MiningSession';
 import User from '@/models/User';
 import connectDB from '@/utils/connectDB';
+import Operations from '@/models/Operations';
+
 
 export async function PATCH(request) {
   try {
@@ -42,6 +44,16 @@ export async function PATCH(request) {
           
           await user.save();
 
+          const newOperation = new Operations({
+            id: userId,
+            description: `Получено с майнинга`,
+            amount: reward,
+            currency: "USDT",
+            type: 'mining',
+            createdAt: new Date(),
+          });
+          await newOperation.save();
+
           // Оновлюємо кількість сплачених днів у сесії
           session.paidDays += daysToPay;
           session.fullAmount += reward;
@@ -51,6 +63,15 @@ export async function PATCH(request) {
             const currentBalance = user.balance.get(currency) || 0;
             session.isCompleted = true;
             user.balance.set(currency, (currentBalance || 0) + amount);
+            const newOperation = new Operations({
+              id: userId,
+              description: `Получено с майнинга`,
+              amount: amount,
+              currency: "USDT",
+              type: 'mining',
+              createdAt: new Date(),
+            });
+            await newOperation.save();
           }
 
           await session.save();

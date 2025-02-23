@@ -6,6 +6,7 @@ import DepositComponent from '@/components/dashboard/DepositComponent/DepositCom
 import PendingDeposits from '@/components/dashboard/PendingDeposits/PendingDeposits';
 import AdminDeposits from '@/components/dashboard/AdminDeposits/AdminDeposits';
 import AdminWithdrawal from '@/components/dashboard/AdminWithdrawal/AdminWithdrawal';
+import AdminTable from '@/components/dashboard/AdminTable/AdminTable';
 import MiningActivation from '@/components/dashboard/MiningActivation/MiningActivation';
 import DashboardPanel from '@/components/dashboard/DashboardPanel/DashboardPanel';
 
@@ -85,6 +86,7 @@ export default function Dashboard() {
         <div className="">
           {user?.role ==="admin"&& <AdminDeposits user={user}/>}
           {user?.role ==="admin"&& <AdminWithdrawal user={user}/>}
+          {user?.role ==="admin"&& <AdminTable user={user}/>}
           <DashboardPanel user={user}></DashboardPanel>
           {/* <p className="text-gray-500 mt-2">Баланс</p>       
           {user?.balance && Object.keys(user.balance).length > 0 ? (

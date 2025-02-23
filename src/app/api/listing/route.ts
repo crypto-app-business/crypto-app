@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import ListingSession from '@/models/ListingSession';
 import User from '@/models/User';
 import connectDB from '@/utils/connectDB';
+import Operations from '@/models/Operations';
 
 export async function POST(request) {
   try {
@@ -29,6 +30,16 @@ export async function POST(request) {
     // Оновлюємо баланс
     user.balance.set(currency, currentBalance - amount);
     await user.save();
+
+    const newOperation = new Operations({
+      id: userId,
+      description: `Вложено в листинг`,
+      amount: amount,
+      currency: "USDT",
+      type: 'listing',
+      createdAt: new Date(),
+    });
+    await newOperation.save();
 
     const newSession = await ListingSession.create({
       userId,
