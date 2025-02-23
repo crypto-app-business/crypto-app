@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     await receiver.save();
 
     return NextResponse.json(
-      { success: true, message: `Трансфер ${amount} ${currency} відправлено до ${receiver.username}` },
+      { success: true, message: `Трансфер ${amount} ${currency} отправлен к ${receiver.username}` },
       { status: 200 }
     );
   } catch (error) {

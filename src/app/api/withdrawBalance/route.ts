@@ -66,7 +66,7 @@ export async function POST(request: Request) {
     await withdrawal.save();
 
     return NextResponse.json(
-      { success: true, message: 'Запит на вивід коштів створено успішно', withdrawalId: withdrawal._id },
+      { success: true, message: 'Запрос на вывод денег создан успешно', withdrawalId: withdrawal._id },
       { status: 200 }
     );
   } catch (error) {

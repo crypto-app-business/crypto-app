@@ -1,6 +1,25 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-const UserSchema = new mongoose.Schema({
+// Інтерфейс для документа користувача
+interface IUser extends Document {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  password: string;
+  password2?: string;
+  phone: string;
+  country: string;
+  referrer?: string;
+  balance: Map<string, number>;
+  role: 'user' | 'admin';
+  telegramId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const UserSchema: Schema = new Schema(
+  {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     username: { type: String, required: true, unique: true },
@@ -12,9 +31,12 @@ const UserSchema = new mongoose.Schema({
     referrer: { type: String },
     balance: { type: Map, of: Number, default: {} },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    telegramId: { type: String },
     createdAt: { type: Date, default: Date.now },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
-const User = mongoose.models.User || mongoose.model('User', UserSchema);
+const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
 
 export default User;

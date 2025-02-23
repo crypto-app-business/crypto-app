@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 // import DepositComponent from "../DepositComponent/DepositComponent";
 import Image from 'next/image';
 import { cryptoOptions } from "./data"
+import RequestStatusIndicator from '@/components/dashboard/RequestStatusIndicator/RequestStatusIndicator';
 
 
 interface User {
@@ -30,6 +31,12 @@ interface WalletFormated {
   currency: string;
   address: string;
   logo?: string;
+}
+
+interface Field {
+  label: string;
+  key: 'username' | 'email' | 'phone' | 'password' | 'telegramId';
+  value: string;
 }
 
 const CustomSelect = ({ options, selectedWallet, onSelect }) => {
@@ -85,7 +92,7 @@ const CustomSelect = ({ options, selectedWallet, onSelect }) => {
                 onClick={() => handleSelect(crypto.currency)}
                 className="flex items-center p-2 hover:bg-gray-100 cursor-pointer text-[#A0A5AD]"
               >
-                {crypto.logo &&<Image
+                {crypto.logo && <Image
                   src={crypto.logo}
                   alt={crypto.currency}
                   width={24}
@@ -114,8 +121,78 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
   const [outputNetworkValue, setOutputNetworkValue] = useState<string>('');
   const [walletSelection, setWalletSelection] = useState<string>('');
 
+  const [editingField, setEditingField] = useState<string | null>(null);
+  const [inputValue, setInputValue] = useState<string>('');
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [isHydrated, setIsHydrated] = useState(false); // Статус гідрації
+  const [token, setToken] = useState<string | null>(null);
+  const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
+
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  const fields: Field[] = [
+    { label: 'Имя', key: 'username', value: user?.username || 'no data' },
+    { label: 'Email', key: 'email', value: user?.email || 'no data' },
+    { label: 'Телефон', key: 'phone', value: user?.phone || 'no data' },
+    { label: 'Пароль', key: 'password', value: '*********' },
+    { label: 'Телеграмм id', key: 'telegramId', value: 'den5tyuo' },
+  ];
+
   const [userName, setUserName] = useState<string>('');
   const [userAmount, setUserAmount] = useState<string>('');
+
+
+  const handleEditClick = (fieldKey: string, currentValue: string) => {
+    setEditingField(fieldKey);
+    setInputValue(currentValue === '*********' ? '' : currentValue);
+  };
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const res = await fetch("/api/auth-token");
+        const data = await res.json();
+        setToken(data.token); // Оновлюємо токен через setToken
+      } catch (err) {
+        console.error("Помилка при отриманні токена:", err);
+      }
+    };
+
+    fetchToken();
+  }, []);
+
+  const handleSave = async () => {
+    setRequestStatus('loading');
+    setIsSaving(true);
+    try {
+
+      if (!token) throw new Error('Токен не знайдено');
+
+      const response = await fetch('/api/user/update', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ [editingField as string]: inputValue }),
+      });
+
+      if (!response.ok) throw new Error('Помилка при збереженні');
+
+      const data = await response.json();
+      console.log('Дані оновлено:', data);
+      setEditingField(null);
+      setRequestStatus('success');
+    } catch (error) {
+      console.error('Помилка:', error);
+      setRequestStatus('error');
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   const handleSaveWallet = async () => {
     setMessageWallet("")
@@ -128,7 +205,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
       setMessageWallet("Выберите криптовалюту");
       return;
     }
-
+    setRequestStatus('loading');
     try {
       const response = await fetch('/api/wallet', {
         method: 'POST',
@@ -144,13 +221,14 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
 
       const data = await response.json();
       if (data.success) {
-        alert('Deposit created successfully! Waiting for confirmation.');
         setMessageWallet('');
+        setRequestStatus('success');
       } else {
-        alert('Failed to create deposit. Try again later.');
+        setRequestStatus('error');
       }
     } catch (error) {
       setMessageWallet(`${error}`);
+      setRequestStatus('error');
       console.error('Error creating deposit:', error);
     }
   };
@@ -172,6 +250,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
       return;
     }
     console.log(walletSelection)
+    setRequestStatus('loading');
 
     try {
       const response = await fetch('/api/withdrawBalance', {
@@ -189,20 +268,21 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
 
       const data = await response.json();
       if (data.success) {
-        alert('Deposit created successfully! Waiting for confirmation.');
         setMessageWallet('');
+        setRequestStatus('success');
       } else {
-        alert('Failed to create deposit. Try again later.');
+        setRequestStatus('error');
       }
     } catch (error) {
       setMessageWallet(`${error}`);
+      setRequestStatus('error');
       console.error('Error creating deposit:', error);
     }
   };
 
   const handleTransfer = async () => {
     setMessageWallet("")
-  
+
     if (!userAmount) {
       setMessageWallet("Введите сумму");
       return;
@@ -212,6 +292,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
       setMessageWallet("Введите юзернейм");
       return;
     }
+    setRequestStatus('loading');
 
     try {
       const response = await fetch('/api/transfer', {
@@ -223,19 +304,20 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
           userId: user?.id,
           amount: userAmount,
           receiverUsername: userName,
-          currency: "USDT" 
+          currency: "USDT"
         }),
       });
 
       const data = await response.json();
       if (data.success) {
-        alert('Deposit created successfully! Waiting for confirmation.');
+        setRequestStatus('success');
         setMessageWallet('');
       } else {
-        alert('Failed to create deposit. Try again later.');
+        setRequestStatus('error');
       }
     } catch (error) {
       setMessageWallet(`${error}`);
+      setRequestStatus('error');
       console.error('Error creating deposit:', error);
     }
   };
@@ -264,7 +346,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
     const formattedWallets = walletsAdded.map(wallet => {
       // Знайти відповідний об'єкт у cryptoOptions за currency
       const foundCrypto = cryptoOptions.find(option => option.currency === wallet.network);
-    
+
       return {
         currency: wallet.network, // Назва валюти
         address: wallet.wallet, // Адреса гаманця
@@ -272,7 +354,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
       };
     });
     const formattedWallets2 = walletsAdded.map(wallet => {
-    
+
       return {
         currency: wallet.wallet, // Назва валюти
         address: wallet.wallet, // Адреса гаманця
@@ -283,9 +365,27 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
   }, [walletsAdded]);
 
 
+  const handleSpinnerHide = () => {
+    setRequestStatus(null); // Скидаємо статус після зникнення спінера
+  };
+
+  if (!isHydrated) {
+    return <div>Загрузка...</div>;
+  }
 
   return (
     <div className="bg-gray-50 flex flex-wrap sm:flex-row flex-col gap-[18px] w-full font-segoeui px-[30px] sm:px-0">
+      <RequestStatusIndicator
+        status={requestStatus}
+        message={
+          requestStatus === 'success'
+            ? 'Успех'
+            : requestStatus === 'error'
+              ? 'Ошибка'
+              : undefined
+        }
+        onHide={handleSpinnerHide}
+      />
       <div className=" w-[294px]">
         <h3 className="text-[24px] font-bold mb-[20px] uppercase font-segoeui">персональная информация</h3>
         <div className=" w-[294px] bg-white rounded-[15px] p-4  mb-[20px]"
@@ -317,71 +417,47 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
           }}
         >
           <div className="mt-4 text-[14px] font-semibold">
-            <div className="flex justify-between items-center mb-[10px]">
-              <p>Имя <span className="text-[#a1a4ad]">{user?.username || 'no data'}</span></p>
-              <button>
-                <Image
-                  src="/dashboard/profile/bx-edit.svg"
-                  alt="Your image description"
-                  width={20}
-                  height={20}
-                  objectFit="cover"
-                  priority={false}
-                />
-              </button>
-            </div>
-            <div className="flex justify-between items-center mb-[10px]">
-              <p>Email <span className="text-[#a1a4ad]">{user?.email || 'no data'}</span></p>
-              <button>
-                <Image
-                  src="/dashboard/profile/bx-edit.svg"
-                  alt="Your image description"
-                  width={20}
-                  height={20}
-                  objectFit="cover"
-                  priority={false}
-                />
-              </button>
-            </div>
-            <div className="flex justify-between items-center mb-[10px]">
-              <p>Телефон <span className="text-[#a1a4ad]">{user?.phone || 'no data'}</span></p>
-              <button>
-                <Image
-                  src="/dashboard/profile/bx-edit.svg"
-                  alt="Your image description"
-                  width={20}
-                  height={20}
-                  objectFit="cover"
-                  priority={false}
-                />
-              </button>
-            </div>
-            <div className="flex justify-between items-center mb-[10px]">
-              <p>Пароль <span className="text-[#a1a4ad]">{false || '*********'}</span></p>
-              <button>
-                <Image
-                  src="/dashboard/profile/bx-edit.svg"
-                  alt="Your image description"
-                  width={20}
-                  height={20}
-                  objectFit="cover"
-                  priority={false}
-                />
-              </button>
-            </div>
-            <div className="flex justify-between items-center mb-[10px]">
-              <p>Телеграмм id <span className="text-[#a1a4ad]">{false || 'den5tyuo'}</span></p>
-              <button>
-                <Image
-                  src="/dashboard/profile/bx-edit.svg"
-                  alt="Your image description"
-                  width={20}
-                  height={20}
-                  objectFit="cover"
-                  priority={false}
-                />
-              </button>
-            </div>
+            {fields.map((field) => (
+              <div key={field.key} className="flex justify-between items-center mb-[10px]">
+                {editingField === field.key ? (
+                  <div className="flex items-center gap-2">
+                    {field.label}
+                    <input
+                      type={field.key === 'password' ? 'password' : 'text'}
+                      value={inputValue}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value)}
+                      className="border rounded px-2 py-1 text-black"
+                      autoFocus
+                    />
+                  </div>
+                ) : (
+                  <p>
+                    {field.label} <span className="text-[#a1a4ad]">{field.value}</span>
+                  </p>
+                )}
+                <button onClick={() => handleEditClick(field.key, field.value)}>
+                  <Image
+                    src="/dashboard/profile/bx-edit.svg"
+                    alt="Edit"
+                    width={20}
+                    height={20}
+                    objectFit="cover"
+                    priority={false}
+                  />
+                </button>
+              </div>
+            ))}
+            {editingField && (
+              <div className="w-full flex justify-end">
+                <button
+                  onClick={handleSave}
+                  disabled={isSaving}
+                  className="text-[17px] font-bold text-white py-[7.5px] px-[16px] bg-[#3581FF4D] rounded-full disabled:opacity-50"
+                >
+                  {isSaving ? 'Зберігаю...' : 'Сохранить'}
+                </button>
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-wrap gap-4 mb-[30px]">
@@ -495,7 +571,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
                         <input
                           id="amount"
                           type="number"
-                          value={amount} 
+                          value={amount}
                           onChange={(e) => setAmount(e.target.value)}
                           placeholder={`100`}
                           className='pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]'

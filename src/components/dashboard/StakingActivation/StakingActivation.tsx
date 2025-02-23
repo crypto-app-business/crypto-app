@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import RequestStatusIndicator from '@/components/dashboard/RequestStatusIndicator/RequestStatusIndicator';
 
 interface User {
   id: string;
@@ -57,6 +58,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
   const [success, setSuccess] = useState<string>('');
   const [miningSessions, setMiningSessions] = useState<MiningSession[]>([]);
   const [balance, setBalance] = useState<number>(0)
+  const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
 
   const fetchMiningSessions = async () => {
     if (!user?.id) return;
@@ -102,7 +104,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
       setError('Введеная сумма больше баланса.');
       return;
     }
-
+    setRequestStatus('loading');
     try {
       const response = await fetch('/api/staking', {
         method: 'POST',
@@ -121,10 +123,12 @@ export default function StakingActivation({ user }: StakingActivationProps) {
 
         if (action === "add") {
           setSuccess('Стейкинг успешно активирован!');
+          setRequestStatus('success');
           setBalance(balance - +amount)
         }
         if (action === "withdraw") {
           setSuccess('Деньги успешно выведены!');
+          setRequestStatus('success');
           setBalance(balance + +amount)
         }
         const newSession: MiningSession = (await response.json()).data;
@@ -132,11 +136,13 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         await fetchMiningSessions();
       } else {
         const { error: responseError } = await response.json();
+        setRequestStatus('error');
         if (action === "add") setError(responseError || 'Не получилось активировать стейкинг.');
         if (action === "withdraw") setError(responseError || 'Не получилось вывесты деньги.');
       }
     } catch (error) {
       console.error(error)
+      setRequestStatus('error');
       setError('Ошибка сервера. Попробуйте позже.');
     }
   };
@@ -175,6 +181,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
 
     const fromCurrency = isUSDTActive ? 'USDT' : 'CC';
     const toCurrency = isUSDTActive ? 'CC' : 'USDT';
+    setRequestStatus('loading');
 
     try {
       const response = await fetch('/api/staking-exchange', {
@@ -190,18 +197,36 @@ export default function StakingActivation({ user }: StakingActivationProps) {
 
       if (response.ok) {
         setSuccess('Обмен успешно выполнен!');
+        setRequestStatus('success');
       } else {
         const { error: responseError } = await response.json();
         setError(responseError || 'Ошибка при обмене валюты.');
+        setRequestStatus('error');
       }
     } catch (error) {
       console.error(error)
       setError('Ошибка сервера. Попробуйте позже.');
+      setRequestStatus('error');
     }
+  };
+
+  const handleSpinnerHide = () => {
+    setRequestStatus(null);
   };
 
   return (
     <div className="bg-gray-50 flex flex-wrap flex-row sm:gap-[4%] sm:justify-start justify-center w-full">
+      <RequestStatusIndicator
+        status={requestStatus}
+        message={
+          requestStatus === 'success'
+            ? 'Успех'
+            : requestStatus === 'error'
+              ? 'Ошибка'
+              : undefined
+        }
+        onHide={handleSpinnerHide}
+      />
       {user?.role === "admin" && <button
         onClick={handleSimulateTime}
         className="bg-blue text-white px-4 py-2 rounded mb-4"

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import LastRegistrations from "@/components/dashboard/LastRegistrations/LastRegistrations"
 import Image from 'next/image';
 import { cryptoOptions } from "./data"
+import RequestStatusIndicator from '@/components/dashboard/RequestStatusIndicator/RequestStatusIndicator';
 
 
 interface User {
@@ -98,6 +99,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
   const [message, setMessage] = useState('');
   const [isPending, setIsPending] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
 
   useEffect(() => {
     // Виконуємо дії з `window` лише на клієнтській стороні
@@ -138,6 +140,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
   };
 
   const handlePaid = async () => {
+    setRequestStatus('loading');
     try {
       const response = await fetch('/api/deposit', {
         method: 'POST',
@@ -154,16 +157,17 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
       const data = await response.json();
       if (data.success) {
         setIsOpen(false)
-        alert('Deposit created successfully! Waiting for confirmation.');
+        setRequestStatus('success');
         setIsPending(false);
         setAmount('');
         setMessage('');
         setWallet('');
       } else {
-        alert('Failed to create deposit. Try again later.');
+        setRequestStatus('error');
       }
     } catch (error) {
       console.error('Error creating deposit:', error);
+      setRequestStatus('error');
     }
   };
 
@@ -181,8 +185,23 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
       : selectedCrypto.address;
   };
 
+  const handleSpinnerHide = () => {
+    setRequestStatus(null);
+  };
+
   return (
     <div className="bg-gray-50 flex flex-wrap sm:flex-row flex-col-reverse gap-[65px] w-full sm:ml-[42px] font-segoeui">
+      <RequestStatusIndicator
+        status={requestStatus}
+        message={
+          requestStatus === 'success'
+            ? 'Успех'
+            : requestStatus === 'error'
+              ? 'Ошибка'
+              : undefined
+        }
+        onHide={handleSpinnerHide}
+      />
       <div className="">
         <h3 className="text-[24px] font-bold mb-[20px] uppercase font-segoeui">Профиль</h3>
         <div className=" w-[275px] bg-white rounded-[15px] p-4  mb-[35px]"

@@ -76,12 +76,12 @@ export async function PATCH(request) {
     const listingSessions = await ListingSession.find({ userId, isCompleted: false });
 
     if (listingSessions.length === 0) {
-      return NextResponse.json({ success: false, message: 'Активні сесії для цього користувача не знайдено.' });
+      return NextResponse.json({ success: false, message: 'Активние сессии не найдени' });
     }
 
     const user = await User.findById(userId);
     if (!user) {
-      return NextResponse.json({ success: false, message: 'Користувача не знайдено.' });
+      return NextResponse.json({ success: false, message: 'Пользователя не найдено.' });
     }
 
     for (const session of listingSessions) {
@@ -140,7 +140,7 @@ export async function PATCH(request) {
     }
     await user.save();
 
-    return NextResponse.json({ success: true, message: 'Баланс оновлено для користувача.' });
+    return NextResponse.json({ success: true, message: 'Баланс обновлен.' });
   } catch (error) {
     console.error('Помилка оновлення сесії:', error);
     return NextResponse.json({ error: 'Помилка сервера.' }, { status: 500 });

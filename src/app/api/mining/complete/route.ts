@@ -14,7 +14,7 @@ export async function PATCH(request) {
     // Отримуємо всі активні сесії для цього користувача
     const miningSessions = await MiningSession.find({ userId, isCompleted: false });
     if (miningSessions.length === 0) {
-      return NextResponse.json({ success: false, message: 'Активні сесії для цього користувача не знайдено.' });
+      return NextResponse.json({ success: false, message: 'Активние сесиии не найдени.' });
     }
 
     // Обробка кожної сесії
@@ -79,7 +79,7 @@ export async function PATCH(request) {
       }
     }
 
-    return NextResponse.json({ success: true, message: 'Баланс оновлено для користувача.' });
+    return NextResponse.json({ success: true, message: 'Баланс обновлен' });
   } catch (error) {
     console.error('Помилка оновлення сесії:', error);
     return NextResponse.json({ error: 'Помилка сервера.' }, { status: 500 });

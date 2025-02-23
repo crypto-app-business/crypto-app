@@ -52,7 +52,7 @@ export async function POST(request: Request) {
         // Create response and set auth token in HTTP-only cookie
         const response = NextResponse.json({ 
             success: true, 
-            message: 'Користувач зареєстрований успішно', 
+            message: 'Пользователь зарегестрирован успешно', 
             userId: newUser._id 
         });
 

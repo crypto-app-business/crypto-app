@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     await newWallet.save();
 
     return NextResponse.json(
-      { success: true, message: 'Гаманець успішно додано', walletId: newWallet._id },
+      { success: true, message: 'Кошелек добавлен', walletId: newWallet._id },
       { status: 200 }
     );
   } catch (error) {

@@ -51,7 +51,7 @@ export async function POST(request: Request) {
     await deposit.save();
 
     return NextResponse.json(
-      { success: true, message: 'Поповнення створено успішно', depositId: deposit._id },
+      { success: true, message: 'Пополнения создано успешно', depositId: deposit._id },
       { status: 200 }
     );
   } catch (error) {

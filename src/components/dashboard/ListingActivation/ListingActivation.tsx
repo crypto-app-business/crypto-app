@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import RequestStatusIndicator from '@/components/dashboard/RequestStatusIndicator/RequestStatusIndicator';
 
 interface User {
   id: string;
@@ -34,6 +35,8 @@ export default function ListingActivation({ user }: ListingActivationProps) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [selectedSessionIndex, setSelectedSessionIndex] = useState<number>(0);
   const finalPercentage = 100;
+  const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
+  
 
   const radius = 55;
   const circumference = 2 * Math.PI * radius;
@@ -66,6 +69,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
       //   setError('Введите корректное количество.');
       //   return;
       // }
+      setRequestStatus('loading');
 
       try {
         const response = await fetch('/api/listing', {
@@ -83,6 +87,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
 
         if (response.ok) {
           setSuccess('Листинг успешно активирован');
+          setRequestStatus('success');
           setIsOpen(false)
         } else {
           const { error: responseError } = await response.json();
@@ -90,10 +95,12 @@ export default function ListingActivation({ user }: ListingActivationProps) {
         }
       } catch (error) {
         setError(`Ошибка сервера. Попробуйте позже.`);
+        setRequestStatus('error');
         console.log(error)
       }
     } else {
       setSelectedSessionIndex(index);
+      setRequestStatus('error');
       setIsOpen(true)
     }
   };
@@ -128,8 +135,23 @@ export default function ListingActivation({ user }: ListingActivationProps) {
     }
   };
 
+  const handleSpinnerHide = () => {
+    setRequestStatus(null);
+  };
+
   return (
     <div className="bg-gray-50 flex flex-wrap flex-row sm:gap-[35px] gap-[25px] w-full sm:justify-start justify-center">
+      <RequestStatusIndicator
+        status={requestStatus}
+        message={
+          requestStatus === 'success'
+            ? 'Успех'
+            : requestStatus === 'error'
+              ? 'Ошибка'
+              : undefined
+        }
+        onHide={handleSpinnerHide}
+      />
       {user?.role === "admin" && <button
         onClick={handleSimulateTime}
         className="bg-blue text-white px-4 py-2 rounded mb-4"
@@ -186,13 +208,13 @@ export default function ListingActivation({ user }: ListingActivationProps) {
                 viewBox="0 0 131 131"
                 className="cursor-pointer "
               >
-                  <defs>
-    <linearGradient id="gradientStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="25%" stopColor="rgb(255, 0, 247)" />
-      <stop offset="50%" stopColor="rgba(53, 129, 255, 0.57)" />
-      <stop offset="75%" stopColor="rgb(53, 129, 255)" />
-    </linearGradient>
-  </defs>
+                <defs>
+                  <linearGradient id="gradientStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="25%" stopColor="rgb(255, 0, 247)" />
+                    <stop offset="50%" stopColor="rgba(53, 129, 255, 0.57)" />
+                    <stop offset="75%" stopColor="rgb(53, 129, 255)" />
+                  </linearGradient>
+                </defs>
                 <circle
                   cx="65.5"
                   cy="65.5"
