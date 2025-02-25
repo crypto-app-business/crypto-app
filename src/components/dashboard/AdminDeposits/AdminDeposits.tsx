@@ -61,12 +61,33 @@ export default function AdminDeposits({ user }: AdminDepositsProps) {
       }
     } catch (err) {
       console.error('Error confirming deposit:', err);
-      alert('Помилка при підтвердженні поповнення');
+      alert('Ошибка потдверджения');
+    }
+  };
+
+  const deleteDeposit = async (depositId: string, userId: string, adminId: string) => {
+    try {
+      const response = await fetch('/api/delete-deposit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ depositId, userId, adminId }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Deposit delete successfully!');
+        setDeposits(deposits.filter((deposit) => deposit._id !== depositId));
+      } else {
+        alert(data.error || 'Failed to delete deposit.');
+      }
+    } catch (err) {
+      console.error('Error delete deposit:', err);
+      alert('Ошибка удаления');
     }
   };
 
   if (loading) {
-    return <p>Завантаження...</p>;
+    return <p>Загрузка...</p>;
   }
 
   if (error) {
@@ -100,18 +121,32 @@ export default function AdminDeposits({ user }: AdminDepositsProps) {
             <p>
               <strong>Сумма:</strong> {deposit.amount}
             </p>
-            <button
-              onClick={() => confirmDeposit(deposit._id, deposit.id, user.id)}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#4caf50',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-              }}
-            >
-              Подтвердить
-            </button>
+            <div className='flex gap-[10px]'>
+              <button
+                onClick={() => confirmDeposit(deposit._id, deposit.id, user.id)}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#4caf50',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                }}
+              >
+                Подтвердить
+              </button>
+              <button
+                onClick={() => deleteDeposit(deposit._id, deposit.id, user.id)}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#4caf50',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                }}
+              >
+                Отменить
+              </button>
+            </div>
           </li>
         ))}
       </ul>

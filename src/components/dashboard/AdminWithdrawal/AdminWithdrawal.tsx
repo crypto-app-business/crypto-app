@@ -65,8 +65,29 @@ export default function AdminWithdrawal({ user }: AdminDepositsProps) {
     }
   };
 
+  const disconfirmDeposit = async (depositId: string, userId: string, adminId: string) => {
+    try {
+      const response = await fetch('/api/delete-withdrawal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ depositId, userId, adminId }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        alert('Deposit confirmed successfully!');
+        setDeposits(deposits.filter((deposit) => deposit._id !== depositId));
+      } else {
+        alert(data.error || 'Failed to confirm deposit.');
+      }
+    } catch (err) {
+      console.error('Error confirming deposit:', err);
+      alert('Помилка при підтвердженні зняття');
+    }
+  };
+
   if (loading) {
-    return <p>Завантаження...</p>;
+    return <p>Загрузка...</p>;
   }
 
   if (error) {
@@ -103,18 +124,32 @@ export default function AdminWithdrawal({ user }: AdminDepositsProps) {
             <p>
               <strong>Сумма:</strong> {deposit.amount}
             </p>
-            <button
-              onClick={() => confirmDeposit(deposit._id, deposit.id, user.id)}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#4daf50',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-              }}
-            >
-              Подтвердить
-            </button>
+            <div className='flex gap-[10px]'>
+              <button
+                onClick={() => confirmDeposit(deposit._id, deposit.id, user.id)}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#4daf50',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                }}
+              >
+                Подтвердить
+              </button>
+              <button
+                onClick={() => disconfirmDeposit(deposit._id, deposit.id, user.id)}
+                style={{
+                  padding: '10px 20px',
+                  backgroundColor: '#4daf50',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                }}
+              >
+                Отменить
+              </button>
+            </div>
           </li>
         ))}
       </ul>

@@ -14,7 +14,7 @@ export async function POST(request: Request) {
 
         // Validate input
         if (!firstName || !lastName || !email || !username || !password || !phone || !country) {
-            return NextResponse.json({ error: 'Всі поля повинні бути заповнені' }, { status: 400 });
+            return NextResponse.json({ error: 'Все поля должни быть заполнены' }, { status: 400 });
         }
 
         // Connect to database
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
-            return NextResponse.json({ error: 'Email вже зареєстровано' }, { status: 400 });
+            return NextResponse.json({ error: 'Email уже зарегестрирован' }, { status: 400 });
         }
 
         // Hash password
@@ -39,6 +39,7 @@ export async function POST(request: Request) {
             country,
             password: hashedPassword,
             referrer,
+            telegramId: username,
         });
         await newUser.save();
 
@@ -67,6 +68,6 @@ export async function POST(request: Request) {
         return response;
     } catch (error) {
         console.error('Registration error:', error);
-        return NextResponse.json({ error: 'Внутрішня помилка сервера' }, { status: 500 });
+        return NextResponse.json({ error: 'Ошибка сервера' }, { status: 500 });
     }
 }

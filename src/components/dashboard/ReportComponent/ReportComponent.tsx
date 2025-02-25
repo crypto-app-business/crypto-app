@@ -177,7 +177,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   activeTab === 'listing' ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]' : 'text-[#00163A]'
                 }
                 `}>
-                <div className="text-[24px] font-bold uppercase">Листининг</div>
+                <div className="text-[24px] font-bold uppercase">Листинг</div>
                 <Image
                   src={`${activeTab === 'listing' && window.innerWidth <= 640 ?"/dashboard/report/mnemonic-white.svg":"/dashboard/report/mnemonic.svg"}`}
                   alt="Wallet Icon"

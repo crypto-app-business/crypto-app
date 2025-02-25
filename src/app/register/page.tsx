@@ -83,7 +83,7 @@ export default function RegisterPage() {
               await checkUsername(value);
               return isUsernameUnique || 'Юзернейм занятий';
             },
-          })} autoComplete="off" placeholder="Юзернейм" type='text' required className="mb-4 w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]" />
+          })} autoComplete="off" placeholder="Юзернейм Телеграмм" type='text' required className="mb-4 w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]" />
           <input {...register('country')} placeholder="Страна" required className="mb-4 w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]" />
         </div>
         {errors.username && <p className="text-red-500 text-sm">{String(errors.username.message)}</p>}

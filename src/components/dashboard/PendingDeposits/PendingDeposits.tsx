@@ -38,7 +38,7 @@ export default function PendingDeposits({ id }: PendingDepositsProps) {
   }, [id]);
 
   if (loading) {
-    return <p>Завантаження...</p>;
+    return <p>Загрузка...</p>;
   }
 
   if (error) {

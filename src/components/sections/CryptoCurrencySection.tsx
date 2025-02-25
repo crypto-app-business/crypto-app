@@ -48,7 +48,7 @@ export function CryptoCurrencySection() {
 
         setCoins(coinsWithSparkline);
       } catch (error) {
-        console.error("Помилка завантаження криптовалют:", error);
+        console.error("Ошибка загрузки криптовалют:", error);
       }
     };
 

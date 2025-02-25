@@ -123,9 +123,9 @@ const OperationsComponent: React.FC<TeamComponentProps> = ({ userId }) => {
       </div>
 
       {loading ? (
-        <div className="text-center">Завантаження...</div>
+        <div className="text-center">Загрузка...</div>
       ) : operations.length === 0 ? (
-        <div className="text-center">Операцій не знайдено</div>
+        <div className="text-center"></div>
       ) : (
         operations.map((operation, index) => (
           <div

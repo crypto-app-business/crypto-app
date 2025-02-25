@@ -105,7 +105,14 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
 
         if (stakingRes.ok) {
           const stakingData: { sessions: MiningSession[] } = await stakingRes.json();
-          setStakingSessions(stakingData.sessions.filter((session) => session.currency === 'CC'));
+          setStakingSessions(
+            stakingData.sessions
+              .filter((session) => session.currency === 'CC')
+              .map((session) => ({
+                ...session,
+                amount: session.amount / 10, // Ділимо amount на 10
+              }))
+          );
         }
 
         if (listingRes.ok) {
@@ -259,7 +266,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       objectFit="cover"
                       priority={false}
                     />
-                    <div className="text-[16px]">Листининг</div>
+                    <div className="text-[16px]">Листинг</div>
 
                   </div>
                 </div>
@@ -357,7 +364,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
 
                         {activeButton === 'Вложено' && <div className='flex justify-between text-[14px] font-bold text-white'>
                           <div className="">Вложено:</div>
-                          <div>{session?.amount.toFixed(2)}</div>
+                          <div>${session?.amount.toFixed(2)}</div>
                         </div>}
                         {activeButton === 'Заработано' && <div className='flex justify-between text-[14px] font-bold text-white'>
                           <div className="">Заработано:</div>
@@ -374,7 +381,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                 ${activeTab === 'listing' ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]' : 'text-[#00163A]'
                   }
                 `}>
-                  <div className="text-[24px] font-bold uppercase">Листининг</div>
+                  <div className="text-[24px] font-bold uppercase">Листинг</div>
                   <Image
                     src={`${activeTab === 'listing' && window.innerWidth <= 640 ? "/dashboard/report/mnemonic-white.svg" : "/dashboard/report/mnemonic.svg"}`}
                     alt="Wallet Icon"
@@ -640,7 +647,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         objectFit="cover"
                         priority={false}
                       />
-                      <div className="text-[16px]">Листининг</div>
+                      <div className="text-[16px]">Листинг</div>
 
                     </div>
                   </div>
@@ -902,7 +909,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         objectFit="cover"
                         priority={false}
                       />
-                      <div className="text-[16px]">Листининг</div>
+                      <div className="text-[16px]">Листинг</div>
 
                     </div>
                   </div>
@@ -1051,7 +1058,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         objectFit="cover"
                         priority={false}
                       />
-                      <div className="text-[16px]">Листининг</div>
+                      <div className="text-[16px]">Листинг</div>
 
                     </div>
                   </div>

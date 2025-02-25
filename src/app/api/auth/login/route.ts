@@ -13,7 +13,7 @@ export async function POST(request: Request) {
 
         // Validate input
         if (!email || !password) {
-            return NextResponse.json({ error: 'Email and password are required' }, { status: 400 });
+            return NextResponse.json({ error: 'Ввкдите емейл или пароль' }, { status: 400 });
         }
 
         // Connect to database
@@ -22,13 +22,13 @@ export async function POST(request: Request) {
         // Find user by email
         const user = await User.findOne({ email });
         if (!user) {
-            return NextResponse.json({ error: 'User not found' }, { status: 404 });
+            return NextResponse.json({ error: 'Пользователь не найденный' }, { status: 404 });
         }
 
         // Verify password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
+            return NextResponse.json({ error: 'Неправильный пароль' }, { status: 401 });
         }
 
         // Generate JWT token
@@ -60,6 +60,6 @@ export async function POST(request: Request) {
         return response;
     } catch (error) {
         console.error('Login error:', error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: 'Ошибка сервера' }, { status: 500 });
     }
 }

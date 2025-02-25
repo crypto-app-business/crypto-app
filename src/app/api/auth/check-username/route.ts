@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const { username } = await request.json();
 
     if (!username) {
-      return NextResponse.json({ error: 'Юзернейм є обов’язковим' }, { status: 400 });
+      return NextResponse.json({ error: 'Юзернейм обезателен' }, { status: 400 });
     }
 
     await connectDB();
