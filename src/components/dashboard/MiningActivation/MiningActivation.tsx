@@ -181,7 +181,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
           </button>}
           <div className='flex flex-col gap-[15px]'>
             {availableContracts.map(([amountRange, { weeks }], index) => (
-              <div key={amountRange} className='flex gap-[10px] h-[82px] justify-end'>
+              <div key={amountRange} className='flex flex-wrap gap-[10px] min-h-[82px] justify-end'>
                 {selectedSessionIndex === index && <div className='w-[5px] bg-[#3581FF] min-h-[54px] h-[100%] rounded-full'></div>}
                 <div
                   className={`px-[15px] py-[10px] border rounded-[15px] cursor-pointer w-full max-w-[284px] ${selectedSessionIndex === index ? 'bg-blue text-white' : ''
@@ -206,7 +206,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
                 </div>
                 {selectedSessionIndex === index && <div className='sm:hidden block'>
                   <h3 className="text-[24px] font-bold mb-[20px] text-blue">Активировать майнинг</h3>
-                  <div className="flex flex-wrap gap-4 mb-[30px] ">
+                  <div className="flex flex-wrap gap-4 mb-[30px] w-full">
                     <div className="bg-blue rounded-[15px] shadow-md w-[330px] min-h-[203px]">
                       <div className="text-white rounded-[15px] pt-[31px] pl-[27px] pr-[27px]">
                         <div className="">
@@ -256,7 +256,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
           </div>
 
         </div>
-        <div className='max-w-[330px] sm:block hidden'>
+        <div className='max-w-[330px] sm:block hidden w-full'>
           <h3 className="text-[24px] font-bold mb-[20px] text-blue uppercase">Активировать майнинг</h3>
           <div className="flex flex-wrap gap-4 mb-[30px] ">
             <div className="bg-blue rounded-[15px] shadow-md w-[330px] min-h-[203px]">

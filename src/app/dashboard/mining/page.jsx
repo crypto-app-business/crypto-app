@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import DepositComponent from '@/components/dashboard/DepositComponent/DepositComponent';
+// import DepositComponent from '@/components/dashboard/DepositComponent/DepositComponent';
 import MiningActivation from '@/components/dashboard/MiningActivation/MiningActivation';
-import PendingDeposits from '@/components/dashboard/PendingDeposits/PendingDeposits';
+// import PendingDeposits from '@/components/dashboard/PendingDeposits/PendingDeposits';
 import AdminDeposits from '@/components/dashboard/AdminDeposits/AdminDeposits';
 
 export default function Dashboard() {
@@ -51,7 +51,7 @@ export default function Dashboard() {
         <div className="">
           {user?.role === 'admin'&&<AdminDeposits user={user}/>}
           <MiningActivation user={user}></MiningActivation>
-          <PendingDeposits id={user?.id} />
+          {/* <PendingDeposits id={user?.id} /> */}
         </div>
       </div>
     );

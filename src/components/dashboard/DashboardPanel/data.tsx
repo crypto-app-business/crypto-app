@@ -3,7 +3,7 @@
         currency: 'USDT TRC20',
         address: 'TYhGMQrX9hJnAiqx9fRj8ssRsThe7S2Z9x',
         logo: '/dashboard/crypto-logos/tether.svg',
-        qr: '/dashboard/crypto-qr/trs20.png'
+        qr: '/dashboard/crypto-qr/trc20.png'
     },
     {
         currency: 'USDT ERC20',

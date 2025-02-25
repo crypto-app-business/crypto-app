@@ -138,7 +138,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
     { label: 'Email', key: 'email', value: user?.email || 'no data' },
     { label: 'Телефон', key: 'phone', value: user?.phone || 'no data' },
     { label: 'Пароль', key: 'password', value: '*********' },
-    { label: 'Телеграмм id', key: 'telegramId', value: 'den5tyuo' },
+    { label: 'Телеграмм id', key: 'telegramId', value: 'no data' },
   ];
 
   const [userName, setUserName] = useState<string>('');
@@ -489,7 +489,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
                       type="text"
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
-                      placeholder={`den`}
+                      placeholder={``}
                       className='pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]'
                     />
                   </div>

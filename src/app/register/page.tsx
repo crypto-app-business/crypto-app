@@ -9,6 +9,7 @@ export default function RegisterPage() {
   const { register, handleSubmit, watch, formState: { errors } } = useForm({ mode: 'onChange' });
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
   // const [passwordStrength, setPasswordStrength] = useState(0);
   const [referrer, setReferrer] = useState<string>("none");
   // const searchParams = useSearchParams();
@@ -123,10 +124,35 @@ export default function RegisterPage() {
                 />}
             </button>
           </div>
-          <input {...register('password2', {
-            validate: validatePassword2,
-            required: 'Потдверджения пароля обязательно.',
-          })} placeholder="Подтвердите пароль" type={showPassword ? 'text' : 'password'} required className="max-h-[40px] mb-4 w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]" />
+          <div className="relative w-full">
+            <input {...register('password2', {
+              validate: validatePassword2,
+              required: 'Потдверджения пароля обязательно.',
+            })} placeholder="Подтвердите пароль" type={showPassword2 ? 'text' : 'password'} required className="max-h-[40px] mb-4 w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]" />
+            <button
+              type="button"
+              onClick={() => setShowPassword2(!showPassword2)}
+              className="absolute top-[8px] right-[8px] flex items-center"
+            >
+              {showPassword2 ?
+                <Image
+                  src="/register/eye-password-hide.svg"
+                  alt="Your image description"
+                  width={24}
+                  height={24}
+                  objectFit="cover"
+                  priority={false}
+                /> :
+                <Image
+                  src="/register/eye.svg"
+                  alt="Your image description"
+                  width={24}
+                  height={24}
+                  objectFit="cover"
+                  priority={false}
+                />}
+            </button>
+          </div>
         </div>
         {referrer && <div className='flex mb-[15px]'>
           <div className='text-[#8190b1] text-[13px] mr-[3px]'>Приглашен:</div>

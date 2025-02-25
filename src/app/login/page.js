@@ -34,13 +34,13 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <form 
-        onSubmit={handleSubmit(onSubmit)} 
+      <form
+        onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-8  w-full max-w-md"
       >
-        <h2 className="text-3xl  mb-6 text-center ">Войти в акаунт</h2>
-        <h3 className=" mb-6 text-center">Введите свой емейл и пароль</h3>
-        
+        <h2 className="text-3xl  mb-6 text-center ">Войти в аккаунт</h2>
+        <h3 className=" mb-6 text-center">Введите свой email и пароль</h3>
+
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
             {error}
@@ -48,46 +48,45 @@ export default function LoginPage() {
         )}
 
         <div className="mb-4">
-          <input 
+          <input
             id="email"
-            {...register('email')} 
-            placeholder="Enter your email" 
-            type="email" 
-            required 
+            {...register('email')}
+            placeholder="Enter your email"
+            type="email"
+            required
             className="w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]"
           />
         </div>
 
         <div className="mb-[10px]">
-          <input 
+          <input
             id="password"
-            {...register('password')} 
-            placeholder="Enter your password" 
-            type="password" 
-            required 
+            {...register('password')}
+            placeholder="Enter your password"
+            type="password"
+            required
             className="w-full px-3 py-2 border-[#d1d6da] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-[#e8f0fd]"
           />
         </div>
         <div className="mt-4 flex justify-between mb-[10px]">
           <div className='flex justify-between align-middle'>
-            <input 
+            <input
               id="checkbox"
-              {...register('checkbox')} 
-              type="checkbox" 
-              required 
+              {...register('checkbox')}
+              type="checkbox"
               className="px-3 py-2 rounded-md focus:outline-none bg-[#e8f0fd] mr-[5px]"
-            > 
+            >
             </input>
             <a className="text-blue-500 hover:underline">
               Запомнить меня
             </a>
           </div>
           <Link href='/forgot-password' className="text-blue-500 hover:underline">
-            Забил пароль?
+            Забыл пароль?
           </Link>
         </div>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={isSubmitting}
           className="mb-[20px] w-full bg-[#234bef] text-white py-2 rounded-md hover:bg-blue-600 transition duration-300 disabled:opacity-50"
         >
@@ -101,12 +100,12 @@ export default function LoginPage() {
 
         <div className='flex justify-center text-center'>
           <Link href='/register' className="text-[#8190b1] pt-[7px] p-[7px]  hover:underline  w-full border rounded border-px border-[#e2e2e0]">
-            Cоздать новий акаунт
+            Создать новый аккаунт
           </Link>
         </div>
-        
+
       </form>
-        
+
     </div>
   );
 }
