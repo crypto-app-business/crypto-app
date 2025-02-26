@@ -17,7 +17,7 @@ export function BackToTopSection() {
           className="border border-[#DDDDDD] bg-[#FAFAFA] rounded-xl text-gray py-4 px-6 flex items-center justify-center gap-4"
           onClick={handleClick}
         >
-          Back to top
+          Вернуться наверх
           <BsArrowUp />
         </button>
       </div>

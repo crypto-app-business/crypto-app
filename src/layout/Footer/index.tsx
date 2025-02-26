@@ -1,53 +1,53 @@
 "use client"
 import React from "react";
-import Image from "next/image";
-import { BsArrowRight } from "react-icons/bs";
-import { SecondButton } from "@/components/buttons/SecondButton";
+// import Image from "next/image";
+// import { BsArrowRight } from "react-icons/bs";
+// import { SecondButton } from "@/components/buttons/SecondButton";
 // import { Footer as FooterComponent } from "@/types/layout/footer";
 
 // interface FooterProps {
 //   footer: FooterComponent[];
 // }
 
-const footer = [
-  {
-      "_createdAt": "2023-09-02T15:41:10Z",
-      "_type": "footer",
-      "links": [
-          "Buy Crypto",
-          "Exchanges",
-          "Watchlist",
-          "Portfolio",
-          "NFT"
-      ],
-      "links3": [
-          "Help Center",
-          "Contact Us",
-          "System Status",
-          "Area of Avaibility",
-          "Privacy Policy"
-      ],
-      "image": {
-          "alt": "nefa logo",
-          "src": "/footer/logo.svg"
-      },
-      "_rev": "jT8xuzfmfyyeoKovz8dtqs",
-      "_id": "03d035be-f862-4fe1-8dac-139ad0396069",
-      "_updatedAt": "2023-09-02T15:50:10Z",
-      "links2": [
-          "Products",
-          "Abous Us",
-          "Careers",
-          "Blog",
-          "Security"
-      ]
-  }
-]
+// const footer = [
+//   {
+//       "_createdAt": "2023-09-02T15:41:10Z",
+//       "_type": "footer",
+//       "links": [
+//           "Buy Crypto",
+//           "Exchanges",
+//           "Watchlist",
+//           "Portfolio",
+//           "NFT"
+//       ],
+//       "links3": [
+//           "Help Center",
+//           "Contact Us",
+//           "System Status",
+//           "Area of Avaibility",
+//           "Privacy Policy"
+//       ],
+//       "image": {
+//           "alt": "nefa logo",
+//           "src": "/footer/logo.svg"
+//       },
+//       "_rev": "jT8xuzfmfyyeoKovz8dtqs",
+//       "_id": "03d035be-f862-4fe1-8dac-139ad0396069",
+//       "_updatedAt": "2023-09-02T15:50:10Z",
+//       "links2": [
+//           "Products",
+//           "Abous Us",
+//           "Careers",
+//           "Blog",
+//           "Security"
+//       ]
+//   }
+// ]
 
 export function Footer() {
   return (
     <footer className="px-28 max-md:px-4 w-11/12">
-      <div className="container mx-auto border-y border-lightgray py-6">
+      {/* <div className="container mx-auto border-y border-lightgray py-6">
         <div className="grid lg:grid-cols-4">
           {footer.map((item, index) => (
             <React.Fragment key={index}>
@@ -130,7 +130,7 @@ export function Footer() {
       </div>
       <p className="text-gray text-center py-6">
         &copy; Copyright 2022 NEFA LLC. All rights reserved
-      </p>
+      </p> */}
     </footer>
   );
 }

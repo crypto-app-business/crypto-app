@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState } from "react";
 import Image from "next/image";
 import { BsChevronDown } from "react-icons/bs";
@@ -16,51 +16,102 @@ interface FaqProps {
 
 const faq = [
   {
-      "image": {
-          "_type": "image",
-          "alt": "faq criptocurrency",
-          "asset": {
-              "_ref": "image-78594d43fe13ca66a511d352017ec0ba833e5f67-732x578-png",
-              "_type": "reference"
-          }
+    "image": {
+      "_type": "image",
+      "alt": "faq criptocurrency",
+      "asset": {
+        "_ref": "image-78594d43fe13ca66a511d352017ec0ba833e5f67-732x578-png",
+        "_type": "reference"
+      }
+    },
+    "_createdAt": "2023-09-01T00:41:42Z",
+    "subtitle": "Помощь",
+    "_type": "faq",
+    "title": {
+      "text1": "Часто задаваемые вопросы"
+    },
+    "_rev": "MDZjMGfJgf06ct7SsVwL05",
+    "_id": "97fa3a26-9439-48f3-a968-d079d4554acc",
+    "_updatedAt": "2023-09-02T19:07:37Z",
+    "articles": [
+      {
+        "title": "Где найти социальные сети компании?",
+        "content": `
+          Присоединяйтесь к нашим социальным сетям!\n
+          Новостной телеграмм канал компании - https://t.me/crypto_corporation_rus\n
+          Телеграм канал (для трейдера) - https://t.me/cc_trade_channel\n
+          Гостевой чат - https://t.me/cc_guest_chat\n
+          Ютуб канал - https://www.youtube.com/@Crypto_CC_Corporation\n
+          Инстаграм компании - https://www.instagram.com/crypto_corporation_cc/
+        `,
+        "_type": "article",
+        "_key": "70e86e62febf"
       },
-      "_createdAt": "2023-09-01T00:41:42Z",
-      "subtitle": "SUPPORT",
-      "_type": "faq",
-      "title": {
-          "text1": "Frequently asked questions"
+      {
+        "_type": "article",
+        "_key": "7fbbf3c4edcc",
+        "title": "Как связаться с поддержкой?",
+        "content": "Официальная поддержка компании - @Crypto_corporation_support"
       },
-      "_rev": "MDZjMGfJgf06ct7SsVwL05",
-      "_id": "97fa3a26-9439-48f3-a968-d079d4554acc",
-      "_updatedAt": "2023-09-02T19:07:37Z",
-      "articles": [
-          {
-              "title": "should I choose NEFA?",
-              "content": "We're industry pioneers, having been in the cryptocurrency\n industry since 2016. We've facilitated more than 21 billion USD\n worth of transactions on our exchange for customers in over 40\n countries. Today, we're trusted by over 8 million customers\n around the world and have received praise for our easy-to-use\n app, secure wallet, and range of features.",
-              "_type": "article",
-              "_key": "70e86e62febf"
-          },
-          {
-              "_type": "article",
-              "_key": "7fbbf3c4edcc",
-              "title": "secure is NEFA?",
-              "content": "We're industry pioneers, having been in the cryptocurrency\n industry since 2016. We've facilitated more than 21 billion USD\n worth of transactions on our exchange for customers in over 40\n countries. Today, we're trusted by over 8 million customers\n around the world and have received praise for our easy-to-use\n app, secure wallet, and range of features."
-          },
-          {
-              "_type": "article",
-              "_key": "f086ad3ad37d",
-              "title": "Do I have to buy a whole Bitcoin?",
-              "content": "We're industry pioneers, having been in the cryptocurrency\n industry since 2016. We've facilitated more than 21 billion USD\n worth of transactions on our exchange for customers in over 40\n countries. Today, we're trusted by over 8 million customers\n around the world and have received praise for our easy-to-use\n app, secure wallet, and range of features."
-          },
-          {
-              "content": "We're industry pioneers, having been in the cryptocurrency\n industry since 2016. We've facilitated more than 21 billion USD\n worth of transactions on our exchange for customers in over 40\n countries. Today, we're trusted by over 8 million customers\n around the world and have received praise for our easy-to-use\n app, secure wallet, and range of features.",
-              "_type": "article",
-              "_key": "fbd96d6e7d9c",
-              "title": "How do I actually buy Bitcoin?"
-          }
-      ]
+      {
+        "_type": "article",
+        "_key": "f086ad3ad37d",
+        "title": "Где взять презентацию компании?",
+        "content": "Мы планируем в будущем запустить собственную крипто-карту, которая позволит удобно использовать цифровые активы для повседневных расчетов. Наша цель — обеспечить быструю, безопасную и простую интеграцию криптовалют в реальную экономику, чтобы вы могли расплачиваться своими активами так же легко, как обычной банковской картой. Следите за обновлениями, впереди много интересного! 🚀"
+      }
+    ]
   }
-]
+];
+
+// Функція для обробки тексту з підтримкою посилань і переносів рядків
+const renderContentWithLinks = (content: string) => {
+  // Регулярний вираз для URL і Telegram-ніків
+  const urlRegex = /(https?:\/\/[^\s]+)|(@\w+)/g;
+  const lines = content.split("\n"); // Розбиваємо на рядки
+
+  return lines.map((line, lineIndex) => {
+    const parts = line.split(urlRegex).filter(Boolean); // Розбиваємо на частини з URL і текстом
+
+    return (
+      <React.Fragment key={lineIndex}>
+        {parts.map((part, partIndex) => {
+          if (/https?:\/\/[^\s]+/.test(part)) {
+            // Обробка звичайних URL
+            return (
+              <a
+                key={`${lineIndex}-${partIndex}`}
+                href={part}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue hover:underline"
+              >
+                {part}
+              </a>
+            );
+          } else if (part.startsWith("@")) {
+            // Обробка Telegram-ніків
+            const telegramHandle = part.substring(1); // Прибираємо "@"
+            return (
+              <a
+                key={`${lineIndex}-${partIndex}`}
+                href={`https://t.me/${telegramHandle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue hover:underline"
+              >
+                {part}
+              </a>
+            );
+          } else {
+            // Звичайний текст
+            return <span key={`${lineIndex}-${partIndex}`}>{part}</span>;
+          }
+        })}
+        {lineIndex < lines.length - 1 && <br />} {/* Додаємо перенос після кожного рядка, крім останнього */}
+      </React.Fragment>
+    );
+  });
+};
 
 const FaqItem = ({ open, title, children }: FaqProps) => {
   const [isOpen, setIsOpen] = useState(!!open);
@@ -86,7 +137,9 @@ const FaqItem = ({ open, title, children }: FaqProps) => {
         <BsChevronDown className={iconClass} />
       </aside>
       <aside className={contentClass}>
-        <p className="select-none">{children}</p>
+        <p className="select-none">
+          {children && renderContentWithLinks(children)}
+        </p>
       </aside>
     </article>
   );
@@ -105,10 +158,10 @@ export function FaqSection() {
           <motion.figure variants={fadeIn("right", "tween", 0.3, 2)}>
             <Image
               src="/faq/main.avif"
-              width={640} 
-              height={505} 
+              width={640}
+              height={505}
               alt={item.image.alt}
-              object-fit="cover"
+              objectFit="cover"
               priority={false}
             />
           </motion.figure>

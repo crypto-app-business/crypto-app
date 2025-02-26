@@ -13,7 +13,7 @@ import { slideIn } from "@/utils/motion";
 
 const partners = [
   {
-      "description": "We're partners with countless major organisations around the globe",
+      "description": "Мы сотрудничаем с бесчисленным множеством крупных организаций по всему миру.",
       "_id": "4675d7a8-cfe4-4fd7-82ff-d2773feb1016",
       "title": {
           "text1": "Биржи"
@@ -23,7 +23,7 @@ const partners = [
           {
               "image": {
                   "alt": "partner one",
-                  "src": "/partners/1.avif"
+                "src": "/partners/BYBIT.png"
               },
               "_type": "partnerimage",
               "_key": "d15ac4cc476f"
@@ -32,14 +32,14 @@ const partners = [
               "_key": "5e7bd55ae0a3",
               "image": {
                   "alt": "partner two",
-                  "src": "/partners/2.avif"
+                  "src": "/partners/BINANCE.png"
               },
               "_type": "partnerimage"
           },
           {
               "image": {
                   "alt": "partner three",
-                  "src": "/partners/3.avif"
+                  "src": "/partners/OKX.png"
               },
               "_type": "partnerimage",
               "_key": "11a5d3ba1f2f"
@@ -47,7 +47,7 @@ const partners = [
           {
               "image": {
                   "alt": "partner four",
-                  "src": "/partners/4.avif"
+                  "src": "/partners/BINGX.png"
               },
               "_type": "partnerimage",
               "_key": "fb6ff5e72dd6"

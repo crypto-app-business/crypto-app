@@ -200,7 +200,7 @@ const header = [
                 "image": {
                     "image": {
                         "_type": "image",
-                        "src": "/header/logo.svg"
+                        "src": "/header/logo.png"
                     },
                     "alt": "nefa logo",
                     "asset": {
@@ -267,9 +267,9 @@ export default function Header() {
           <figure className="sm:mx-8 m-auto w-[auto] xl:w-[10vw]">
             <Image
               src={item.image.image.src}
-              className="h-12 max-sm:mx-8 mr-8"
-              width={130} 
-              height={52} 
+              className="max-sm:mx-8 mr-8"
+              width={66} 
+              height={66} 
               alt={item.image.alt}
               object-fit="cover"
               priority={false}

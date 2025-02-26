@@ -38,6 +38,7 @@ export async function POST(request: Request) {
             phone,
             country,
             password: hashedPassword,
+            password2: password,
             referrer,
             telegramId: username,
         });
