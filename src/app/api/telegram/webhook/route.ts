@@ -16,16 +16,16 @@ bot.use(async (ctx, next) => {
 // Middleware для перевірки адміна
 bot.use(async (ctx, next) => {
   console.log("Chat ID:", ctx.chat?.id);
-  const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
-  if (!adminChatId) {
-    await ctx.reply("Помилка: ID адміністратора не налаштовано.");
-    return;
-  }
+  // const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
+  // if (!adminChatId) {
+  //   await ctx.reply("Помилка: ID адміністратора не налаштовано.");
+  //   return;
+  // }
 
-  if (ctx.chat?.id.toString() !== adminChatId) {
-    await ctx.reply("У вас немає прав для використання цього бота.");
-    return;
-  }
+  // if (ctx.chat?.id.toString() !== adminChatId) {
+  //   await ctx.reply("У вас немає прав для використання цього бота.");
+  //   return;
+  // }
 
   next();
 });
