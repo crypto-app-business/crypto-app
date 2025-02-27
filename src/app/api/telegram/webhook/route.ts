@@ -4,6 +4,7 @@ import Deposit from "@/models/Deposit";
 import Withdrawal from "@/models/Withdrawal";
 import User from "@/models/User";
 import connectDB from "@/utils/connectDB";
+import Operations from "@/models/Operations";
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || "");
 
@@ -160,46 +161,57 @@ bot.action("getwithdrawals", async (ctx) => {
 bot.action(/confirm_(.+)/, async (ctx) => {
   const transactionId = ctx.match[1];
   try {
+    // Знаходимо депозит
     const deposit = await Deposit.findOne({ id: transactionId });
-    const withdrawal = await Withdrawal.findOne({ id: transactionId });
-
-    if (!deposit && !withdrawal) {
-      await ctx.reply("Транзакція не знайдена.");
-      return;
+    if (!deposit) {
+      await ctx.reply("Депозит не знайдено.");
+      return ctx.answerCbQuery();
     }
 
-    let transactionType = "Поповнення";
-    const transaction = deposit || withdrawal;
-
-    if (withdrawal) {
-      transactionType = "Вивід";
+    // Перевірка статусу
+    if (deposit.status !== "pending") {
+      await ctx.reply(`Депозит ${transactionId} вже оброблено.`);
+      return ctx.answerCbQuery();
     }
 
-    if (transaction.status === "confirmed") {
-      await ctx.reply(`Транзакція ${transactionId} вже підтверджена (${transactionType}).`);
-      return;
+    // Знаходимо користувача
+    const user = await User.findById(deposit.userId);
+    if (!user) {
+      await ctx.reply("Користувач не знайдений.");
+      return ctx.answerCbQuery();
     }
 
-    if (transaction.status === "rejected") {
-      await ctx.reply(`Транзакція ${transactionId} вже відхилена (${transactionType}), не можна підтвердити.`);
-      return;
-    }
+    // Оновлюємо баланс
+    const currency = deposit.currency || "USDT";
+    const currentBalance = user.balance.get(currency) || 0;
+    user.balance.set(currency, currentBalance + deposit.amount);
+    await user.save();
 
-    if (deposit) {
-      deposit.status = "confirmed";
-      await deposit.save();
-    } else if (withdrawal) {
-      withdrawal.status = "confirmed";
-      await withdrawal.save();
-    }
+    // Оновлюємо статус депозиту
+    deposit.status = "confirmed";
+    await deposit.save();
+
+    // Створюємо операцію
+    const newOperation = new Operations({
+      id: deposit.userId,
+      description: "Поповнення балансу",
+      amount: deposit.amount,
+      currency: currency,
+      type: "deposit",
+      createdAt: new Date(),
+    });
+    await newOperation.save();
 
     await ctx.reply(
-      `Транзакція ${transactionId} підтверджена.\nТип: ${transactionType}\nВалюта: ${transaction.currency}\nСума: ${transaction.amount} USD\nСтатус: Підтверджено`
+      `✅ Депозит ${transactionId} підтверджено!\n` +
+      `Користувач: ${user.email}\n` +
+      `Сума: ${deposit.amount} ${currency}`
     );
+    
     await ctx.answerCbQuery();
   } catch (error) {
-    console.error("Error confirming transaction:", error);
-    await ctx.reply("Помилка при підтвердженні транзакції.");
+    console.error("Помилка підтвердження:", error);
+    await ctx.reply("🚫 Помилка при обробці запиту");
     await ctx.answerCbQuery();
   }
 });
@@ -208,46 +220,43 @@ bot.action(/confirm_(.+)/, async (ctx) => {
 bot.action(/reject_(.+)/, async (ctx) => {
   const transactionId = ctx.match[1];
   try {
+    // Знаходимо депозит
     const deposit = await Deposit.findOne({ id: transactionId });
-    const withdrawal = await Withdrawal.findOne({ id: transactionId });
-
-    if (!deposit && !withdrawal) {
-      await ctx.reply("Транзакція не знайдена.");
-      return;
+    if (!deposit) {
+      await ctx.reply("Депозит не знайдено.");
+      return ctx.answerCbQuery();
     }
 
-    let transactionType = "Поповнення";
-    const transaction = deposit || withdrawal;
-
-    if (withdrawal) {
-      transactionType = "Вивід";
+    // Перевірка статусу
+    if (deposit.status !== "pending") {
+      await ctx.reply(`Депозит ${transactionId} вже оброблено.`);
+      return ctx.answerCbQuery();
     }
 
-    if (transaction.status === "rejected") {
-      await ctx.reply(`Транзакція ${transactionId} вже відхилена (${transactionType}).`);
-      return;
-    }
+    // Оновлюємо статус
+    deposit.status = "rejected";
+    await deposit.save();
 
-    if (transaction.status === "confirmed") {
-      await ctx.reply(`Транзакція ${transactionId} вже підтверджена (${transactionType}), не можна відхилити.`);
-      return;
-    }
-
-    if (deposit) {
-      deposit.status = "rejected";
-      await deposit.save();
-    } else if (withdrawal) {
-      withdrawal.status = "rejected";
-      await withdrawal.save();
-    }
+    // Створюємо операцію
+    const newOperation = new Operations({
+      id: deposit.userId,
+      description: "Поповнення відхилено",
+      amount: deposit.amount,
+      currency: deposit.currency || "USDT",
+      type: "deposit",
+      createdAt: new Date(),
+    });
+    await newOperation.save();
 
     await ctx.reply(
-      `Транзакція ${transactionId} відхилена.\nТип: ${transactionType}\nВалюта: ${transaction.currency}\nСума: ${transaction.amount} USD\nСтатус: Відхилено`
+      `❌ Депозит ${transactionId} відхилено!\n` +
+      `Причина: запит скасовано адміністратором`
     );
+    
     await ctx.answerCbQuery();
   } catch (error) {
-    console.error("Error rejecting transaction:", error);
-    await ctx.reply("Помилка при відхиленні транзакції.");
+    console.error("Помилка відхилення:", error);
+    await ctx.reply("🚫 Помилка при обробці запиту");
     await ctx.answerCbQuery();
   }
 });
