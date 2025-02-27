@@ -15,6 +15,7 @@ bot.use(async (ctx, next) => {
 
 // Middleware для перевірки адміна
 bot.use(async (ctx, next) => {
+  console.log("Chat ID:", ctx.chat?.id);
   const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
   if (!adminChatId) {
     await ctx.reply("Помилка: ID адміністратора не налаштовано.");
@@ -171,7 +172,7 @@ bot.command("getusers", async (ctx) => {
 bot.command("getdeposits", async (ctx) => {
   try {
     const deposits = await Deposit.find()
-      .sort({ createdAt: -1 }); // Сортуємо за датою створення (новіші перші)
+      // .sort({ createdAt: -1 }); // Сортуємо за датою створення (новіші перші)
 
     if (!deposits.length) {
       await ctx.reply("Депозити не знайдені.");
@@ -181,10 +182,10 @@ bot.command("getdeposits", async (ctx) => {
     let response = "Список депозитів:\n\n";
     deposits.forEach((deposit, index) => {
       response += `${index + 1}. ID: ${deposit.id}\n`;
-      response += `   Валюта: ${deposit.currency}\n`;
-      response += `   Сума: ${deposit.amount} USD\n`;
-      response += `   Статус: ${deposit.status}\n`;
-      response += `   Дата: ${new Date(deposit.createdAt).toLocaleString()}\n\n`;
+      // response += `   Валюта: ${deposit.currency}\n`;
+      // response += `   Сума: ${deposit.amount} USD\n`;
+      // response += `   Статус: ${deposit.status}\n`;
+      // response += `   Дата: ${new Date(deposit.createdAt).toLocaleString()}\n\n`;
     });
 
     if (response.length > 4096) {
