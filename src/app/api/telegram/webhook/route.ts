@@ -74,7 +74,7 @@ bot.action("getdeposits", async (ctx) => {
     }
 
     // Типізація для messages: рядок або об’єкт із текстом і кнопками
-    const messages: (string | { text: string; reply_markup: any })[] = [];
+    const messages: (string | { text: string; reply_markup: ReturnType<typeof Markup.inlineKeyboard> })[] = [];
     let response: string = "Список депозитів (pending):\n\n";
 
     deposits.forEach((deposit, index) => {
@@ -100,7 +100,7 @@ bot.action("getdeposits", async (ctx) => {
               Markup.button.callback("Підтвердити", `confirm_${dep.id}`),
               Markup.button.callback("Відмінити", `reject_${dep.id}`),
             ])
-          ).reply_markup,
+          ),
         });
         response = "Список депозитів (продовження):\n\n";
       }
