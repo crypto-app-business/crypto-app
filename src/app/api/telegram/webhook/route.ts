@@ -15,7 +15,9 @@ bot.use(async (ctx, next) => {
 
 // Middleware для логування chat ID (залишаємо для дебагу)
 bot.use(async (ctx, next) => {
+    const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
   console.log("Chat ID:", ctx.chat?.id);
+  console.log("Chat ID admin:", adminChatId);
   next();
 });
 
