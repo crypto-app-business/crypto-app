@@ -171,28 +171,48 @@ bot.command("getusers", async (ctx) => {
 // Нова команда для отримання списку депозитів
 bot.command("getdeposits", async (ctx) => {
   try {
-    const deposits = await Deposit.find()
-      // .sort({ createdAt: -1 }); // Сортуємо за датою створення (новіші перші)
+    // Підключення до бази даних
+    await connectDB();
 
+    // Шукаємо депозити зі статусом "pending"
+    const deposits = await Deposit.find({ status: "pending" });
+
+    // Якщо депозитів немає
     if (!deposits.length) {
-      await ctx.reply("Депозити не знайдені.");
+      await ctx.reply("Депозити зі статусом 'pending' не знайдені.");
       return;
     }
 
-    let response = "Список депозитів:\n\n";
+    // Формуємо список
+    let response: string = "Список депозитів (pending):\n\n"; // Явно вказуємо тип string
+    const messages: string[] = []; // Явно вказуємо, що messages — це масив рядків
+
     deposits.forEach((deposit, index) => {
-      response += `${index + 1}. ID: ${deposit.id}\n`;
-      // response += `   Валюта: ${deposit.currency}\n`;
-      // response += `   Сума: ${deposit.amount} USD\n`;
-      // response += `   Статус: ${deposit.status}\n`;
-      // response += `   Дата: ${new Date(deposit.createdAt).toLocaleString()}\n\n`;
+      const depositInfo: string = `${index + 1}. ID: ${deposit.id}\n` +
+                                 `   Валюта: ${deposit.currency}\n` +
+                                 `   Сума: ${deposit.amount} USD\n` +
+                                 `   Статус: ${deposit.status}\n` +
+                                 `   Дата: ${new Date(deposit.createdAt).toLocaleString()}\n\n`;
+
+      // Перевіряємо, чи не перевищує поточне повідомлення ліміт у 4096 символів
+      if (response.length + depositInfo.length > 4096) {
+        messages.push(response); // Додаємо поточний текст у масив
+        response = "Список депозитів (продовження):\n\n" + depositInfo; // Починаємо новий блок
+      } else {
+        response += depositInfo; // Додаємо до поточного тексту
+      }
     });
 
-    if (response.length > 4096) {
-      response = response.substring(0, 4095) + "...";
+    // Додаємо останню частину, якщо вона не порожня
+    if (response.length > 0) {
+      messages.push(response);
     }
 
-    await ctx.reply(response);
+    // Надсилаємо всі частини повідомлення
+    for (const message of messages) {
+      await ctx.reply(message);
+    }
+
   } catch (error) {
     console.error("Error getting deposits:", error);
     await ctx.reply("Помилка при отриманні списку депозитів.");
