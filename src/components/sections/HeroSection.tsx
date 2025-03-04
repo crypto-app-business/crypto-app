@@ -24,12 +24,12 @@ export function HeroSection({ hero }: HeroProps) {
   // const descriptionParts = item.description;
   return (
     <motion.section
-      className="bg-primary bg-opacity-5 relative px-32 pt-72 pb-24"
+      className="bg-primary bg-opacity-5 relative px-[15px] pt-[120px] sm:px-32 sm:pt-72 pb-24"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: "some" }}
     >
-      <div className="container grid lg:grid-cols-2 max-md:justify-items-center max-md:justify-center px-4 mx-auto">
+      <div className="container grid lg:grid-cols-2 max-md:justify-items-center max-md:justify-center px-2 mx-auto">
         <article className="static">
           <motion.h6
             className="text-primary text-2xl"
@@ -38,18 +38,14 @@ export function HeroSection({ hero }: HeroProps) {
             Всё так просто, что аж прибыльно!
           </motion.h6>
           <StarParticle
-            className="absolute top-36 right-2/4 w-32"
+            className=" hidden sm:block sm:absolute top-36 right-2/4 w-32"
             particle={hero}
           />
           <motion.h1
-            className="text-4xl md:text-5xl lg:text-6xl font-bold leading-normal"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.2]"
             variants={fadeIn("right", "tween", 0.3, 2)}
           >
-            Добро пожаловать в
-            <br />
-            <span className="text-blue">Crypto Corporation</span>
-            <br />
-            — будущее уже здесь! 🚀
+            Добро пожаловать в Crypto Corporation — будущее уже здесь! 🚀
           </motion.h1>
           <motion.div
             className="mt-4 mb-8"
@@ -58,7 +54,7 @@ export function HeroSection({ hero }: HeroProps) {
             <p className="text-gray">Мы создаём новые возможности в мире блокчейна, криптовалют и децентрализованных технологий. Наша миссия — дать каждому доступ к инновационным финансовым инструментам, обеспечивая безопасность, прозрачность и свободу.</p>
           </motion.div>
           <motion.div
-            className="col-span-2 lg:flex gap-4 lg:mb-12 w-max"
+            className="col-span-2 flex gap-4 lg:mb-12 w-max"
             variants={fadeIn("right", "tween", 0.3, 2)}
           >
             <Link className="w-full" href="/login">
@@ -103,7 +99,7 @@ export function HeroSection({ hero }: HeroProps) {
             </DropdownButton> */}
           </motion.div>
           <PurpleCircleParticle
-            className="absolute bottom-24 left-20"
+            className="hidden sm:block absolute bottom-24 left-20"
             particle={hero}
           />
         </article>

@@ -228,7 +228,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
           </div>
           <div className="mt-4">
             <p className="text-[14px] font-semibold mb-[10px]">
-              Дата регистрации: <span className="text-[#a1a4ad]">{user?.registrationDate || 'no data'}</span>
+              Дата регистрации: <span className="text-[#a1a4ad]">{user?.registrationDate || 'нет данных'}</span>
             </p>
             <p className="text-[14px] font-semibold mb-[10px]">
               Статус аккаунта: <span className="text-[#a1a4ad]">Не активный</span>

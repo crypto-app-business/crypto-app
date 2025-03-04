@@ -3,7 +3,7 @@
 // import { useNextSanityImage } from "next-sanity-image";
 import Image from "next/image";
 import React from "react";
-import { BsCheckCircleFill } from "react-icons/bs";
+// import { BsCheckCircleFill } from "react-icons/bs";
 import { FirstButton } from "../buttons/FirstButton";
 // import { Credit as CreditComponent } from "@/types/sections/credit";
 import { motion } from "framer-motion";
@@ -34,12 +34,11 @@ const credit = [
       "_rev": "KsXaVvUhkeFH1gwScPDhAi",
       "_type": "credit",
       "subtitle": {
-          "text1": "Subject to cardholder and rewards terms which will be available ",
-          "span": "at application."
+          "text1": "Мы планируем в будущем запустить собственную крипто-карту, которая позволит удобно использовать цифровые активы для повседневных расчетов. Наша цель — обеспечить быструю, безопасную и простую интеграцию криптовалют в реальную экономику, чтобы вы могли расплачиваться своими активами так же легко, как обычной банковской картой. Следите за обновлениями, впереди много интересного! 🚀"
       },
       "title": {
-          "span": "NEFA",
-          "text1": "Introducing the ",
+          "span": "Crypto Corporation",
+          "text1": "Представляем кредитную карту",
           "text2": " Credit Card"
       }
   }
@@ -48,7 +47,7 @@ const credit = [
 export function CreditCard() {
   return (
     <motion.section
-      className="container mx-auto py-32"
+      className="container mx-auto py-[20px] sm:py-32 px-[15px] sm:px-0"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: "some" }}
@@ -62,7 +61,7 @@ export function CreditCard() {
             >
               <Image
                 key={index}
-                src="/credit/main.avif" 
+                src="/credit/main.png" 
                 width={1920} 
                 height={1268} 
                 // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -77,23 +76,23 @@ export function CreditCard() {
               variants={fadeIn("left", "tween", 0.3, 2)}
             >
               <div className="max-w-md">
-                <h2 className="font-bold text-4xl mb-6 leading-normal">
+                <h2 className="font-bold text-4xl mb-6 leading-[1.2]">
                   {item.title.text1}
                   <span className="text-blue-gradient">{item.title.span}</span>
-                  {item.title.text2}
+                  {/* {item.title.text2} */}
                 </h2>
-                <p className="text-gray">
+                <p className="text-gray my-6">
                   {item.subtitle.text1}
-                  <span>{item.subtitle.span}</span>
+                  {/* <span>{item.subtitle.span}</span> */}
                 </p>
-                <ul className="my-6">
+                {/* <ul className="my-6">
                   {item.list.map((arr, index) => (
                     <li key={index} className="mb-2">
                       <BsCheckCircleFill className="text-primary inline mr-2" />
                       {arr}
                     </li>
                   ))}
-                </ul>
+                </ul> */}
                 <FirstButton className={""} onClick={undefined}>
                   Join the waitlist
                 </FirstButton>

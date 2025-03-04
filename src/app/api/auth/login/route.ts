@@ -22,7 +22,7 @@ export async function POST(request: Request) {
         // Find user by email
         const user = await User.findOne({ email });
         if (!user) {
-            return NextResponse.json({ error: 'Пользователь не найденный' }, { status: 404 });
+            return NextResponse.json({ error: 'Пользователь не найден' }, { status: 404 });
         }
 
         // Verify password

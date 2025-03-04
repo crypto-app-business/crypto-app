@@ -114,7 +114,7 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                 <div className="text-[24px] font-bold text-[#3581FF]">{activePartnersCount}</div>
               </div>
             </div>
-            <div className="flex items-center gap-[12px] justify-center">
+            <div className="flex items-center gap-[12px] sm:justify-center justify-start">
               <Image
                 src="/dashboard/teams/file-person-fill.svg"
                 alt="Wallet Icon"
@@ -128,7 +128,7 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                 <div className="text-[24px] font-bold text-[#3581FF]">{personalPartnersCount}</div>
               </div>
             </div>
-            <div className="flex items-center gap-[12px] justify-center">
+            <div className="flex items-center gap-[12px] sm:justify-center justify-start">
               <Image
                 src="/dashboard/teams/people-fill.svg"
                 alt="Wallet Icon"

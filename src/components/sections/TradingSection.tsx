@@ -93,7 +93,7 @@ const trading = [
 export function TradingSection() {
   return (
     <motion.section
-      className="px-6"
+      className="px-[15px] sm:px-6"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: "some" }}
@@ -105,10 +105,10 @@ export function TradingSection() {
         >
           <div className="grid lg:grid-cols-2 max-md:justify-items-center gap-6">
             <motion.div
-              className="max-w-lg lg:row-start-1 ml-12"
+              className="max-w-lg lg:row-start-1 px-[5px] ml-0 sm:ml-12"
               variants={fadeIn("right", "tween", 0.3, 2)}
             >
-              <h2 className="font-bold text-4xl mb-6 leading-normal">
+              <h2 className="font-bold text-4xl mb-6 leading-[1.2]">
                 {item.title.text1}
                 <span className="text-blue-gradient">{item.title.span}</span>
               </h2>

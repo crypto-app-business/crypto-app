@@ -62,7 +62,7 @@ const partners = [
 export const PartnersSection = () => {
   return (
     <motion.section
-      className="px-6"
+      className="px-[15px] sm:px-6"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: "some" }}

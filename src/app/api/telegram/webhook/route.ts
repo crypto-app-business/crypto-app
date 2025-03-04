@@ -16,7 +16,7 @@ bot.use(async (ctx, next) => {
 
 // Middleware для логування chat ID (залишаємо для дебагу)
 bot.use(async (ctx, next) => {
-    const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
+  const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
   console.log("Chat ID:", ctx.chat?.id);
   console.log("Chat ID admin:", adminChatId);
   next();
@@ -68,63 +68,42 @@ bot.action("getusers", async (ctx) => {
 
 // Обробка кнопки "Отримати поповнення" з кнопками для підтвердження/відхилення
 // Обробка кнопки "Отримати поповнення" з кнопками для підтвердження/відхилення
+// Обробник кнопки "Отримати поповнення"
 bot.action("getdeposits", async (ctx) => {
   try {
-    const deposits = await Deposit.find({ status: "pending" });
+    const deposits = await Deposit.find({ status: "pending" }).sort({ createdAt: -1 });
     if (!deposits.length) {
       await ctx.reply("Депозити зі статусом 'pending' не знайдені.");
-      return;
+      return ctx.answerCbQuery();
     }
 
-    // Типізація для messages: рядок або об’єкт із текстом і кнопками
-    const messages: (string | { text: string; reply_markup: ReturnType<typeof Markup.inlineKeyboard> })[] = [];
-    let response: string = "Список депозитів (pending):\n\n";
+    // Відправляємо кожен депозит окремим повідомленням з кнопками
+    for (const deposit of deposits) {
+      const depositInfo = `
+ID: ${deposit.id}
+Валюта: ${deposit.currency}
+Сума: ${deposit.amount} USD
+Статус: ${deposit.status}
+Дата: ${new Date(deposit.createdAt).toLocaleString()}
+      `;
 
-    deposits.forEach((deposit, index) => {
-      const depositInfo: string = `${index + 1}. ID: ${deposit.id}\n` +
-        `   Валюта: ${deposit.currency}\n` +
-        `   Сума: ${deposit.amount} USD\n` +
-        `   Статус: ${deposit.status}\n` +
-        `   Дата: ${new Date(deposit.createdAt).toLocaleString()}\n\n`;
-
-      if (response.length + depositInfo.length > 4000) { // Залишаємо запас під кнопки
-        messages.push(response);
-        response = "Список депозитів (продовження):\n\n" + depositInfo;
-      } else {
-        response += depositInfo;
-      }
-
-      // Додаємо кнопки для кожного депозиту в кінці списку
-      if ((index + 1) === deposits.length || response.length > 4000) {
-        messages.push({
-          text: response,
-          reply_markup: Markup.inlineKeyboard(
-            deposits.slice(messages.length * 10, (messages.length + 1) * 10).map(dep => [
-              Markup.button.callback("Підтвердити", `confirm_${dep.id}`),
-              Markup.button.callback("Відмінити", `reject_${dep.id}`),
-            ])
-          ),
-        });
-        response = "Список депозитів (продовження):\n\n";
-      }
-    });
-
-    for (const msg of messages) {
-      if (typeof msg === "string") {
-        await ctx.reply(msg);
-      } else {
-        await ctx.reply(msg.text, msg.reply_markup);
-      }
+      await ctx.reply(depositInfo, {
+        reply_markup: Markup.inlineKeyboard([
+          [
+            Markup.button.callback("✅ Підтвердити", `confirm_${deposit.id}`),
+            Markup.button.callback("❌ Відхилити", `reject_${deposit.id}`),
+          ],
+        ]).reply_markup,
+      });
     }
 
     await ctx.answerCbQuery();
   } catch (error) {
-    console.error("Error getting deposits:", error);
-    await ctx.reply("Помилка при отриманні списку депозитів.");
+    console.error("Помилка при отриманні депозитів:", error);
+    await ctx.reply("🚫 Помилка при завантаженні списку");
     await ctx.answerCbQuery();
   }
 });
-
 // Обробка кнопки "Отримати виведення"
 bot.action("getwithdrawals", async (ctx) => {
   try {
@@ -159,10 +138,9 @@ bot.action("getwithdrawals", async (ctx) => {
 
 // Обробка кнопок "Підтвердити" для депозитів
 bot.action(/confirm_(.+)/, async (ctx) => {
-  const transactionId = ctx.match[1];
+  const depositId = ctx.match[1];
   try {
-    // Знаходимо депозит
-    const deposit = await Deposit.findOne({ id: transactionId });
+    const deposit = await Deposit.findById(depositId);
     if (!deposit) {
       await ctx.reply("Депозит не знайдено.");
       return ctx.answerCbQuery();
@@ -170,48 +148,26 @@ bot.action(/confirm_(.+)/, async (ctx) => {
 
     // Перевірка статусу
     if (deposit.status !== "pending") {
-      await ctx.reply(`Депозит ${transactionId} вже оброблено.`);
+      await ctx.reply(`Депозит ${depositId} вже оброблено.`);
       return ctx.answerCbQuery();
     }
 
-    // Знаходимо користувача
+    // Оновлення балансу користувача
     const user = await User.findById(deposit.userId);
-    if (!user) {
-      await ctx.reply("Користувач не знайдений.");
-      return ctx.answerCbQuery();
+    if (user) {
+      user.balance.set(deposit.currency, (user.balance.get(deposit.currency) || 0 + deposit.amount));
+      await user.save();
     }
 
-    // Оновлюємо баланс
-    const currency = deposit.currency || "USDT";
-    const currentBalance = user.balance.get(currency) || 0;
-    user.balance.set(currency, currentBalance + deposit.amount);
-    await user.save();
-
-    // Оновлюємо статус депозиту
+    // Зміна статусу депозиту
     deposit.status = "confirmed";
     await deposit.save();
 
-    // Створюємо операцію
-    const newOperation = new Operations({
-      id: deposit.userId,
-      description: "Поповнення балансу",
-      amount: deposit.amount,
-      currency: currency,
-      type: "deposit",
-      createdAt: new Date(),
-    });
-    await newOperation.save();
-
-    await ctx.reply(
-      `✅ Депозит ${transactionId} підтверджено!\n` +
-      `Користувач: ${user.email}\n` +
-      `Сума: ${deposit.amount} ${currency}`
-    );
-    
+    await ctx.reply(`✅ Депозит ${depositId} успішно підтверджено!`);
     await ctx.answerCbQuery();
   } catch (error) {
     console.error("Помилка підтвердження:", error);
-    await ctx.reply("🚫 Помилка при обробці запиту");
+    await ctx.reply("🚫 Не вдалося обробити запит");
     await ctx.answerCbQuery();
   }
 });
@@ -252,7 +208,7 @@ bot.action(/reject_(.+)/, async (ctx) => {
       `❌ Депозит ${transactionId} відхилено!\n` +
       `Причина: запит скасовано адміністратором`
     );
-    
+
     await ctx.answerCbQuery();
   } catch (error) {
     console.error("Помилка відхилення:", error);

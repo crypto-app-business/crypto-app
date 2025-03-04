@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import RequestStatusIndicator from '@/components/dashboard/RequestStatusIndicator/RequestStatusIndicator';
+import User from '@/models/User';
 
 interface User {
   id: string;
@@ -42,7 +43,8 @@ export default function ListingActivation({ user }: ListingActivationProps) {
   const circumference = 2 * Math.PI * radius;
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>, index: number) => {
-    if (isOpen) {
+    console.log(user)
+    if (isOpen && selectedSessionIndex ===index) {
       e.preventDefault();
       setError('');
       setSuccess('');
@@ -50,6 +52,10 @@ export default function ListingActivation({ user }: ListingActivationProps) {
 
       if (!(data[index].amount <= amount)) {
         setError('Сумма меньше листинга');
+        return;
+      }
+      if (user?.balance?.USDT <= amount) {
+        setError('Недостаточно денег');
         return;
       }
 
@@ -102,6 +108,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
       setSelectedSessionIndex(index);
       setRequestStatus('error');
       setIsOpen(true)
+      setError('')
     }
   };
 
@@ -138,7 +145,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
   const handleSpinnerHide = () => {
     setRequestStatus(null);
   };
-
+console.log(requestStatus)
   return (
     <div className="bg-gray-50 flex flex-wrap flex-row sm:gap-[35px] gap-[25px] w-full sm:justify-start justify-center">
       <RequestStatusIndicator
@@ -177,7 +184,7 @@ export default function ListingActivation({ user }: ListingActivationProps) {
               <label className="block mb-2">
                 <div className="text-[16px] mb-[5px] text-white">Сумма листинга:</div>
                 <input
-                  type="number"
+                  type="text"
                   value={amount}
                   onChange={(e) => {
                     const value = e.target.value;

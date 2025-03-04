@@ -198,7 +198,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
           <div className='p-[30px] pt-0 sm:p-0'>
             <div className='flex flex-wrap justify-left sm:justify-between items-center mb-[35px] gap-[14px] sm:gap-[5px]'>
               {buttons.map((button) => (
-                <div key={button.label} onClick={() => setActiveButton(button.label)} className={`flex gap-[5px] px-[5px] py-[10px] rounded-[5px] ${activeButton === button.label ? 'bg-[#3581FF] shadow-[8px_10px_18.5px_0px_rgba(0,22,58,0.25)]' : ''}`}>
+                <div key={button.label} onClick={() => setActiveButton(button.label)} className={`flex gap-[5px] px-[5px] w-[150px] sm:w-max py-[10px] rounded-[5px] ${activeButton === button.label ? 'bg-[#3581FF] shadow-[8px_10px_18.5px_0px_rgba(0,22,58,0.25)]' : ''}`}>
                   <Image
                     src={`/dashboard/statistic/${button.image}`}
                     alt="Wallet Icon"

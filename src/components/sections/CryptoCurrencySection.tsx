@@ -62,7 +62,7 @@ export function CryptoCurrencySection() {
   const recentlyAdded = coins.slice(-6);
 
   return (
-    <section className="-mt-20 mx-12 relative px-5 lg:px-10 max-sm:flex max-sm:justify-center">
+    <section className="-mt-20 sm:mx-12 relative px-[15px] sm:px-5 lg:px-10 max-sm:flex max-sm:justify-center">
       <div className="max-md:w-[max-content] lg:container mx-auto rounded-3xl bg-white py-8 lg:px-4 shadow">
         <article className="grid lg:grid-cols-2 xl:grid-cols-3 md:justify-center w-full">
           <CoinColumn title="Trending" coins={trendingCoins} logoSrc="/coins/logo1.png" />
@@ -83,7 +83,7 @@ function CoinColumn({ title, coins, logoSrc }) {
   };
 
   return (
-    <aside className="px-5 mb-6">
+    <aside className=" px-[5px] sm:px-5 mb-6">
       <div className="flex justify-between mb-6">
         <figure className="font-bold text-lg flex gap-4 items-center">
           <Image src={logoSrc} alt={title} width={16} height={16} className="inline w-[1em] h-[1em] mr-2" />

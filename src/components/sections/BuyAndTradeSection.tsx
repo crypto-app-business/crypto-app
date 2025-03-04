@@ -16,11 +16,11 @@ const buy = [
   {
     "_type": "buy",
     "description": [
-      "Купи на присейте нашу монету и заработай на листинге от 1000%",
+      "Купи на присейле нашу монету и заработай на листинге от 1000%",
     ],
     "_id": "e45717cd-2a64-49c6-918e-4b46dad47b4b",
     "title": {
-      "text1": "Покупай , меняй,",
+      "text1": "Покупай, меняй,",
       "text2": "выдерживай и зарабатывай!"
     },
     "_updatedAt": "2023-08-03T02:31:28Z",
@@ -71,18 +71,18 @@ export function BuyAndTradeSection() {
 
   return (
     <motion.section
-      className="container mx-auto mt-24 flex items-center"
+      className="container mx-auto mt-24 flex items-center mb-[20px]"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: "some" }}
     >
-      <div className="grid lg:grid-cols-2 max-md:justify-items-center gap-10 px-16 lg:p-12">
+      <div className="grid lg:grid-cols-2 max-md:justify-items-center gap-10 px-[15px] sm:px-16 lg:p-12">
         <div className="flex items-center md:justify-center">
           <motion.div
             className="max-w-xl"
             variants={fadeIn("right", "tween", 0.2, 2)}
           >
-            <h2 className="font-bold text-4xl mb-6 leading-normal">
+            <h2 className="font-bold text-4xl mb-6 leading-[1.2]">
               {item.title.text1}
               <br />
               {item.title.text2}
@@ -95,9 +95,9 @@ export function BuyAndTradeSection() {
 
             <form onSubmit={(e) => e.preventDefault()}>
               <div className="flex justify-between gap-4 md:gap-6 mb-6">
-                <div className="border border-primary rounded-2xl py-3 md:py-4 px-4 md:px-6 flex items-center w-full">
+                <div className="border border-primary rounded-2xl py-3 md:py-4 px-4 md:px-6 flex items-center w-full max-w-[370px]">
                   <div className="border-r border-primary pr-4 md:pr-6">
-                    <small className="text-primary">Amount</small>
+                    <small className="text-primary">Количество</small>
                   </div>
                   <label htmlFor="firstvalue">
                     <input
@@ -116,9 +116,9 @@ export function BuyAndTradeSection() {
               </div>
 
               <div className="flex justify-between gap-4 md:gap-6 mb-6">
-                <div className="border border-primary rounded-2xl py-3 md:py-4 px-4 md:px-6 flex items-center w-full">
-                  <div className="border-r border-primary pr-4 md:pr-14">
-                    <small className="text-primary">Get</small>
+                <div className="border border-primary rounded-2xl py-3 md:py-4 px-4 md:px-6 flex items-center w-full max-w-[370px]">
+                  <div className="border-r border-primary pr-4 md:pr-8">
+                    <small className="text-primary">Получаете</small>
                   </div>
                   <label htmlFor="secondvalue">
                     <input

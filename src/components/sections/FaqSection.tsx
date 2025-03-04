@@ -57,7 +57,7 @@ const faq = [
         "_type": "article",
         "_key": "f086ad3ad37d",
         "title": "Где взять презентацию компании?",
-        "content": "Мы планируем в будущем запустить собственную крипто-карту, которая позволит удобно использовать цифровые активы для повседневных расчетов. Наша цель — обеспечить быструю, безопасную и простую интеграцию криптовалют в реальную экономику, чтобы вы могли расплачиваться своими активами так же легко, как обычной банковской картой. Следите за обновлениями, впереди много интересного! 🚀"
+        "content": "Скачать презентацию"
       }
     ]
   }
@@ -95,6 +95,20 @@ const renderContentWithLinks = (content: string) => {
               <a
                 key={`${lineIndex}-${partIndex}`}
                 href={`https://t.me/${telegramHandle}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue hover:underline"
+              >
+                {part}
+              </a>
+            );
+          } else if (part.startsWith("Скачать презентацию")) {
+            // Обробка Telegram-ніків
+            // const telegramHandle = part.substring(1); // Прибираємо "@"
+            return (
+              <a
+                key={`${lineIndex}-${partIndex}`}
+                href={`/CryptoCorporationRU.pdf`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue hover:underline"
@@ -148,7 +162,7 @@ const FaqItem = ({ open, title, children }: FaqProps) => {
 export function FaqSection() {
   return (
     <motion.section
-      className="container mx-auto py-32"
+      className="container mx-auto py-[20px] sm:py-32 px-[15px] sm:px-0"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: "some" }}
@@ -171,7 +185,7 @@ export function FaqSection() {
               variants={fadeIn("left", "tween", 0.3, 2)}
             >
               <span className="text-primary">{item.subtitle}</span>
-              <h2 className="font-bold text-4xl mb-6 leading-normal">
+              <h2 className="font-bold text-4xl mb-6 leading-[1.2]">
                 {item.title.text1}
               </h2>
               <div className="my-6">

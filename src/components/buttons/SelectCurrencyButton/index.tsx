@@ -30,15 +30,15 @@ export function SelectCurrencyButton({ value = "BTC" }: Props) {
     {
       name: "CC",
       code: "CC",
-      icon: "Etherium.png",
-      alt: "Etherium",
+      icon: "COIN.png",
+      alt: "CC",
     },
   ];
 
   const selectedCoin = data.find(({ code }) => code === value) || data[0];
 
   return (
-    <div className="relative">
+    <div className="relative min-w-[115px]">
       <div className="border border-primary rounded-2xl py-3 md:py-4 px-4 md:px-6 flex items-center cursor-default">
         <figure className="w-[26px] pr-2">
           <img

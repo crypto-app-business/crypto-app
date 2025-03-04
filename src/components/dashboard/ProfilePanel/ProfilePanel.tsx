@@ -134,11 +134,11 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
   }, []);
 
   const fields: Field[] = [
-    { label: 'Имя', key: 'username', value: user?.username || 'no data' },
-    { label: 'Email', key: 'email', value: user?.email || 'no data' },
-    { label: 'Телефон', key: 'phone', value: user?.phone || 'no data' },
+    { label: 'Имя', key: 'username', value: user?.username || 'нет данных' },
+    { label: 'Email', key: 'email', value: user?.email || 'нет данных' },
+    { label: 'Телефон', key: 'phone', value: user?.phone || 'нет данных' },
     { label: 'Пароль', key: 'password', value: '*********' },
-    { label: 'Телеграмм id', key: 'telegramId', value: 'no data' },
+    { label: 'Телеграмм id', key: 'telegramId', value: 'нет данных' },
   ];
 
   const [userName, setUserName] = useState<string>('');
@@ -510,11 +510,11 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
       {/* Wallet Section */}
       <div>
         < div className="flex flex-wrap sm:flex-nowrap gap-[18px]" >
-          <div className="w-[254px]">
+          <div className="w-[294px] sm:w-[254px]">
             < h3 className="text-[20px] font-bold mb-[20px] uppercase" > привязать кошельки для вывода</h3 >
             <div className="flex flex-wrap gap-4 mb-[30px]">
 
-              <div className="bg-[#3581FF] rounded-[15px] shadow-md w-[254px] min-h-[236px]"   >
+              <div className="bg-[#3581FF] rounded-[15px] shadow-md w-[294px] sm:w-[254px] min-h-[236px]"   >
                 <div className=" text-white rounded-[15px] p-[27px] min-h-[236px]"
                   style={{
                     background: 'linear-gradient(180deg, rgba(53, 191, 255, 0) 33.1%, rgba(53, 191, 255, 0.74) 100%)',
@@ -555,7 +555,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
           </div>
           <div className="">
             <div className="flex flex-wrap gap-4 mb-[30px]">
-              <div className="bg-[#3581FF] rounded-[15px] shadow-md w-[220px] h-[315px]"   >
+              <div className="bg-[#3581FF] rounded-[15px] shadow-md h-[315px] w-[294px] sm:w-[220px]"   >
                 <div className=" text-white rounded-[15px] p-[20px] h-[315px]"
                   style={{
                     background: 'linear-gradient(180deg, rgba(53, 191, 255, 0) 33.1%, rgba(53, 191, 255, 0.74) 100%)',

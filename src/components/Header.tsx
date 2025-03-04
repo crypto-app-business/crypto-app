@@ -73,33 +73,46 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
   };
 
   return (
-    <header className="bg-[url('/header.png')] bg-cover text-white max-h-[125px] shadow-md p-4 flex justify-between items-center">
-      <div className='flex justify-between w-full max-w-[1149px] mr-auto ml-auto items-center'>
-        <div className='flex gap-[20px] items-center'>
-          <Image
-            src="/logo.png"
-            alt="Your image description"
-            width={83}
-            height={66}
-            style={{ objectFit: "cover" }}
-            priority={false}
-          />
-        </div>
-        <div>
-          <div className='flex items-center gap-[10px] justify-end'>
-            <div className='uppercase text-[24px] bold hidden sm:block'>Баланс</div>
-            {user?.balance && <div className='uppercase text-[24px] bold text-[#3581FF] hidden sm:block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
-            <button className="flex items-center justify-center gap-2 px-[3px] py-[2px] text-black hover:bg-gray-600">
+    <header className="bg-cover bg-[#3581FF] text-white max-h-[125px] shadow-md flex justify-between items-center">
+      <div className='w-full p-4'
+        style={{
+          // background: 'linear-gradient(180.00deg, rgb(255, 255, 255),rgba(113, 156, 228, 0) 100%)',
+          // background: 'linear-gradient(to bottom, rgb(255, 255, 255), rgba(113, 156, 228, 0) 100%)'
+          background: 'linear-gradient(180deg, rgba(53, 191, 255, 0) 33.1%, rgba(53, 191, 255, 0.74) 100%)',
+        }}
+      >
+        <div className=' flex justify-between w-full max-w-[1149px] mr-auto ml-auto items-center'>
+          <div className='flex items-center gap-[10px]'>
+            <div className='flex gap-[20px] items-center bg-white rounded-full'>
               <Image
-                src="/dashboard/globe.svg"
+                src="/logo.png"
                 alt="Your image description"
-                width={45}
-                height={45}
+                width={83}
+                height={66}
                 style={{ objectFit: "cover" }}
                 priority={false}
               />
-            </button>
-            {/* <div className="relative">
+            </div>
+            <div className='text-[25px]'>
+              <div>Crypto</div>
+              <div>Corporation</div>
+            </div>
+          </div>
+          <div>
+            <div className='flex items-center gap-[10px] justify-end'>
+              <div className='uppercase text-[24px] bold hidden sm:block'>Баланс</div>
+              {user?.balance && <div className='uppercase text-[24px] bold text-[#3581FF] hidden sm:block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
+              <button className="flex items-center justify-center gap-2 px-[3px] py-[2px] text-black hover:bg-gray-600">
+                <Image
+                  src="/dashboard/globe.svg"
+                  alt="Your image description"
+                  width={45}
+                  height={45}
+                  style={{ objectFit: "cover" }}
+                  priority={false}
+                />
+              </button>
+              {/* <div className="relative">
               <button className="flex items-center justify-center rounded-full bg-gray-700 hover:bg-gray-600">
                 <Image
                   src="/dashboard/bell.svg"
@@ -114,42 +127,43 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
                 2
               </span>
             </div> */}
-            <Link href='/dashboard/profile'  className="flex items-center justify-center rounded-full hover:bg-gray-600">
-              <Image
-                src="/dashboard/contacts.svg"
-                alt="Your image description"
-                width={45}
-                height={45}
-                style={{ objectFit: "cover" }}
-                priority={false}
-              />
-            </Link>
-            <button onClick={() => handleLogout('/')} className="flex items-center justify-center rounded-full hover:bg-gray-600">
-              <Image
-                src="/dashboard/exit.svg"
-                alt="Your image description"
-                width={45}
-                height={45}
-                style={{ objectFit: "cover" }}
-                priority={false}
-              />
-            </button>
-            {!isSidebarOpen && (
-              <div onClick={toggleSidebar} className="sm:hidden">
+              <Link href='/dashboard/profile' className="flex items-center justify-center rounded-full hover:bg-gray-600">
                 <Image
-                  src="/dashboard/menu.svg"
+                  src="/dashboard/contacts.svg"
                   alt="Your image description"
                   width={45}
                   height={45}
                   style={{ objectFit: "cover" }}
                   priority={false}
                 />
-              </div>
-            )}
-          </div>
-          <div className='flex gap-[5px]'>
-          <div className='uppercase text-[14px] bold sm:hidden block'>Баланс</div>
-          {user?.balance && <div className='uppercase text-[14px] bold text-[#3581FF] sm:hidden block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
+              </Link>
+              <button onClick={() => handleLogout('/')} className="flex items-center justify-center rounded-full hover:bg-gray-600">
+                <Image
+                  src="/dashboard/exit.svg"
+                  alt="Your image description"
+                  width={45}
+                  height={45}
+                  style={{ objectFit: "cover" }}
+                  priority={false}
+                />
+              </button>
+              {!isSidebarOpen && (
+                <div onClick={toggleSidebar} className="sm:hidden">
+                  <Image
+                    src="/dashboard/menu.svg"
+                    alt="Your image description"
+                    width={45}
+                    height={45}
+                    style={{ objectFit: "cover" }}
+                    priority={false}
+                  />
+                </div>
+              )}
+            </div>
+            <div className='flex gap-[5px]'>
+              {user?.balance && <div className='uppercase text-[14px] bold sm:hidden block'>Баланс</div>}
+              {user?.balance && <div className='uppercase text-[14px] bold text-[#3581FF] sm:hidden block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
+            </div>
           </div>
         </div>
       </div>

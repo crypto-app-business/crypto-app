@@ -11,8 +11,8 @@ export function BackToTopSection() {
   };
 
   return (
-    <section className="py-10">
-      <div className="container mx-auto text-center py-6 flex justify-center">
+    <section className="py-0 sm:py-10">
+      <div className="container mx-auto text-center pb-[10px] sm:py-6 flex justify-center">
         <button
           className="border border-[#DDDDDD] bg-[#FAFAFA] rounded-xl text-gray py-4 px-6 flex items-center justify-center gap-4"
           onClick={handleClick}

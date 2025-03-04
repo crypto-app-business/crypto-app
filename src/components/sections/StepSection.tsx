@@ -61,7 +61,7 @@ const step = [
 export function StepSection() {
   return (
     <motion.section
-      className="px-8"
+      className="px-[15px] sm:px-8"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: "some" }}
@@ -69,7 +69,7 @@ export function StepSection() {
       <div className="rounded-3xl bg-gradient-to-b from-[#FFFFFF] to-[#F4F9FF] py-20">
         {step.map((item, index) => (
           <div key={index} className="container mx-auto text-center">
-            <h2 className="font-bold text-4xl mb-6 leading-normal">
+            <h2 className="font-bold text-4xl mb-6 leading-[1.2]">
               {item.title.text1}
             </h2>
             <div className="lg:flex grid justify-center gap-24">

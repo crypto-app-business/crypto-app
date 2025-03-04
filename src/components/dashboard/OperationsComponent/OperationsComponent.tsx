@@ -116,11 +116,11 @@ const OperationsComponent: React.FC<TeamComponentProps> = ({ userId }) => {
 
   return (
     <div className='mx-[30px] sm:mx-0'>
-      <div className="flex justify-between mx-0 sm:mx-[35px] mb-[20px]">
+      {operations.length !== 0 && <div className="flex justify-between mx-0 sm:mx-[35px] mb-[20px]">
         <div className="text-[#00163A] sm:text-[20px] text-[14px] font-bold uppercase">дата/время</div>
         <div className="text-[#00163A] sm:text-[20px] text-[14px] font-bold uppercase">операции</div>
         <div className="text-[#00163A] sm:text-[20px] text-[14px] font-bold uppercase">сумма</div>
-      </div>
+      </div>}
 
       {loading ? (
         <div className="text-center">Загрузка...</div>

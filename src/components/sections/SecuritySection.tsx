@@ -85,7 +85,7 @@ const security= [
 export function SecuritySection() {
   return (
     <motion.section
-      className="container mx-auto py-32"
+      className="container mx-auto py-[20px] sm:py-32 px-[15px] sm:px-0"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: "some" }}
@@ -107,7 +107,7 @@ export function SecuritySection() {
             variants={fadeIn("left", "tween", 0.3, 2)}
           >
             <div className="max-w-xl">
-              <h2 className="font-bold text-4xl mb-6 leading-normal">
+              <h2 className="font-bold text-4xl mb-6 leading-[1.2]">
                 {item.title.text1}
               </h2>
               <ul className="my-6">
