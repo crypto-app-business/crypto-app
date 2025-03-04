@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-// import Image from 'next/image';
-// import LastRegistrations from '../LastRegistrations/LastRegistrations';
+import { useLanguageStore } from '@/store/useLanguageStore';
 
 interface Deposit {
   currency: string;
@@ -39,10 +38,30 @@ interface TeamComponentProps {
 }
 
 const OperationsComponent: React.FC<TeamComponentProps> = ({ userId }) => {
+  const { language } = useLanguageStore();
   const [team, setTeam] = useState<FlattenedUserData[]>([]);
   const [operations, setOperations] = useState<Operation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  // const [selectedLine, setSelectedLine] = useState<number | null>(1);
+
+  console.log(team)
+  const translations = {
+    loading: {
+      ru: "Загрузка...",
+      en: "Loading...",
+    },
+    dateTime: {
+      ru: "дата/время",
+      en: "Date/Time",
+    },
+    operations: {
+      ru: "операции",
+      en: "Operations",
+    },
+    amount: {
+      ru: "сумма",
+      en: "Amount",
+    },
+  };
 
   const flattenTree = (data: RawUserData[], currentLine = 1): FlattenedUserData[] => {
     return data.reduce<FlattenedUserData[]>((acc, user) => {
@@ -51,8 +70,6 @@ const OperationsComponent: React.FC<TeamComponentProps> = ({ userId }) => {
       return [...acc, flattenedUser, ...flattenTree(subTree, currentLine + 1)];
     }, []);
   };
-
-  console.log(team)
 
   useEffect(() => {
     const fetchTeam = async () => {
@@ -68,31 +85,15 @@ const OperationsComponent: React.FC<TeamComponentProps> = ({ userId }) => {
       }
     };
 
-    // const fetchOperations = async () => {
-    //   try {
-    //     const response = await fetch(`/api/operations`);
-    //     if (!response.ok) throw new Error(`API error: ${response.status} ${response.statusText}`);
-    //     const data: Operation[] = await response.json();
-    //     setOperations(data);
-    //   } catch (error) {
-    //     console.error('Error fetching operations:', error);
-    //     setOperations([]);
-    //   } finally {
-    //     setLoading(false);
-    //   }
-    // };
     const fetchOperations = async () => {
       try {
         const response = await fetch(`/api/operations`);
         if (!response.ok) throw new Error(`API error: ${response.status} ${response.statusText}`);
-    
         const data = await response.json();
-    
-        // Витягаємо масив operations
         if (data.success && Array.isArray(data.operations)) {
           setOperations(data.operations);
         } else {
-          setOperations([]); // Якщо operations немає
+          setOperations([]);
         }
       } catch (error) {
         console.error('Error fetching operations:', error);
@@ -106,24 +107,24 @@ const OperationsComponent: React.FC<TeamComponentProps> = ({ userId }) => {
     fetchOperations();
   }, [userId]);
 
-  // const activePartnersCount = useMemo(() => {
-  //   return team.reduce((count, member) => count + (member.deposits.length > 0 ? 1 : 0), 0);
-  // }, [team]);
-
-  // const personalPartnersCount = useMemo(() => {
-  //   return team.filter(member => member.line === 1).length;
-  // }, [team, userId]);
-
   return (
-    <div className='mx-[30px] sm:mx-0'>
-      {operations.length !== 0 && <div className="flex justify-between mx-0 sm:mx-[35px] mb-[20px]">
-        <div className="text-[#00163A] sm:text-[20px] text-[14px] font-bold uppercase">дата/время</div>
-        <div className="text-[#00163A] sm:text-[20px] text-[14px] font-bold uppercase">операции</div>
-        <div className="text-[#00163A] sm:text-[20px] text-[14px] font-bold uppercase">сумма</div>
-      </div>}
+    <div className="mx-[30px] sm:mx-0">
+      {operations.length !== 0 && (
+        <div className="flex justify-between mx-0 sm:mx-[35px] mb-[20px]">
+          <div className="text-[#00163A] sm:text-[20px] text-[14px] font-bold uppercase">
+            {translations.dateTime[language]}
+          </div>
+          <div className="text-[#00163A] sm:text-[20px] text-[14px] font-bold uppercase">
+            {translations.operations[language]}
+          </div>
+          <div className="text-[#00163A] sm:text-[20px] text-[14px] font-bold uppercase">
+            {translations.amount[language]}
+          </div>
+        </div>
+      )}
 
       {loading ? (
-        <div className="text-center">Загрузка...</div>
+        <div className="text-center">{translations.loading[language]}</div>
       ) : operations.length === 0 ? (
         <div className="text-center"></div>
       ) : (
@@ -132,7 +133,7 @@ const OperationsComponent: React.FC<TeamComponentProps> = ({ userId }) => {
             key={index}
             className="flex gap-[15px] justify-between px-[15px] sm:px-[35px] py-[10px] border border-[#00163A] rounded-[15px] text-[14px] text-[#00163A] w-full mb-2"
           >
-            <div>{new Date(operation.createdAt).toLocaleString()}</div>
+            <div>{new Date(operation.createdAt).toLocaleString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
             <div className="font-bold">{operation.description}</div>
             <div className="font-bold text-[#3581FF]">
               {operation.amount} {operation.currency}

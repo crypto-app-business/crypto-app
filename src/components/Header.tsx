@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useLanguageStore } from '@/store/useLanguageStore';
 
 interface Balance {
   USDT?: number;
@@ -14,10 +15,28 @@ interface User {
   username: string;
 }
 
-
 export default function Header({ isSidebarOpen, toggleSidebar }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const { language, toggleLanguage } = useLanguageStore();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      try {
+        const res = await fetch('/api/auth/me');
+        if (res.ok) {
+          const userData = await res.json();
+          setUser(userData);
+        } else {
+          router.push('/login');
+        }
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        router.push('/login');
+      }
+    };
+    checkAuth();
+  }, [router, setUser]);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -58,12 +77,12 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
     try {
       const res = await fetch('/api/auth/logout', {
         method: 'POST',
-        credentials: 'include', // Для передачі cookies
+        credentials: 'include',
       });
 
       if (res.ok) {
         setUser(null);
-        router.push(redirect); // Перенаправлення після виходу
+        router.push(redirect);
       } else {
         console.error('Error logging out:', await res.json());
       }
@@ -74,24 +93,11 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
 
   return (
     <header className="bg-cover bg-[#3581FF] text-white max-h-[125px] shadow-md flex justify-between items-center">
-      <div className='w-full p-4'
-        style={{
-          // background: 'linear-gradient(180.00deg, rgb(255, 255, 255),rgba(113, 156, 228, 0) 100%)',
-          // background: 'linear-gradient(to bottom, rgb(255, 255, 255), rgba(113, 156, 228, 0) 100%)'
-          background: 'linear-gradient(180deg, rgba(53, 191, 255, 0) 33.1%, rgba(53, 191, 255, 0.74) 100%)',
-        }}
-      >
-        <div className=' flex justify-between w-full max-w-[1149px] mr-auto ml-auto items-center'>
+      <div className='w-full p-4' style={{ background: 'linear-gradient(180deg, rgba(53, 191, 255, 0) 33.1%, rgba(53, 191, 255, 0.74) 100%)' }}>
+        <div className='flex justify-between w-full max-w-[1149px] mr-auto ml-auto items-center'>
           <div className='flex items-center gap-[10px]'>
             <div className='flex gap-[20px] items-center bg-white rounded-full'>
-              <Image
-                src="/logo.png"
-                alt="Your image description"
-                width={83}
-                height={66}
-                style={{ objectFit: "cover" }}
-                priority={false}
-              />
+              <Image src="/logo.png" alt="Logo" width={83} height={66} style={{ objectFit: "cover" }} priority={false} />
             </div>
             <div className='text-[25px]'>
               <div>Crypto</div>
@@ -100,68 +106,29 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
           </div>
           <div>
             <div className='flex items-center gap-[10px] justify-end'>
-              <div className='uppercase text-[24px] bold hidden sm:block'>Баланс</div>
+              <div className='uppercase text-[24px] bold hidden sm:block'>{language === 'ru' ? 'Баланс' : 'Balance'}</div>
               {user?.balance && <div className='uppercase text-[24px] bold text-[#3581FF] hidden sm:block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
-              <button className="flex items-center justify-center gap-2 px-[3px] py-[2px] text-black hover:bg-gray-600">
-                <Image
-                  src="/dashboard/globe.svg"
-                  alt="Your image description"
-                  width={45}
-                  height={45}
-                  style={{ objectFit: "cover" }}
-                  priority={false}
-                />
+              
+              {/* Кнопка перемикання мови */}
+              <button onClick={toggleLanguage} className="flex items-center justify-center gap-2 px-[3px] py-[2px] text-black hover:bg-gray-600">
+                <Image src="/dashboard/globe.svg" alt="Change language" width={45} height={45} style={{ objectFit: "cover" }} priority={false} />
               </button>
-              {/* <div className="relative">
-              <button className="flex items-center justify-center rounded-full bg-gray-700 hover:bg-gray-600">
-                <Image
-                  src="/dashboard/bell.svg"
-                  alt="Your image description"
-                  width={45}
-                  height={45}
-                  style={{ objectFit: "cover" }}
-                  priority={false}
-                />
-              </button>
-              <span className="absolute top-0 right-0 flex items-center justify-center w-[25px] h-[25px] bg-white text-[#00163A] text-[16px] font-bold rounded-full">
-                2
-              </span>
-            </div> */}
+
               <Link href='/dashboard/profile' className="flex items-center justify-center rounded-full hover:bg-gray-600">
-                <Image
-                  src="/dashboard/contacts.svg"
-                  alt="Your image description"
-                  width={45}
-                  height={45}
-                  style={{ objectFit: "cover" }}
-                  priority={false}
-                />
+                <Image src="/dashboard/contacts.svg" alt="Profile" width={45} height={45} style={{ objectFit: "cover" }} priority={false} />
               </Link>
               <button onClick={() => handleLogout('/')} className="flex items-center justify-center rounded-full hover:bg-gray-600">
-                <Image
-                  src="/dashboard/exit.svg"
-                  alt="Your image description"
-                  width={45}
-                  height={45}
-                  style={{ objectFit: "cover" }}
-                  priority={false}
-                />
+                <Image src="/dashboard/exit.svg" alt="Logout" width={45} height={45} style={{ objectFit: "cover" }} priority={false} />
               </button>
+              
               {!isSidebarOpen && (
                 <div onClick={toggleSidebar} className="sm:hidden">
-                  <Image
-                    src="/dashboard/menu.svg"
-                    alt="Your image description"
-                    width={45}
-                    height={45}
-                    style={{ objectFit: "cover" }}
-                    priority={false}
-                  />
+                  <Image src="/dashboard/menu.svg" alt="Menu" width={45} height={45} style={{ objectFit: "cover" }} priority={false} />
                 </div>
               )}
             </div>
             <div className='flex gap-[5px]'>
-              {user?.balance && <div className='uppercase text-[14px] bold sm:hidden block'>Баланс</div>}
+              {user?.balance && <div className='uppercase text-[14px] bold sm:hidden block'>{language === 'ru' ? 'Баланс' : 'Balance'}</div>}
               {user?.balance && <div className='uppercase text-[14px] bold text-[#3581FF] sm:hidden block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
             </div>
           </div>

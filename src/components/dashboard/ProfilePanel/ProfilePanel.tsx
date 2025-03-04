@@ -1,10 +1,9 @@
 'use client';
 import { useState, useEffect } from "react";
-// import DepositComponent from "../DepositComponent/DepositComponent";
 import Image from 'next/image';
-import { cryptoOptions } from "./data"
+import { cryptoOptions } from "./data";
 import RequestStatusIndicator from '@/components/dashboard/RequestStatusIndicator/RequestStatusIndicator';
-
+import { useLanguageStore } from '@/store/useLanguageStore';
 
 interface User {
   id: string;
@@ -41,6 +40,14 @@ interface Field {
 
 const CustomSelect = ({ options, selectedWallet, onSelect }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const { language } = useLanguageStore();
+
+  const translations = {
+    currencyType: {
+      ru: "Тип валюты",
+      en: "Currency type",
+    },
+  };
 
   const handleSelect = (currency) => {
     onSelect(currency);
@@ -75,7 +82,7 @@ const CustomSelect = ({ options, selectedWallet, onSelect }) => {
               height={24}
               className="mr-2 rounded-full"
             />
-            Тип валюты
+            {translations.currencyType[language]}
           </>
         )}
         <svg className="ml-auto w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
@@ -83,33 +90,32 @@ const CustomSelect = ({ options, selectedWallet, onSelect }) => {
         </svg>
       </div>
 
-      {
-        isOpen && (
-          <div className="absolute z-10 w-full mt-1 bg-white border rounded-[5px] shadow-lg">
-            {options.map((crypto, index) => (
-              <div
-                key={`${crypto.currency}-${index}`}
-                onClick={() => handleSelect(crypto.currency)}
-                className="flex items-center p-2 hover:bg-gray-100 cursor-pointer text-[#A0A5AD]"
-              >
-                {crypto.logo && <Image
-                  src={crypto.logo}
-                  alt={crypto.currency}
-                  width={24}
-                  height={24}
-                  className="mr-2 rounded-full"
-                />}
-                {crypto.currency}
-              </div>
-            ))}
-          </div>
-        )
-      }
-    </div >
+      {isOpen && (
+        <div className="absolute z-10 w-full mt-1 bg-white border rounded-[5px] shadow-lg">
+          {options.map((crypto, index) => (
+            <div
+              key={`${crypto.currency}-${index}`}
+              onClick={() => handleSelect(crypto.currency)}
+              className="flex items-center p-2 hover:bg-gray-100 cursor-pointer text-[#A0A5AD]"
+            >
+              {crypto.logo && <Image
+                src={crypto.logo}
+                alt={crypto.currency}
+                width={24}
+                height={24}
+                className="mr-2 rounded-full"
+              />}
+              {crypto.currency}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 
 export default function ProfilePanel({ user }: AdminDepositsProps) {
+  const { language } = useLanguageStore();
   const [selectedSaveWallet, setSelectedSaveWallet] = useState<string>("");
   const [amount, setAmount] = useState('');
   const [amountWallet, setAmountWallet] = useState('');
@@ -120,30 +126,178 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
   const [outputNetwork, setOutputNetwork] = useState<WalletFormated[]>([]);
   const [outputNetworkValue, setOutputNetworkValue] = useState<string>('');
   const [walletSelection, setWalletSelection] = useState<string>('');
-
   const [editingField, setEditingField] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState<string>('');
   const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [isHydrated, setIsHydrated] = useState(false); // Статус гідрації
+  const [isHydrated, setIsHydrated] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
 
+  const translations = {
+    loading: {
+      ru: "Загрузка...",
+      en: "Loading...",
+    },
+    personalInfo: {
+      ru: "персональная информация",
+      en: "Personal Information",
+    },
+    addPhoto: {
+      ru: "Добавить фото",
+      en: "Add Photo",
+    },
+    fields: {
+      username: {
+        ru: "Имя",
+        en: "Name",
+      },
+      email: {
+        ru: "Email",
+        en: "Email",
+      },
+      phone: {
+        ru: "Телефон",
+        en: "Phone",
+      },
+      password: {
+        ru: "Пароль",
+        en: "Password",
+      },
+      telegramId: {
+        ru: "Телеграмм id",
+        en: "Telegram ID",
+      },
+      noData: {
+        ru: "нет данных",
+        en: "no data",
+      },
+    },
+    saving: {
+      ru: "Зберігаю...",
+      en: "Saving...",
+    },
+    save: {
+      ru: "Сохранить",
+      en: "Save",
+    },
+    transfer: {
+      ru: "Перевод",
+      en: "Transfer",
+    },
+    amountToTransfer: {
+      ru: "Сумма в $ к переводу:",
+      en: "Amount in $ to transfer:",
+    },
+    username: {
+      ru: "Имя пользователя:",
+      en: "Username:",
+    },
+    bindWallets: {
+      ru: "привязать кошельки для вывода",
+      en: "Bind Wallets for Withdrawal",
+    },
+    network: {
+      ru: "Сеть:",
+      en: "Network:",
+    },
+    wallet: {
+      ru: "Кошелёк:",
+      en: "Wallet:",
+    },
+    addWallet: {
+      ru: "Добавить кошелёк",
+      en: "Add Wallet",
+    },
+    withdrawal: {
+      ru: "вывод",
+      en: "Withdrawal",
+    },
+    amountToWithdraw: {
+      ru: "Сумма к выводу:",
+      en: "Amount to withdraw:",
+    },
+    withdrawalNetwork: {
+      ru: "Сеть вывода:",
+      en: "Withdrawal Network:",
+    },
+    walletSelection: {
+      ru: "Выбор кошелька:",
+      en: "Wallet Selection:",
+    },
+    withdraw: {
+      ru: "Вывод",
+      en: "Withdraw",
+    },
+    walletHeaders: {
+      dateAdded: {
+        ru: "Дата добавления",
+        en: "Date Added",
+      },
+      wallet: {
+        ru: "Кошелёк",
+        en: "Wallet",
+      },
+      network: {
+        ru: "Сеть",
+        en: "Network",
+      },
+    },
+    errors: {
+      enterAmount: {
+        ru: "Введите сумму",
+        en: "Enter amount",
+      },
+      selectCrypto: {
+        ru: "Выберите криптовалюту",
+        en: "Select cryptocurrency",
+      },
+      selectNetwork: {
+        ru: "Выберите сеть",
+        en: "Select network",
+      },
+      selectWallet: {
+        ru: "Выберите кошелек",
+        en: "Select wallet",
+      },
+      enterUsername: {
+        ru: "Введите юзернейм",
+        en: "Enter username",
+      },
+      tokenNotFound: {
+        ru: "Токен не найдено",
+        en: "Token not found",
+      },
+      saveError: {
+        ru: "Помилка при збереженні",
+        en: "Error while saving",
+      },
+    },
+    requestStatus: {
+      success: {
+        ru: "Успех",
+        en: "Success",
+      },
+      error: {
+        ru: "Ошибка",
+        en: "Error",
+      },
+    },
+  };
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
 
   const fields: Field[] = [
-    { label: 'Имя', key: 'username', value: user?.username || 'нет данных' },
-    { label: 'Email', key: 'email', value: user?.email || 'нет данных' },
-    { label: 'Телефон', key: 'phone', value: user?.phone || 'нет данных' },
-    { label: 'Пароль', key: 'password', value: '*********' },
-    { label: 'Телеграмм id', key: 'telegramId', value: 'нет данных' },
+    { label: translations.fields.username[language], key: 'username', value: user?.username || translations.fields.noData[language] },
+    { label: translations.fields.email[language], key: 'email', value: user?.email || translations.fields.noData[language] },
+    { label: translations.fields.phone[language], key: 'phone', value: user?.phone || translations.fields.noData[language] },
+    { label: translations.fields.password[language], key: 'password', value: '*********' },
+    { label: translations.fields.telegramId[language], key: 'telegramId', value: translations.fields.noData[language] },
   ];
 
   const [userName, setUserName] = useState<string>('');
   const [userAmount, setUserAmount] = useState<string>('');
-
 
   const handleEditClick = (fieldKey: string, currentValue: string) => {
     setEditingField(fieldKey);
@@ -155,9 +309,9 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
       try {
         const res = await fetch("/api/auth-token");
         const data = await res.json();
-        setToken(data.token); // Оновлюємо токен через setToken
+        setToken(data.token);
       } catch (err) {
-        console.error("Помилка при отриманні токена:", err);
+        console.error("Error fetching token:", err);
       }
     };
 
@@ -168,8 +322,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
     setRequestStatus('loading');
     setIsSaving(true);
     try {
-
-      if (!token) throw new Error('Токен не знайдено');
+      if (!token) throw new Error(translations.errors.tokenNotFound[language]);
 
       const response = await fetch('/api/user/update', {
         method: 'PATCH',
@@ -180,14 +333,14 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
         body: JSON.stringify({ [editingField as string]: inputValue }),
       });
 
-      if (!response.ok) throw new Error('Помилка при збереженні');
+      if (!response.ok) throw new Error(translations.errors.saveError[language]);
 
       const data = await response.json();
-      console.log('Дані оновлено:', data);
+      console.log('Data updated:', data);
       setEditingField(null);
       setRequestStatus('success');
     } catch (error) {
-      console.error('Помилка:', error);
+      console.error('Error:', error);
       setRequestStatus('error');
     } finally {
       setIsSaving(false);
@@ -195,14 +348,14 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
   };
 
   const handleSaveWallet = async () => {
-    setMessageWallet("")
+    setMessageWallet("");
     if (!amountWallet) {
-      setMessageWallet("Введите сумму");
+      setMessageWallet(translations.errors.enterAmount[language]);
       return;
     }
 
     if (!selectedSaveWallet) {
-      setMessageWallet("Выберите криптовалюту");
+      setMessageWallet(translations.errors.selectCrypto[language]);
       return;
     }
     setRequestStatus('loading');
@@ -234,22 +387,22 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
   };
 
   const handleWithdrawBalance = async () => {
-    setMessageWallet("")
+    setMessageWallet("");
     if (!amount) {
-      setMessageWallet("Введите сумму");
+      setMessageWallet(translations.errors.enterAmount[language]);
       return;
     }
 
     if (!outputNetworkValue) {
-      setMessageWallet("Выберите сеть");
+      setMessageWallet(translations.errors.selectNetwork[language]);
       return;
     }
 
     if (!walletSelection) {
-      setMessageWallet("Выберите кошелек");
+      setMessageWallet(translations.errors.selectWallet[language]);
       return;
     }
-    console.log(walletSelection)
+    console.log(walletSelection);
     setRequestStatus('loading');
 
     try {
@@ -281,15 +434,15 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
   };
 
   const handleTransfer = async () => {
-    setMessageWallet("")
+    setMessageWallet("");
 
     if (!userAmount) {
-      setMessageWallet("Введите сумму");
+      setMessageWallet(translations.errors.enterAmount[language]);
       return;
     }
 
     if (!userName) {
-      setMessageWallet("Введите юзернейм");
+      setMessageWallet(translations.errors.enterUsername[language]);
       return;
     }
     setRequestStatus('loading');
@@ -304,7 +457,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
           userId: user?.id,
           amount: userAmount,
           receiverUsername: userName,
-          currency: "USDT"
+          currency: "USDT",
         }),
       });
 
@@ -324,18 +477,18 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
 
   useEffect(() => {
     const fetchWallets = async () => {
-      if (!user) return; // Якщо користувач не встановлений, виходимо
-      setMessage('')
+      if (!user) return;
+      setMessage('');
       try {
         const res = await fetch(`/api/wallet?id=${user.id}`);
         if (res.ok) {
           const data = await res.json();
           setWalletsAdded(data.wallets);
         } else {
-          console.error('Помилка отримання гаманців');
+          console.error('Error fetching wallets');
         }
       } catch (error) {
-        console.error('Помилка сервера:', error);
+        console.error('Server error:', error);
       }
     };
 
@@ -344,33 +497,29 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
 
   useEffect(() => {
     const formattedWallets = walletsAdded.map(wallet => {
-      // Знайти відповідний об'єкт у cryptoOptions за currency
       const foundCrypto = cryptoOptions.find(option => option.currency === wallet.network);
-
       return {
-        currency: wallet.network, // Назва валюти
-        address: wallet.wallet, // Адреса гаманця
-        logo: foundCrypto ? foundCrypto.logo : "/dashboard/crypto-logos/default.svg", // Якщо не знайдено, ставимо дефолтне лого
+        currency: wallet.network,
+        address: wallet.wallet,
+        logo: foundCrypto ? foundCrypto.logo : "/dashboard/crypto-logos/default.svg",
       };
     });
     const formattedWallets2 = walletsAdded.map(wallet => {
-
       return {
-        currency: wallet.wallet, // Назва валюти
-        address: wallet.wallet, // Адреса гаманця
+        currency: wallet.wallet,
+        address: wallet.wallet,
       };
     });
-    setFormattedWalletsd(formattedWallets)
-    setOutputNetwork(formattedWallets2)
+    setFormattedWalletsd(formattedWallets);
+    setOutputNetwork(formattedWallets2);
   }, [walletsAdded]);
 
-
   const handleSpinnerHide = () => {
-    setRequestStatus(null); // Скидаємо статус після зникнення спінера
+    setRequestStatus(null);
   };
 
   if (!isHydrated) {
-    return <div>Загрузка...</div>;
+    return <div>{translations.loading[language]}</div>;
   }
 
   return (
@@ -379,16 +528,19 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
         status={requestStatus}
         message={
           requestStatus === 'success'
-            ? 'Успех'
+            ? translations.requestStatus.success[language]
             : requestStatus === 'error'
-              ? 'Ошибка'
-              : undefined
+            ? translations.requestStatus.error[language]
+            : undefined
         }
         onHide={handleSpinnerHide}
       />
-      <div className=" w-[294px]">
-        <h3 className="text-[24px] font-bold mb-[20px] uppercase font-segoeui">персональная информация</h3>
-        <div className=" w-[294px] bg-white rounded-[15px] p-4  mb-[20px]"
+      <div className="w-[294px]">
+        <h3 className="text-[24px] font-bold mb-[20px] uppercase font-segoeui">
+          {translations.personalInfo[language]}
+        </h3>
+        <div
+          className="w-[294px] bg-white rounded-[15px] p-4 mb-[20px]"
           style={{
             boxShadow: '8px 10px 18.5px 0px rgba(0, 22, 58, 0.25)',
           }}
@@ -397,7 +549,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
             <div className="w-[104px] h-[104px] rounded-full bg-gray-200 flex items-center justify-center">
               <Image
                 src="/dashboard/address-book.svg"
-                alt="Your image description"
+                alt="Profile image"
                 width={104}
                 height={104}
                 objectFit="cover"
@@ -407,11 +559,14 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
             <div>
               <h3 className="text-[20px] font-bold">{user?.username || 'My'}</h3>
               <p className="text-[13px] text-[#a1a4ad] mb-[20px]">ID {user?.username || 'RU001587'}</p>
-              <button className="text-[17px] font-bold text-white py-[7.5px] px-[16px] bg-[#3581FF4D] rounded-full">Добавить фото</button>
+              <button className="text-[17px] font-bold text-white py-[7.5px] px-[16px] bg-[#3581FF4D] rounded-full">
+                {translations.addPhoto[language]}
+              </button>
             </div>
           </div>
         </div>
-        <div className=" w-[294px] bg-white rounded-[15px] p-4  mb-[30px]"
+        <div
+          className="w-[294px] bg-white rounded-[15px] p-4 mb-[30px]"
           style={{
             boxShadow: '8px 10px 18.5px 0px rgba(0, 22, 58, 0.25)',
           }}
@@ -454,50 +609,57 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
                   disabled={isSaving}
                   className="text-[17px] font-bold text-white py-[7.5px] px-[16px] bg-[#3581FF4D] rounded-full disabled:opacity-50"
                 >
-                  {isSaving ? 'Зберігаю...' : 'Сохранить'}
+                  {isSaving ? translations.saving[language] : translations.save[language]}
                 </button>
               </div>
             )}
           </div>
         </div>
         <div className="flex flex-wrap gap-4 mb-[30px]">
-          <div className="rounded-[15px] shadow-md sm:w-[294px] w-[294px] min-w-[294px] min-h-[203px]"   >
-            <div className="bg-[#0d316d] text-white rounded-[15px] p-[30px] min-h-[203px]"
+          <div className="rounded-[15px] shadow-md sm:w-[294px] w-[294px] min-w-[294px] min-h-[203px]">
+            <div
+              className="bg-[#0d316d] text-white rounded-[15px] p-[30px] min-h-[203px]"
               style={{
                 background: 'linear-gradient(180.00deg, rgba(53, 129, 255, 0),rgba(53, 129, 255, 0.35) 100%),rgb(0, 22, 58)',
-                boxShadow: '8px 10px 18.5px 0px rgba(0, 22, 58, 0.25)'
+                boxShadow: '8px 10px 18.5px 0px rgba(0, 22, 58, 0.25)',
               }}
             >
-              <h4 className="font-bold text-[20px] uppercase text-white">Перевод</h4>
+              <h4 className="font-bold text-[20px] uppercase text-white">{translations.transfer[language]}</h4>
               <div className="flex w-full">
-                <div className='w-full'>
-                  <div className='mb-[10px] flex flex-col gap-[5px]'>
-                    <label htmlFor="amount" className="text-white text-[14px] font-semibold">Сумма в $ к переводу:</label>
+                <div className="w-full">
+                  <div className="mb-[10px] flex flex-col gap-[5px]">
+                    <label htmlFor="amount" className="text-white text-[14px] font-semibold">
+                      {translations.amountToTransfer[language]}
+                    </label>
                     <input
                       id="amount"
                       type="number"
                       value={userAmount}
                       onChange={(e) => setUserAmount(e.target.value)}
-                      placeholder={`0`}
-                      className='pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]'
+                      placeholder="0"
+                      className="pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]"
                     />
                   </div>
-                  <div className='flex flex-col gap-[5px]'>
-                    <label htmlFor="amount" className="text-white text-[14px] font-semibold">Имя пользователя:</label>
+                  <div className="flex flex-col gap-[5px]">
+                    <label htmlFor="amount" className="text-white text-[14px] font-semibold">
+                      {translations.username[language]}
+                    </label>
                     <input
                       id="amount"
                       type="text"
                       value={userName}
                       onChange={(e) => setUserName(e.target.value)}
-                      placeholder={``}
-                      className='pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]'
+                      placeholder=""
+                      className="pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]"
                     />
                   </div>
-
                   <div>{message}</div>
-                  <div className='flex justify-end w-full'>
-                    <button onClick={handleTransfer} className="mt-4 bg-[#FFFFFF4D] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
-                      Перевод
+                  <div className="flex justify-end w-full">
+                    <button
+                      onClick={handleTransfer}
+                      className="mt-4 bg-[#FFFFFF4D] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition"
+                    >
+                      {translations.transfer[language]}
                     </button>
                   </div>
                 </div>
@@ -505,17 +667,19 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
             </div>
           </div>
         </div>
-      </div >
+      </div>
 
       {/* Wallet Section */}
       <div>
-        < div className="flex flex-wrap sm:flex-nowrap gap-[18px]" >
+        <div className="flex flex-wrap sm:flex-nowrap gap-[18px]">
           <div className="w-[294px] sm:w-[254px]">
-            < h3 className="text-[20px] font-bold mb-[20px] uppercase" > привязать кошельки для вывода</h3 >
+            <h3 className="text-[20px] font-bold mb-[20px] uppercase">
+              {translations.bindWallets[language]}
+            </h3>
             <div className="flex flex-wrap gap-4 mb-[30px]">
-
-              <div className="bg-[#3581FF] rounded-[15px] shadow-md w-[294px] sm:w-[254px] min-h-[236px]"   >
-                <div className=" text-white rounded-[15px] p-[27px] min-h-[236px]"
+              <div className="bg-[#3581FF] rounded-[15px] shadow-md w-[294px] sm:w-[254px] min-h-[236px]">
+                <div
+                  className="text-white rounded-[15px] p-[27px] min-h-[236px]"
                   style={{
                     background: 'linear-gradient(180deg, rgba(53, 191, 255, 0) 33.1%, rgba(53, 191, 255, 0.74) 100%)',
                     borderRadius: '15px',
@@ -523,28 +687,35 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
                   }}
                 >
                   <div className="flex w-full">
-                    <div className='w-full'>
-                      <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">Сеть:</label>
+                    <div className="w-full">
+                      <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">
+                        {translations.network[language]}
+                      </label>
                       <CustomSelect
                         options={cryptoOptions}
                         selectedWallet={selectedSaveWallet}
                         onSelect={setSelectedSaveWallet}
                       />
-                      <div className='flex flex-col gap-[5px]'>
-                        <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">Кошелёк:</label>
+                      <div className="flex flex-col gap-[5px]">
+                        <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">
+                          {translations.wallet[language]}
+                        </label>
                         <input
                           id="amount"
                           type="text"
                           value={amountWallet}
                           onChange={(e) => setAmountWallet(e.target.value)}
-                          placeholder={`987кен6547`}
-                          className='pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]'
+                          placeholder="987кен6547"
+                          className="pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]"
                         />
                       </div>
                       <div>{messageWallet}</div>
-                      <div className='flex justify-center w-full'>
-                        <button onClick={handleSaveWallet} className="w-[199px] h-[41px] mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
-                          Добавить кошелёк
+                      <div className="flex justify-center w-full">
+                        <button
+                          onClick={handleSaveWallet}
+                          className="w-[199px] h-[41px] mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition"
+                        >
+                          {translations.addWallet[language]}
                         </button>
                       </div>
                     </div>
@@ -553,49 +724,58 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
               </div>
             </div>
           </div>
-          <div className="">
+          <div>
             <div className="flex flex-wrap gap-4 mb-[30px]">
-              <div className="bg-[#3581FF] rounded-[15px] shadow-md h-[315px] w-[294px] sm:w-[220px]"   >
-                <div className=" text-white rounded-[15px] p-[20px] h-[315px]"
+              <div className="bg-[#3581FF] rounded-[15px] shadow-md h-[315px] w-[294px] sm:w-[220px]">
+                <div
+                  className="text-white rounded-[15px] p-[20px] h-[315px]"
                   style={{
                     background: 'linear-gradient(180deg, rgba(53, 191, 255, 0) 33.1%, rgba(53, 191, 255, 0.74) 100%)',
                     borderRadius: '15px',
                     boxShadow: '8px 10px 18.5px 0px rgba(0, 22, 58, 0.25)',
                   }}
                 >
-                  < h3 className="text-[20px] font-bold mb-[10px] uppercase" > вывод</h3 >
+                  <h3 className="text-[20px] font-bold mb-[10px] uppercase">
+                    {translations.withdrawal[language]}
+                  </h3>
                   <div className="flex w-full">
-                    <div className='w-full'>
-                      <div className='mb-[5px] flex flex-col gap-[5px]'>
-                        <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">Сумма к выводу:</label>
+                    <div className="w-full">
+                      <div className="mb-[5px] flex flex-col gap-[5px]">
+                        <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">
+                          {translations.amountToWithdraw[language]}
+                        </label>
                         <input
                           id="amount"
                           type="number"
                           value={amount}
                           onChange={(e) => setAmount(e.target.value)}
-                          placeholder={`100`}
-                          className='pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]'
+                          placeholder="100"
+                          className="pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]"
                         />
                       </div>
-                      <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">Сеть вывода:</label>
+                      <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">
+                        {translations.withdrawalNetwork[language]}
+                      </label>
                       <CustomSelect
                         options={formattedWallets}
                         selectedWallet={outputNetworkValue}
                         onSelect={setOutputNetworkValue}
                       />
-
-                      <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">Выбор кошелька:</label>
+                      <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">
+                        {translations.walletSelection[language]}
+                      </label>
                       <CustomSelect
                         options={outputNetwork}
                         selectedWallet={walletSelection}
                         onSelect={setWalletSelection}
                       />
-
-
                       <div>{message}</div>
-                      <div className='flex justify-end w-full'>
-                        <button onClick={handleWithdrawBalance} className=" mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition">
-                          Вывод
+                      <div className="flex justify-end w-full">
+                        <button
+                          onClick={handleWithdrawBalance}
+                          className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition"
+                        >
+                          {translations.withdraw[language]}
                         </button>
                       </div>
                     </div>
@@ -604,20 +784,22 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
               </div>
             </div>
           </div>
-
-        </div >
+        </div>
 
         <div className="flex flex-col gap-[20px] max-w-[315px] sm:max-w-[380px] mb-[30px]">
           <div className="flex flex-wrap justify-between py-[7px] rounded-[5px] text-[16px] w-full font-bold">
-            <div>Дата добавления</div>
-            <div>Кошелёк</div>
-            <div className="pr-[60px]">Сеть</div>
+            <div>{translations.walletHeaders.dateAdded[language]}</div>
+            <div>{translations.walletHeaders.wallet[language]}</div>
+            <div className="pr-[60px]">{translations.walletHeaders.network[language]}</div>
           </div>
           {walletsAdded.map((wallet, index) => (
-            <div key={`wallet-${index}`} className="flex flex-wrap justify-around border py-[7px] rounded-[5px] text-[16px] w-full">
+            <div
+              key={`wallet-${index}`}
+              className="flex flex-wrap justify-around border py-[7px] rounded-[5px] text-[16px] w-full"
+            >
               <div>
                 {wallet.createdAt &&
-                  new Date(wallet.createdAt).toLocaleString("uk-UA", {
+                  new Date(wallet.createdAt).toLocaleString(language === 'ru' ? "uk-UA" : "en-US", {
                     day: "2-digit",
                     month: "2-digit",
                     year: "numeric",
@@ -632,6 +814,6 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
           ))}
         </div>
       </div>
-    </div >
+    </div>
   );
 }

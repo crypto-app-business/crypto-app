@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FlattenedUserData } from "@/components/dashboard/TeamComponent/TeamComponent";
+import { useLanguageStore } from '@/store/useLanguageStore';
 
 interface PartnerData {
   username: string;
@@ -9,7 +10,19 @@ interface PartnerData {
 }
 
 export default function LastRegistrations({ userId }) {
+  const { language } = useLanguageStore();
   const [lastRegistrations, setLastRegistrations] = useState<PartnerData[]>([]);
+
+  const translations = {
+    title: {
+      ru: "Последние регистрации",
+      en: "Last Registrations",
+    },
+    line: {
+      ru: "линия",
+      en: "line",
+    },
+  };
 
   useEffect(() => {
     const fetchLastRegistrations = async () => {
@@ -23,7 +36,7 @@ export default function LastRegistrations({ userId }) {
             .map(({ username, line, registrationDate, firstName }) => ({
               username,
               line,
-              registrationDate: new Date(registrationDate).toLocaleDateString("uk-UA"),
+              registrationDate: new Date(registrationDate).toLocaleDateString(language === 'ru' ? "uk-UA" : "en-US"),
               firstName,
             }));
           setLastRegistrations(sortedData);
@@ -36,17 +49,26 @@ export default function LastRegistrations({ userId }) {
     };
 
     if (userId) fetchLastRegistrations();
-  }, [userId]);
+  }, [userId, language]); // Додано language до залежностей, щоб оновлювати формат дати
 
   return (
     <div className="flex flex-col gap-[17px] max-w-[275px]">
-      <h3 className="text-[24px] font-bold mb-[25px] uppercase">Последние регистрации</h3>
+      <h3 className="text-[24px] font-bold mb-[25px] uppercase">
+        {translations.title[language]}
+      </h3>
       {lastRegistrations.length > 0 && (
-        lastRegistrations.map(({ username, line, registrationDate, firstName}, index) => (
+        lastRegistrations.map(({ username, line, registrationDate, firstName }, index) => (
           <div key={index} className="flex flex-wrap justify-around border py-[7px] rounded-[5px] text-[16px]">
-            <div>{firstName}</div>
-            <div className="font-bold">линия: {line}</div>
-            <div>{new Date(registrationDate.split('.').reverse().join('-')).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}</div>
+            <div>{firstName || '-'}</div>
+            <div className="font-bold">
+              {translations.line[language]}: {line}
+            </div>
+            <div>
+              {new Date(registrationDate.split('.').reverse().join('-')).toLocaleTimeString(
+                language === 'ru' ? 'uk-UA' : 'en-US',
+                { hour: '2-digit', minute: '2-digit' }
+              )}
+            </div>
             <div>{username}</div>
           </div>
         ))

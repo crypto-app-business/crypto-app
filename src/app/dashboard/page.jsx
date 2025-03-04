@@ -88,21 +88,6 @@ export default function Dashboard() {
           {user?.role ==="admin"&& <AdminWithdrawal user={user}/>}
           {user?.role ==="admin"&& <AdminTable user={user}/>}
           <DashboardPanel user={user}></DashboardPanel>
-          {/* <p className="text-gray-500 mt-2">Баланс</p>       
-          {user?.balance && Object.keys(user.balance).length > 0 ? (
-            <ul>
-              {Object.entries(user.balance).map(([currency, amount]) => (
-                <li key={currency}>
-                  <strong>{currency}:</strong> {amount}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p>Баланс отсутсвует</p>
-          )} */}
-          {/* <DepositComponent id={user?.id} /> */}
-          
-
         </div>
       </div>
     );

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import RequestStatusIndicator from '@/components/dashboard/RequestStatusIndicator/RequestStatusIndicator';
+import { useLanguageStore } from '@/store/useLanguageStore';
 
 interface User {
   id: string;
@@ -28,18 +29,28 @@ interface StakingActivationProps {
   user: User;
 }
 
-const handleSimulateTime = async () => {
-  if (!confirm('Are you sure you want to simulate time?')) return;
+const handleSimulateTime = async (language: string) => {
+  const translations = {
+    confirmSimulate: {
+      ru: "Вы уверены, что хотите симулировать время?",
+      en: "Are you sure you want to simulate time?",
+    },
+    simulateSuccess: {
+      ru: "Время успешно симулировано!",
+      en: "Time simulated successfully!",
+    },
+  };
+
+  if (!confirm(translations.confirmSimulate[language])) return;
 
   try {
     const response = await fetch('/api/updateStaking', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      // body: JSON.stringify({ userId: user.id }),
     });
 
     if (response.ok) {
-      alert('Time simulated successfully!');
+      alert(translations.simulateSuccess[language]);
     } else {
       console.error('Failed to simulate time.');
     }
@@ -49,6 +60,7 @@ const handleSimulateTime = async () => {
 };
 
 export default function StakingActivation({ user }: StakingActivationProps) {
+  const { language } = useLanguageStore();
   const [currency] = useState<string>('USDT');
   const [amount, setAmount] = useState<string>('');
   const [usdtAmount, setUSDTAmount] = useState("");
@@ -57,8 +69,109 @@ export default function StakingActivation({ user }: StakingActivationProps) {
   const [error, setError] = useState<string>('');
   const [success, setSuccess] = useState<string>('');
   const [miningSessions, setMiningSessions] = useState<MiningSession[]>([]);
-  const [balance, setBalance] = useState<number>(0)
+  const [balance, setBalance] = useState<number>(0);
   const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
+
+  const translations = {
+    simulateStaking: {
+      ru: "Симулировать стейкинг",
+      en: "Simulate Staking",
+    },
+    investedInStaking: {
+      ru: "Вложено в стейкинг",
+      en: "Invested in Staking",
+    },
+    balance: {
+      ru: "Баланс",
+      en: "Balance",
+    },
+    earned: {
+      ru: "Заработано",
+      en: "Earned",
+    },
+    exchange: {
+      ru: "Обменять",
+      en: "Exchange",
+    },
+    to: {
+      ru: "на",
+      en: "to",
+    },
+    amount: {
+      ru: "Сумма",
+      en: "Amount",
+    },
+    currencyExchange: {
+      ru: "Обмен валюты",
+      en: "Currency Exchange",
+    },
+    investInStaking: {
+      ru: "Вложить в стейкинг",
+      en: "Invest in Staking",
+    },
+    withdrawInvestment: {
+      ru: "Вывести вложение",
+      en: "Withdraw Investment",
+    },
+    errors: {
+      fillAllFields: {
+        ru: "Пожалуйста заполните все поля.",
+        en: "Please fill in all fields.",
+      },
+      invalidAmount: {
+        ru: "Введите корректное количество.",
+        en: "Enter a valid amount.",
+      },
+      amountExceedsBalance: {
+        ru: "Введенная сумма больше баланса.",
+        en: "The entered amount exceeds the balance.",
+      },
+      stakingActivationFailed: {
+        ru: "Не получилось активировать стейкинг.",
+        en: "Failed to activate staking.",
+      },
+      withdrawalFailed: {
+        ru: "Не получилось вывести деньги.",
+        en: "Failed to withdraw funds.",
+      },
+      serverError: {
+        ru: "Ошибка сервера. Попробуйте позже.",
+        en: "Server error. Try again later.",
+      },
+      invalidExchangeAmount: {
+        ru: "Введите корректную сумму для обмена.",
+        en: "Enter a valid amount for exchange.",
+      },
+      exchangeFailed: {
+        ru: "Ошибка при обмене валюты.",
+        en: "Error during currency exchange.",
+      },
+    },
+    success: {
+      stakingActivated: {
+        ru: "Стейкинг успешно активирован!",
+        en: "Staking successfully activated!",
+      },
+      fundsWithdrawn: {
+        ru: "Деньги успешно выведены!",
+        en: "Funds successfully withdrawn!",
+      },
+      exchangeCompleted: {
+        ru: "Обмен успешно выполнен!",
+        en: "Exchange successfully completed!",
+      },
+    },
+    requestStatus: {
+      success: {
+        ru: "Успех",
+        en: "Success",
+      },
+      error: {
+        ru: "Ошибка",
+        en: "Error",
+      },
+    },
+  };
 
   const fetchMiningSessions = async () => {
     if (!user?.id) return;
@@ -69,10 +182,10 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         const filteredSessions = data.sessions.filter(session => session.currency === 'CC');
         setMiningSessions(filteredSessions);
       } else {
-        console.error('Ошибка получения даних про стейкинге.');
+        console.error('Error fetching staking data.');
       }
     } catch (error) {
-      console.error('Ошибка сервера:', error);
+      console.error('Server error:', error);
     }
   };
 
@@ -81,7 +194,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
   }, [user?.id]);
 
   useEffect(() => {
-    setBalance(+user?.balance?.CC?.toFixed(2))
+    setBalance(+user?.balance?.CC?.toFixed(2));
   }, [user]);
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>, action: string) => {
@@ -90,18 +203,18 @@ export default function StakingActivation({ user }: StakingActivationProps) {
     setSuccess('');
 
     if (!currency || !amount) {
-      setError('Пожалуйста зполните все поля.');
+      setError(translations.errors.fillAllFields[language]);
       return;
     }
 
     const numericAmount = parseFloat(amount);
     if (isNaN(numericAmount) || numericAmount <= 0) {
-      setError('Введите корректное количество.');
+      setError(translations.errors.invalidAmount[language]);
       return;
     }
 
-    if (action === "withdraw" && miningSessions[0].amount < numericAmount) {
-      setError('Введеная сумма больше баланса.');
+    if (action === "withdraw" && miningSessions[0]?.amount < numericAmount) {
+      setError(translations.errors.amountExceedsBalance[language]);
       return;
     }
     setRequestStatus('loading');
@@ -122,14 +235,14 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         updatedBalance[currency] -= numericAmount;
 
         if (action === "add") {
-          setSuccess('Стейкинг успешно активирован!');
+          setSuccess(translations.success.stakingActivated[language]);
           setRequestStatus('success');
-          setBalance(balance - +amount)
+          setBalance(balance - +amount);
         }
         if (action === "withdraw") {
-          setSuccess('Деньги успешно выведены!');
+          setSuccess(translations.success.fundsWithdrawn[language]);
           setRequestStatus('success');
-          setBalance(balance + +amount)
+          setBalance(balance + +amount);
         }
         const newSession: MiningSession = (await response.json()).data;
         setMiningSessions((prevSessions) => [...prevSessions, newSession]);
@@ -137,13 +250,13 @@ export default function StakingActivation({ user }: StakingActivationProps) {
       } else {
         const { error: responseError } = await response.json();
         setRequestStatus('error');
-        if (action === "add") setError(responseError || 'Не получилось активировать стейкинг.');
-        if (action === "withdraw") setError(responseError || 'Не получилось вывесты деньги.');
+        if (action === "add") setError(responseError || translations.errors.stakingActivationFailed[language]);
+        if (action === "withdraw") setError(responseError || translations.errors.withdrawalFailed[language]);
       }
     } catch (error) {
-      console.error(error)
+      console.error(error);
       setRequestStatus('error');
-      setError('Ошибка сервера. Попробуйте позже.');
+      setError(translations.errors.serverError[language]);
     }
   };
 
@@ -175,7 +288,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
 
     const amount = parseFloat(isUSDTActive ? usdtAmount : ccAmount);
     if (isNaN(amount) || amount <= 0) {
-      setError('Введите корректную сумму для обмена.');
+      setError(translations.errors.invalidExchangeAmount[language]);
       return;
     }
 
@@ -196,16 +309,16 @@ export default function StakingActivation({ user }: StakingActivationProps) {
       });
 
       if (response.ok) {
-        setSuccess('Обмен успешно выполнен!');
+        setSuccess(translations.success.exchangeCompleted[language]);
         setRequestStatus('success');
       } else {
         const { error: responseError } = await response.json();
-        setError(responseError || 'Ошибка при обмене валюты.');
+        setError(responseError || translations.errors.exchangeFailed[language]);
         setRequestStatus('error');
       }
     } catch (error) {
-      console.error(error)
-      setError('Ошибка сервера. Попробуйте позже.');
+      console.error(error);
+      setError(translations.errors.serverError[language]);
       setRequestStatus('error');
     }
   };
@@ -220,96 +333,109 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         status={requestStatus}
         message={
           requestStatus === 'success'
-            ? 'Успех'
+            ? translations.requestStatus.success[language]
             : requestStatus === 'error'
-              ? 'Ошибка'
-              : undefined
+            ? translations.requestStatus.error[language]
+            : undefined
         }
         onHide={handleSpinnerHide}
       />
-      {user?.role === "admin" && <button
-        onClick={handleSimulateTime}
-        className="bg-blue text-white px-4 py-2 rounded mb-4"
-      >
-        Симулировать стейкинг
-      </button>}
-      <div className=" rounded-[15px] gap-[6px] p-[30px] mb-[30px] min-w-[325px] w-full sm:w-[45%]"
+      {user?.role === "admin" && (
+        <button
+          onClick={() => handleSimulateTime(language)}
+          className="bg-blue text-white px-4 py-2 rounded mb-4"
+        >
+          {translations.simulateStaking[language]}
+        </button>
+      )}
+      <div
+        className="rounded-[15px] gap-[6px] p-[30px] mb-[30px] min-w-[325px] w-full sm:w-[45%]"
         style={{
           boxShadow: '8px 10px 18.5px 0px rgba(0, 22, 58, 0.25)',
-          background: 'linear-gradient(180.00deg, rgba(53, 191, 255, 0) 33%,rgba(53, 191, 255, 0.74) 100%),rgb(53, 129, 255)'
+          background: 'linear-gradient(180.00deg, rgba(53, 191, 255, 0) 33%,rgba(53, 191, 255, 0.74) 100%),rgb(53, 129, 255)',
         }}
       >
-        <div className='flex mb-[15px]'>
-          <div className='text-white'>
-            <div className='flex items-center'>
+        <div className="flex mb-[15px]">
+          <div className="text-white">
+            <div className="flex items-center">
               <Image
                 src="/dashboard/mining/safe.svg"
-                alt="Wallet Icon"
+                alt="Safe Icon"
                 width={40}
                 height={40}
                 objectFit="cover"
                 priority={false}
               />
               <div>
-                <div className='text-[16px] font-semibold uppercase'>Вложено в стейкинг</div>
+                <div className="text-[16px] font-semibold uppercase">
+                  {translations.investedInStaking[language]}
+                </div>
               </div>
             </div>
-            <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-              {miningSessions[0]?.amount && <div className='text-[24px] font-bold'>{miningSessions[0].amount?.toFixed(2)}</div>}
-              {miningSessions[0]?.amount && <div className='text-[14px]'>{miningSessions[0].currency}</div>}
+            <div className="flex items-end gap-[6px] ml-[40px] mt-[-13px]">
+              {miningSessions[0]?.amount && (
+                <div className="text-[24px] font-bold">{miningSessions[0].amount.toFixed(2)}</div>
+              )}
+              {miningSessions[0]?.amount && (
+                <div className="text-[14px]">{miningSessions[0].currency}</div>
+              )}
             </div>
           </div>
         </div>
-        <div className='flex mb-[35px]'>
-          <div className='text-white'>
-            <div className='flex items-center'>
+        <div className="flex mb-[35px]">
+          <div className="text-white">
+            <div className="flex items-center">
               <Image
                 src="/dashboard/mining/coins.svg"
-                alt="Wallet Icon"
+                alt="Coins Icon"
                 width={40}
                 height={40}
                 objectFit="cover"
                 priority={false}
               />
               <div>
-                <div className='text-[16px] font-semibold uppercase'>Баланс</div>
+                <div className="text-[16px] font-semibold uppercase">
+                  {translations.balance[language]}
+                </div>
               </div>
             </div>
-            <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-              <div className='text-[24px] font-bold'>{balance || 0.00}</div>
-              <div className='text-[14px]'>CC</div>
+            <div className="flex items-end gap-[6px] ml-[40px] mt-[-13px]">
+              <div className="text-[24px] font-bold">{balance || 0.00}</div>
+              <div className="text-[14px]">CC</div>
             </div>
           </div>
         </div>
-        <div className='flex mb-[30px]'>
-          <div className='text-[#00163A]'>
-            <div className='flex items-center'>
+        <div className="flex mb-[30px]">
+          <div className="text-[#00163A]">
+            <div className="flex items-center">
               <Image
                 src="/dashboard/mining/shield.svg"
-                alt="Wallet Icon"
+                alt="Shield Icon"
                 width={40}
                 height={40}
                 objectFit="cover"
                 priority={false}
               />
               <div>
-                <div className='text-[16px] font-semibold uppercase'>Заработано</div>
+                <div className="text-[16px] font-semibold uppercase">
+                  {translations.earned[language]}
+                </div>
               </div>
             </div>
-            <div className='flex items-end gap-[6px] ml-[40px] mt-[-13px]'>
-              <div className='text-[24px] font-bold'>{miningSessions[0]?.fullAmount?.toFixed(2) || 0}</div>
-              <div className='text-[14px]'>CC</div>
+            <div className="flex items-end gap-[6px] ml-[40px] mt-[-13px]">
+              <div className="text-[24px] font-bold">{miningSessions[0]?.fullAmount?.toFixed(2) || 0}</div>
+              <div className="text-[14px]">CC</div>
             </div>
           </div>
         </div>
         <div>
           <div className="text-[14px] font-semibold text-[#00163A] mb-[5px]">
-            Обменять
+            {translations.exchange[language]}
           </div>
           <div className="flex gap-[10px] items-center">
             <input
               type="text"
-              placeholder="Сумма"
+              placeholder={translations.amount[language]}
               className="mb-[10px] rounded pl-[15px] py-[5px] text-[black] min-w-[209px]"
               onChange={isUSDTActive ? handleUSDTChange : handleCCChange}
               value={isUSDTActive ? usdtAmount : ccAmount}
@@ -317,10 +443,12 @@ export default function StakingActivation({ user }: StakingActivationProps) {
             <div className="text-[14px] mb-[10px]">{isUSDTActive ? "USDT" : "CC"}</div>
           </div>
           <div className="flex justify-between items-center max-w-[208px]">
-            <div className="text-[14px] font-semibold text-[#00163A] mb-[10px]">на</div>
+            <div className="text-[14px] font-semibold text-[#00163A] mb-[10px]">
+              {translations.to[language]}
+            </div>
             <Image
               src="/dashboard/staking/arrow-2-svgrepo-com.svg"
-              alt="Wallet Icon"
+              alt="Swap Icon"
               width={24}
               height={24}
               className="rotate-90 mb-[10px] cursor-pointer"
@@ -330,7 +458,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
           <div className="flex gap-[10px] items-center">
             <input
               type="text"
-              placeholder="Сумма"
+              placeholder={translations.amount[language]}
               className="mb-[20px] rounded pl-[15px] py-[5px] text-[black] min-w-[209px]"
               onChange={isUSDTActive ? handleCCChange : handleUSDTChange}
               value={!isUSDTActive ? usdtAmount : ccAmount}
@@ -339,37 +467,45 @@ export default function StakingActivation({ user }: StakingActivationProps) {
             <div className="text-[14px] mb-[20px]">{isUSDTActive ? "CC" : "USDT"}</div>
           </div>
         </div>
-        <div className='flex justify-end'>
-          <button onClick={handleExchange} className='px-[25px] py-[10px] rounded-full bg-[#71a7fe] text-white text-[16px] bold'
+        <div className="flex justify-end">
+          <button
+            onClick={handleExchange}
+            className="px-[25px] py-[10px] rounded-full bg-[#71a7fe] text-white text-[16px] bold"
             style={{
               background: 'rgba(255, 255, 255, 0.3)',
             }}
-          >Обмен валюты</button>
+          >
+            {translations.currencyExchange[language]}
+          </button>
         </div>
       </div>
 
-
-      <div className="bg-[#00163A] rounded-[15px] gap-[6px] p-[30px] mb-[30px] min-w-[325px] sm:min-w-[400px] w-full sm:w-[47%] max-h-[345px]"
+      <div
+        className="bg-[#00163A] rounded-[15px] gap-[6px] p-[30px] mb-[30px] min-w-[325px] sm:min-w-[400px] w-full sm:w-[47%] max-h-[345px]"
         style={{
           boxShadow: '8px 10px 18.5px 0px rgba(0, 22, 58, 0.25)',
         }}
       >
-        <div className='flex justify-center flex-col items-center mb-[15px] text-white h-full text-[16px] max-w-[210px] ml-auto mr-auto'>
+        <div className="flex justify-center flex-col items-center mb-[15px] text-white h-full text-[16px] max-w-[210px] ml-auto mr-auto">
           <Image
             src="/dashboard/staking/Coin_gif.gif"
-            alt="Wallet Icon"
+            alt="Coin Animation"
             width={73}
             height={73}
             objectFit="cover"
             priority={false}
           />
-
-          <button onClick={(e) => handleSubmit(e, "add")} className='px-[25px] py-[10px] rounded-full bg-[#3581FF4D] font-bold mb-[20px]'>Вложить в стейкинг</button>
-          <div className='flex gap-[10px] items-center'>
+          <button
+            onClick={(e) => handleSubmit(e, "add")}
+            className="px-[25px] py-[10px] rounded-full bg-[#3581FF4D] font-bold mb-[20px]"
+          >
+            {translations.investInStaking[language]}
+          </button>
+          <div className="flex gap-[10px] items-center">
             <input
               type="text"
-              placeholder='Сумма'
-              className='mb-[20px] rounded pl-[15px] py-[5px] text-[black]'
+              placeholder={translations.amount[language]}
+              className="mb-[20px] rounded pl-[15px] py-[5px] text-[black]"
               onChange={(e) => {
                 const value = e.target.value;
                 if (/^\d*\.?\d*$/.test(value)) {
@@ -377,15 +513,19 @@ export default function StakingActivation({ user }: StakingActivationProps) {
                 }
               }}
             />
-            <div className='text-[14px] mb-[20px]'>CC</div>
+            <div className="text-[14px] mb-[20px]">CC</div>
           </div>
           {error && <div className="text-red-500 w-max mb-[20px]">{error}</div>}
           {success && !error && <div className="text-green-500 w-max mb-[20px]">{success}</div>}
-          <button onClick={(e) => handleSubmit(e, "withdraw")} className='px-[25px] py-[10px] rounded-full bg-[#4b5b75] font-bold'>Вывести вложение</button>
-
+          <button
+            onClick={(e) => handleSubmit(e, "withdraw")}
+            className="px-[25px] py-[10px] rounded-full bg-[#4b5b75] font-bold"
+          >
+            {translations.withdrawInvestment[language]}
+          </button>
           <Image
             src="/dashboard/staking/Dolar_gif.gif"
-            alt="Wallet Icon"
+            alt="Dollar Animation"
             width={73}
             height={73}
             objectFit="cover"
@@ -393,116 +533,6 @@ export default function StakingActivation({ user }: StakingActivationProps) {
           />
         </div>
       </div>
-
-
-      {/* Wallet Section
-      <div className="">
-      <h2 className="text-xl font-bold mb-4">Активировать стейкинг</h2>
-      {error && <p className="text-red-500">{error}</p>}
-      {success && <p className="text-green-500">{success}</p>}
-      <form onSubmit={handleSubmit}>
-
-        <label className="block mb-2">
-           <div> Выберите криптовалюту:</div>
-          <select
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            className="w-full max-w-[300px] p-2 border rounded"
-          >
-            <option value="">Выбрать</option>
-            {user?.balance &&
-              Object.keys(user.balance).map((curr) => (
-                <option key={`balance-${curr}`} value={curr}>
-                  {curr}
-                </option>
-              ))}
-          </select>
-        </label>
-
-        <label className="block mb-2">
-        <div>Введите количество: </div>
-          <input
-            type="text"
-            value={amount}
-            onChange={(e) => {
-              const value = e.target.value;
-              if (/^\d*\.?\d*$/.test(value)) {
-                setAmount(value);
-              }
-            }}
-            className="w-full max-w-[300px] p-2 border rounded"
-            placeholder="Например, 0.01"
-          />
-        </label>
-
-        <button
-          type="submit"
-          className="w-full max-w-[300px] text-white bg-[#4caf50] p-2 rounded hover:bg-blue-600"
-        >
-          Создать
-        </button>
-      </form>
-
-      <div>
-  <h3 className="text-lg font-bold mt-6">Активные стейкинговые сессии</h3>
-  {miningSessions.length > 0 ? (
-    <>
-
-      <div className="hidden lg:block">
-        <table className="w-full border-collapse border border-gray-200 mt-4">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border px-4 py-2">Криптовалюта</th>
-              <th className="border px-4 py-2">Сумма</th>
-              <th className="border px-4 py-2">Дата создания</th>
-              <th className="border px-4 py-2">Дата завершения</th>
-            </tr>
-          </thead>
-          <tbody>
-            {miningSessions.map((session, index) => (
-              <tr key={`table-row-${index}`} className="hover:bg-gray-50">
-                <td className="border px-4 py-2">{session.currency}</td>
-                <td className="border px-4 py-2">{session.amount}</td>
-                <td className="border px-4 py-2">
-                  {new Date(session.startDate).toLocaleString()}
-                </td>
-                <td className="border px-4 py-2">
-                  {session?.endDate && new Date(session.endDate).toLocaleString()}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-
-      <ul className="lg:hidden mt-4">
-        {miningSessions.map((session, index) => (
-          <li
-            key={`miningSessions-${index}`}
-            className="p-4 border rounded mb-2 shadow-sm hover:shadow-md"
-          >
-            <p>
-              <strong>Криптовалюта:</strong> {session.currency}
-            </p>
-            <p>
-              <strong>Сумма:</strong> {session.amount}
-            </p>
-            <p>
-              <strong>Дата создания:</strong> {new Date(session.startDate).toLocaleString()}
-            </p>
-            {session?.endDate && <p>
-              <strong>Дата завершения:</strong> {new Date(session?.endDate).toLocaleString()}
-            </p>}
-          </li>
-        ))}
-      </ul>
-    </>
-  ) : (
-    <p className="text-gray-500 mt-2">Нет активних сессий.</p>
-  )}
-</div>
-    </div> */}
     </div>
   );
 }

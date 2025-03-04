@@ -13,6 +13,7 @@ import {
   Filler,
   Tooltip
 } from "chart.js";
+import { useLanguageStore } from '@/store/useLanguageStore';
 
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Filler, Tooltip);
 
@@ -26,7 +27,35 @@ interface Coin {
 }
 
 export function CryptoCurrencySection() {
+  const { language } = useLanguageStore();
   const [coins, setCoins] = useState<Coin[]>([]);
+
+  const translations = {
+    trending: {
+      ru: "Трендовые",
+      en: "Trending",
+    },
+    topGainers: {
+      ru: "Лидеры роста",
+      en: "Top Gainers",
+    },
+    recentlyAdded: {
+      ru: "Недавно добавленные",
+      en: "Recently Added",
+    },
+    name: {
+      ru: "Название",
+      en: "Name",
+    },
+    price: {
+      ru: "Цена",
+      en: "Price",
+    },
+    chart: {
+      ru: "График",
+      en: "Chart",
+    },
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,7 +69,6 @@ export function CryptoCurrencySection() {
 
         const coinsWithSparkline = res.data.data.map(coin => ({
           ...coin,
-          // Генеруємо тестові дані для графіка
           sparkline: Array.from({length: 7}, () => 
             parseFloat(coin.priceUsd) * (0.9 + Math.random() * 0.2)
           )
@@ -48,7 +76,7 @@ export function CryptoCurrencySection() {
 
         setCoins(coinsWithSparkline);
       } catch (error) {
-        console.error("Ошибка загрузки криптовалют:", error);
+        console.error(language === 'ru' ? "Ошибка загрузки криптовалют:" : "Error loading cryptocurrencies:", error);
       }
     };
 
@@ -65,9 +93,9 @@ export function CryptoCurrencySection() {
     <section className="-mt-20 sm:mx-12 relative px-[15px] sm:px-5 lg:px-10 max-sm:flex max-sm:justify-center">
       <div className="max-md:w-[max-content] lg:container mx-auto rounded-3xl bg-white py-8 lg:px-4 shadow">
         <article className="grid lg:grid-cols-2 xl:grid-cols-3 md:justify-center w-full">
-          <CoinColumn title="Trending" coins={trendingCoins} logoSrc="/coins/logo1.png" />
-          <CoinColumn title="Top Gainers" coins={gainerCoins} logoSrc="/coins/logo2.png" />
-          <CoinColumn title="Recently Added" coins={recentlyAdded} logoSrc="/coins/logo3.png" />
+          <CoinColumn title={translations.trending[language]} coins={trendingCoins} logoSrc="/coins/logo1.png" />
+          <CoinColumn title={translations.topGainers[language]} coins={gainerCoins} logoSrc="/coins/logo2.png" />
+          <CoinColumn title={translations.recentlyAdded[language]} coins={recentlyAdded} logoSrc="/coins/logo3.png" />
         </article>
       </div>
     </section>
@@ -75,6 +103,23 @@ export function CryptoCurrencySection() {
 }
 
 function CoinColumn({ title, coins, logoSrc }) {
+  const { language } = useLanguageStore();
+
+  const translations = {
+    name: {
+      ru: "Название",
+      en: "Name",
+    },
+    price: {
+      ru: "Цена",
+      en: "Price",
+    },
+    chart: {
+      ru: "График",
+      en: "Chart",
+    },
+  };
+
   const createGradient = (ctx, color) => {
     const gradient = ctx.createLinearGradient(0, 0, 0, 80);
     gradient.addColorStop(0, color + "33");
@@ -83,7 +128,7 @@ function CoinColumn({ title, coins, logoSrc }) {
   };
 
   return (
-    <aside className=" px-[5px] sm:px-5 mb-6">
+    <aside className="px-[5px] sm:px-5 mb-6">
       <div className="flex justify-between mb-6">
         <figure className="font-bold text-lg flex gap-4 items-center">
           <Image src={logoSrc} alt={title} width={16} height={16} className="inline w-[1em] h-[1em] mr-2" />
@@ -92,9 +137,9 @@ function CoinColumn({ title, coins, logoSrc }) {
       </div>
 
       <div className="grid grid-cols-3 mb-4 text-base">
-        <span className="text-gray">Name</span>
-        <span className="text-gray">Price</span>
-        <span className="text-gray">Chart</span>
+        <span className="text-gray">{translations.name[language]}</span>
+        <span className="text-gray">{translations.price[language]}</span>
+        <span className="text-gray">{translations.chart[language]}</span>
       </div>
 
       {coins.map((coin, index) => {
@@ -165,8 +210,8 @@ function CoinColumn({ title, coins, logoSrc }) {
               />
             </figure>
           </div>
-        )}
-      )}
+        );
+      })}
     </aside>
   );
 }

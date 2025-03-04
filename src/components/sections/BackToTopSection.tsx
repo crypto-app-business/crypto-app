@@ -1,8 +1,20 @@
-"use client"
+"use client";
 import React from "react";
 import { BsArrowUp } from "react-icons/bs";
+import { useLanguageStore } from "@/store/useLanguageStore";
+
+const backToTopContent = {
+  ru: {
+    buttonText: "Вернуться наверх",
+  },
+  en: {
+    buttonText: "Back to Top",
+  },
+};
 
 export function BackToTopSection() {
+  const { language } = useLanguageStore();
+
   const handleClick = () => {
     window.scrollTo({
       top: 0,
@@ -17,7 +29,7 @@ export function BackToTopSection() {
           className="border border-[#DDDDDD] bg-[#FAFAFA] rounded-xl text-gray py-4 px-6 flex items-center justify-center gap-4"
           onClick={handleClick}
         >
-          Вернуться наверх
+          {backToTopContent[language].buttonText}
           <BsArrowUp />
         </button>
       </div>
