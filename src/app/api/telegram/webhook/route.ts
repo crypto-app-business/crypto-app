@@ -135,11 +135,10 @@ bot.action("getwithdrawals", async (ctx) => {
   }
 });
 
-// Обробка кнопок "Підтвердити" для депозитів
 bot.action(/confirm_(.+)/, async (ctx) => {
   const depositId = ctx.match[1];
   try {
-    const deposit = await Deposit.findById(depositId); // Залишаємо findById, бо тепер depositId — це _id
+    const deposit = await Deposit.findById(depositId);
     if (!deposit) {
       await ctx.reply("Депозит не знайдено.");
       return ctx.answerCbQuery();
@@ -150,14 +149,35 @@ bot.action(/confirm_(.+)/, async (ctx) => {
       return ctx.answerCbQuery();
     }
 
-    const user = await User.findById(deposit.id); // Змінили deposit.userId на deposit.id, якщо id — це userId
-    if (user) {
-      user.balance.set(deposit.USDT, (user.balance.get(deposit.USDT) || 0) + deposit.amount); // Змінили USDT на currency
-      await user.save();
+    // Шукаємо користувача за deposit.id (припускаємо, що це userId)
+    const user = await User.findById(deposit.id);
+    if (!user) {
+      await ctx.reply("Користувача не знайдено.");
+      return ctx.answerCbQuery();
     }
 
+    // Ініціалізуємо balance.USDT, якщо його немає
+    if (!user.balance || typeof user.balance !== "object") {
+      user.balance = new Map(); // Ініціалізуємо як Map, якщо balance ще не існує
+    }
+    // Додаємо або оновлюємо баланс у USDT
+    user.balance.set("USDT", (user.balance.get("USDT") || 0) + deposit.amount);
+    await user.save();
+
+    // Оновлюємо статус депозиту
     deposit.status = "confirmed";
     await deposit.save();
+
+    // Створюємо операцію
+    const newOperation = new Operations({
+      id: deposit.id, // ID користувача
+      description: "Пополнения баланса",
+      amount: deposit.amount,
+      currency: "USDT", // Завжди USDT
+      type: "deposit",
+      createdAt: new Date(),
+    });
+    await newOperation.save();
 
     await ctx.reply(`✅ Депозит ${depositId} успішно підтверджено!`);
     await ctx.answerCbQuery();
@@ -188,7 +208,7 @@ bot.action(/reject_(.+)/, async (ctx) => {
 
     const newOperation = new Operations({
       id: deposit.id, // Змінили deposit.userId на deposit.id, якщо id — це userId
-      description: "Поповнення відхилено",
+      description: "Пополнение не подтверждено",
       amount: deposit.amount,
       currency: deposit.currency || "USDT",
       type: "deposit",
