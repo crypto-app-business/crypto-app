@@ -1,4 +1,4 @@
-import { Telegraf, Markup } from "telegraf"; // Додаємо Markup для кнопок
+import { Telegraf, Markup } from "telegraf";
 import { NextResponse } from "next/server";
 import Deposit from "@/models/Deposit";
 import Withdrawal from "@/models/Withdrawal";
@@ -6,15 +6,24 @@ import User from "@/models/User";
 import connectDB from "@/utils/connectDB";
 import Operations from "@/models/Operations";
 
+// З’єднуємося з базою один раз при завантаженні файлу
+connectDB().catch((err) => console.error("DB connection error:", err));
+
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || "");
 
-// З’єднуємося з базою даних при ініціалізації бота
-bot.use(async (ctx, next) => {
-  await connectDB();
-  next();
+bot.catch((err, ctx) => {
+  console.error(`Error for ${ctx.updateType}:`, err);
+  ctx.reply("Виникла помилка. Спробуйте ще раз пізніше.");
 });
 
-// Middleware для логування chat ID (залишаємо для дебагу)
+async function sendLongMessage(ctx, text) {
+  const maxLength = 4096;
+  for (let i = 0; i < text.length; i += maxLength) {
+    await ctx.reply(text.substring(i, i + maxLength));
+  }
+}
+
+// Middleware для логування chat ID
 bot.use(async (ctx, next) => {
   const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
   console.log("Chat ID:", ctx.chat?.id);
@@ -53,12 +62,8 @@ bot.action("getusers", async (ctx) => {
       response += `   Баланс: ${Object.entries(user.balance || {}).map(([curr, amt]) => `${curr}: ${amt}`).join(", ")}\n\n`;
     });
 
-    if (response.length > 4096) {
-      response = response.substring(0, 4095) + "...";
-    }
-
-    await ctx.reply(response);
-    await ctx.answerCbQuery(); // Підтверджуємо обробку натискання
+    await sendLongMessage(ctx, response);
+    await ctx.answerCbQuery();
   } catch (error) {
     console.error("Error getting users:", error);
     await ctx.reply("Помилка при отриманні списку користувачів.");
@@ -66,9 +71,7 @@ bot.action("getusers", async (ctx) => {
   }
 });
 
-// Обробка кнопки "Отримати поповнення" з кнопками для підтвердження/відхилення
-// Обробка кнопки "Отримати поповнення" з кнопками для підтвердження/відхилення
-// Обробник кнопки "Отримати поповнення"
+// Обробка кнопки "Отримати поповнення"
 bot.action("getdeposits", async (ctx) => {
   try {
     const deposits = await Deposit.find({ status: "pending" }).sort({ createdAt: -1 });
@@ -77,10 +80,9 @@ bot.action("getdeposits", async (ctx) => {
       return ctx.answerCbQuery();
     }
 
-    // Відправляємо кожен депозит окремим повідомленням з кнопками
     for (const deposit of deposits) {
       const depositInfo = `
-ID: ${deposit.id}
+ID: ${deposit._id}  // Змінили deposit.id на deposit._id для відображення
 Валюта: ${deposit.currency}
 Сума: ${deposit.amount} USD
 Статус: ${deposit.status}
@@ -90,8 +92,8 @@ ID: ${deposit.id}
       await ctx.reply(depositInfo, {
         reply_markup: Markup.inlineKeyboard([
           [
-            Markup.button.callback("✅ Підтвердити", `confirm_${deposit.id}`),
-            Markup.button.callback("❌ Відхилити", `reject_${deposit.id}`),
+            Markup.button.callback("✅ Підтвердити", `confirm_${deposit._id}`), // Змінили deposit.id на deposit._id
+            Markup.button.callback("❌ Відхилити", `reject_${deposit._id}`),   // Змінили deposit.id на deposit._id
           ],
         ]).reply_markup,
       });
@@ -104,6 +106,7 @@ ID: ${deposit.id}
     await ctx.answerCbQuery();
   }
 });
+
 // Обробка кнопки "Отримати виведення"
 bot.action("getwithdrawals", async (ctx) => {
   try {
@@ -123,11 +126,7 @@ bot.action("getwithdrawals", async (ctx) => {
       response += `   Дата: ${new Date(withdrawal.createdAt).toLocaleString()}\n\n`;
     });
 
-    if (response.length > 4096) {
-      response = response.substring(0, 4095) + "...";
-    }
-
-    await ctx.reply(response);
+    await sendLongMessage(ctx, response);
     await ctx.answerCbQuery();
   } catch (error) {
     console.error("Error getting withdrawals:", error);
@@ -140,26 +139,23 @@ bot.action("getwithdrawals", async (ctx) => {
 bot.action(/confirm_(.+)/, async (ctx) => {
   const depositId = ctx.match[1];
   try {
-    const deposit = await Deposit.findById(depositId);
+    const deposit = await Deposit.findById(depositId); // Залишаємо findById, бо тепер depositId — це _id
     if (!deposit) {
       await ctx.reply("Депозит не знайдено.");
       return ctx.answerCbQuery();
     }
 
-    // Перевірка статусу
     if (deposit.status !== "pending") {
       await ctx.reply(`Депозит ${depositId} вже оброблено.`);
       return ctx.answerCbQuery();
     }
 
-    // Оновлення балансу користувача
-    const user = await User.findById(deposit.userId);
+    const user = await User.findById(deposit.id); // Змінили deposit.userId на deposit.id, якщо id — це userId
     if (user) {
-      user.balance.set(deposit.USDT, (user.balance.get(deposit.USDT) || 0 + deposit.amount));
+      user.balance.set(deposit.currency, (user.balance.get(deposit.currency) || 0) + deposit.amount); // Змінили USDT на currency
       await user.save();
     }
 
-    // Зміна статусу депозиту
     deposit.status = "confirmed";
     await deposit.save();
 
@@ -174,28 +170,24 @@ bot.action(/confirm_(.+)/, async (ctx) => {
 
 // Обробка кнопок "Відмінити" для депозитів
 bot.action(/reject_(.+)/, async (ctx) => {
-  const transactionId = ctx.match[1];
+  const depositId = ctx.match[1]; // Змінили transactionId на depositId для консистентності
   try {
-    // Знаходимо депозит
-    const deposit = await Deposit.findOne({ id: transactionId });
+    const deposit = await Deposit.findById(depositId); // Змінили findOne({ id: ... }) на findById
     if (!deposit) {
       await ctx.reply("Депозит не знайдено.");
       return ctx.answerCbQuery();
     }
 
-    // Перевірка статусу
     if (deposit.status !== "pending") {
-      await ctx.reply(`Депозит ${transactionId} вже оброблено.`);
+      await ctx.reply(`Депозит ${depositId} вже оброблено.`);
       return ctx.answerCbQuery();
     }
 
-    // Оновлюємо статус
     deposit.status = "rejected";
     await deposit.save();
 
-    // Створюємо операцію
     const newOperation = new Operations({
-      id: deposit.userId,
+      id: deposit.id, // Змінили deposit.userId на deposit.id, якщо id — це userId
       description: "Поповнення відхилено",
       amount: deposit.amount,
       currency: deposit.currency || "USDT",
@@ -205,7 +197,7 @@ bot.action(/reject_(.+)/, async (ctx) => {
     await newOperation.save();
 
     await ctx.reply(
-      `❌ Депозит ${transactionId} відхилено!\n` +
+      `❌ Депозит ${depositId} відхилено!\n` +
       `Причина: запит скасовано адміністратором`
     );
 
