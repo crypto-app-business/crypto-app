@@ -155,7 +155,7 @@ bot.action(/confirm_(.+)/, async (ctx) => {
     // Оновлення балансу користувача
     const user = await User.findById(deposit.userId);
     if (user) {
-      user.balance.set(deposit.currency, (user.balance.get(deposit.currency) || 0 + deposit.amount));
+      user.balance.set(deposit.USDT, (user.balance.get(deposit.USDT) || 0 + deposit.amount));
       await user.save();
     }
 

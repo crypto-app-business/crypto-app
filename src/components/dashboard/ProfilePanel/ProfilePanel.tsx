@@ -47,6 +47,10 @@ const CustomSelect = ({ options, selectedWallet, onSelect }) => {
       ru: "Тип валюты",
       en: "Currency type",
     },
+    currencyType2: {
+      ru: "Тип кошелька",
+      en: "Wallet type",
+    },
   };
 
   const handleSelect = (currency) => {
@@ -705,7 +709,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
                           type="text"
                           value={amountWallet}
                           onChange={(e) => setAmountWallet(e.target.value)}
-                          placeholder="987кен6547"
+                          placeholder=""
                           className="pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]"
                         />
                       </div>

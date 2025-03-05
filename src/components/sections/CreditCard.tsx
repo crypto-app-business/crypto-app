@@ -5,6 +5,7 @@ import { FirstButton } from "../buttons/FirstButton";
 import { motion } from "framer-motion";
 import { fadeIn } from "@/utils/motion";
 import { useLanguageStore } from '@/store/useLanguageStore';
+import Link from "next/link";
 
 const credit = [
   {
@@ -114,9 +115,11 @@ export function CreditCard() {
                     </li>
                   ))}
                 </ul> */}
-                <FirstButton className={""} onClick={undefined}>
-                  {translations.joinWaitlist[language]}
-                </FirstButton>
+                <Link href="/login">
+                  <FirstButton className={""} onClick={undefined}>
+                    {translations.joinWaitlist[language]}
+                  </FirstButton>
+                </Link>
               </div>
             </motion.article>
           </React.Fragment>
