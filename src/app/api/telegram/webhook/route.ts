@@ -249,7 +249,7 @@ bot.action(/confirm_withdrawal_(.+)/, async (ctx) => {
     // Створюємо операцію
     const newOperation = new Operations({
       id: withdrawal.id, // ID користувача
-      description: "Виведення підтверджено",
+      description: "Снятие баланса",
       amount: withdrawal.amount,
       currency: "USDT", // Завжди USDT
       type: "withdrawal",
@@ -288,7 +288,7 @@ bot.action(/reject_withdrawal_(.+)/, async (ctx) => {
     // Створюємо операцію
     const newOperation = new Operations({
       id: withdrawal.id, // ID користувача
-      description: "Виведення відхилено",
+      description: "Снятие баланса не подтвержден",
       amount: withdrawal.amount,
       currency: "USDT", // Завжди USDT
       type: "withdrawal",
