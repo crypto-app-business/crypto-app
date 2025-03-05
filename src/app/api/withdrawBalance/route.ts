@@ -2,6 +2,12 @@ import { NextResponse } from 'next/server';
 import Withdrawal from '@/models/Withdrawal';
 import User from "@/models/User";
 import connectDB from '@/utils/connectDB';
+import { Telegraf } from 'telegraf';
+
+
+// Ініціалізація бота (токен із .env)
+const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || "");
+
 
 interface WithdrawalRequest {
   id: string;
@@ -64,6 +70,23 @@ export async function POST(request: Request) {
 
     // Збереження запиту у базі даних
     await withdrawal.save();
+
+    const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
+    if (adminChatId) {
+      const message = `
+Нове виведення створено:
+ID: ${withdrawal._id}
+Користувач: ${id}
+Валюта: ${currency}
+Сума: ${amount} USD
+Статус: ${withdrawal.status}
+Гаманець: ${waletId}
+Дата: ${new Date(withdrawal.createdAt).toLocaleString()}
+  `;
+      await bot.telegram.sendMessage(adminChatId, message);
+    } else {
+      console.warn("TELEGRAM_ADMIN_CHAT_ID нет");
+    }
 
     return NextResponse.json(
       { success: true, message: 'Запрос на вывод денег создан успешно', withdrawalId: withdrawal._id },

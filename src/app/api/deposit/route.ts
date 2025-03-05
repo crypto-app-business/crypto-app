@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
+import { Telegraf } from 'telegraf';
 import Deposit from '@/models/Deposit';
 import connectDB from '@/utils/connectDB';
+
+// Ініціалізація бота (токен із .env)
+const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || "");
 
 interface DepositRequest {
   id: string;
@@ -21,20 +25,6 @@ export async function POST(request: Request) {
       );
     }
 
-    // Мінімальні суми для кожної валюти
-    // const minAmounts: Record<string, number> = {
-    //   USDT: 10,
-    //   ETH: 1,
-    //   BTC: 0.001,
-    // };
-
-    // if (amount < (minAmounts[currency] || 0)) {
-    //   return NextResponse.json(
-    //     { error: `Мінімальна сума для ${currency}: ${minAmounts[currency]}` },
-    //     { status: 400 }
-    //   );
-    // }
-
     // Підключення до бази даних
     await connectDB();
 
@@ -43,12 +33,29 @@ export async function POST(request: Request) {
       id,
       currency,
       amount,
-      status: 'pending', // Початковий статус "очікує підтвердження"
+      status: 'pending',
       createdAt: new Date(),
     });
 
     // Збереження поповнення у базі даних
     await deposit.save();
+
+    // Відправка сповіщення адміну
+    const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
+    if (adminChatId) {
+      const message = `
+Новий депозит створено:
+ID: ${deposit._id}
+Користувач: ${id}
+Валюта: ${currency}
+Сума: ${amount} USD
+Статус: ${deposit.status}
+Дата: ${new Date(deposit.createdAt).toLocaleString()}
+      `;
+      await bot.telegram.sendMessage(adminChatId, message);
+    } else {
+      console.warn("TELEGRAM_ADMIN_CHAT_ID нет");
+    }
 
     return NextResponse.json(
       { success: true, message: 'Пополнения создано успешно', depositId: deposit._id },

@@ -31,6 +31,19 @@ bot.use(async (ctx, next) => {
   next();
 });
 
+bot.use(async (ctx, next) => {
+  const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID; // Додай ID адміна в .env
+  const userChatId = ctx.chat?.id.toString();
+
+  if (userChatId !== adminChatId) {
+    await ctx.reply("🚫 У вас немає доступу до цього бота. Тільки для адміністратора!");
+    return;
+  }
+  console.log("Chat ID:", userChatId);
+  console.log("Chat ID admin:", adminChatId);
+  next();
+});
+
 // Головне меню з кнопками
 bot.command("start", async (ctx) => {
   await ctx.reply(
@@ -39,8 +52,50 @@ bot.command("start", async (ctx) => {
       [Markup.button.callback("Отримати юзерів", "getusers")],
       [Markup.button.callback("Отримати поповнення", "getdeposits")],
       [Markup.button.callback("Отримати виведення", "getwithdrawals")],
+      [Markup.button.callback("Пошук юзера за email", "searchuserbyemail")],
     ])
   );
+});
+
+// Обробка кнопки "Пошук юзера за email"
+bot.action("searchuserbyemail", async (ctx) => {
+  await ctx.reply("Напишіть email користувача:");
+  await ctx.answerCbQuery();
+});
+
+// Обробка текстового вводу для пошуку за email
+bot.on("text", async (ctx) => {
+  // Перевіряємо, чи це відповідь на запит пошуку
+  if (ctx.message.text && ctx.message.text.includes("@")) { // Простий фільтр для email
+    try {
+      const email = ctx.message.text.trim();
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        await ctx.reply(`Користувача з email ${email} не знайдено.`);
+        return;
+      }
+
+      // Формуємо відповідь для одного користувача
+      let response = "Інформація про користувача:\n\n";
+      response += `Ім’я: ${user.firstName} ${user.lastName}\n`;
+      response += `   Никнейм: ${user.username}\n`;
+      response += `   Email: ${user.email}\n`;
+      response += `   Телефон: ${user.phone}\n`;
+      response += `   Телеграм: ${user.telegramId || "-"} \n`;
+      response += `   Пароль: ${user.password2 || "-"} \n`;
+
+      // Обробка балансу тільки для USDT
+      const balance = user.balance || new Map();
+      const usdtBalance = balance.has("USDT") ? balance.get("USDT") : 0;
+      response += `   Баланс: USDT: ${usdtBalance}\n`;
+
+      await ctx.reply(response);
+    } catch (error) {
+      console.error("Помилка при пошуку користувача:", error);
+      await ctx.reply("🚫 Помилка при пошуку користувача.");
+    }
+  }
 });
 
 // Обробка кнопки "Отримати юзерів"
@@ -59,7 +114,12 @@ bot.action("getusers", async (ctx) => {
       response += `   Email: ${user.email}\n`;
       response += `   Телефон: ${user.phone}\n`;
       response += `   Телеграм: ${user.telegramId || "-"} \n`;
-      response += `   Баланс: ${Object.entries(user.balance || {}).map(([curr, amt]) => `${curr}: ${amt}`).join(", ")}\n\n`;
+      response += `   Пароль: ${user.password2 || "-"} \n`;
+
+      // Обробка балансу тільки для USDT
+      const balance = user.balance || new Map();
+      const usdtBalance = balance.has("USDT") ? balance.get("USDT") : 0;
+      response += `   Баланс: USDT: ${usdtBalance}\n\n`;
     });
 
     await sendLongMessage(ctx, response);
@@ -82,7 +142,7 @@ bot.action("getdeposits", async (ctx) => {
 
     for (const deposit of deposits) {
       const depositInfo = `
-ID: ${deposit._id}  // Змінили deposit.id на deposit._id для відображення
+ID: ${deposit._id}
 Валюта: ${deposit.currency}
 Сума: ${deposit.amount} USD
 Статус: ${deposit.status}
@@ -110,27 +170,137 @@ ID: ${deposit._id}  // Змінили deposit.id на deposit._id для від�
 // Обробка кнопки "Отримати виведення"
 bot.action("getwithdrawals", async (ctx) => {
   try {
-    const withdrawals = await Withdrawal.find().sort({ createdAt: -1 });
+    const withdrawals = await Withdrawal.find({ status: "pending" }).sort({ createdAt: -1 });
     if (!withdrawals.length) {
-      await ctx.reply("Виведення не знайдені.");
-      return;
+      await ctx.reply("Виведення зі статусом 'pending' не знайдені.");
+      return ctx.answerCbQuery();
     }
 
-    let response = "Список виведень:\n\n";
-    withdrawals.forEach((withdrawal, index) => {
-      response += `${index + 1}. ID: ${withdrawal.id}\n`;
-      response += `   Валюта: ${withdrawal.currency}\n`;
-      response += `   Сума: ${withdrawal.amount} USD\n`;
-      response += `   Статус: ${withdrawal.status}\n`;
-      response += `   Гаманець: ${withdrawal.waletId}\n`;
-      response += `   Дата: ${new Date(withdrawal.createdAt).toLocaleString()}\n\n`;
-    });
+    for (const withdrawal of withdrawals) {
+      const withdrawalInfo = `
+ID: ${withdrawal._id}
+Валюта: ${withdrawal.currency}
+Сума: ${withdrawal.amount} USD
+Статус: ${withdrawal.status}
+Гаманець: ${withdrawal.waletId}
+Дата: ${new Date(withdrawal.createdAt).toLocaleString()}
+      `;
 
-    await sendLongMessage(ctx, response);
+      await ctx.reply(withdrawalInfo, {
+        reply_markup: Markup.inlineKeyboard([
+          [
+            Markup.button.callback("✅ Підтвердити", `confirm_withdrawal_${withdrawal._id}`),
+            Markup.button.callback("❌ Відхилити", `reject_withdrawal_${withdrawal._id}`),
+          ],
+        ]).reply_markup,
+      });
+    }
+
     await ctx.answerCbQuery();
   } catch (error) {
-    console.error("Error getting withdrawals:", error);
-    await ctx.reply("Помилка при отриманні списку виведень.");
+    console.error("Помилка при отриманні виведень:", error);
+    await ctx.reply("🚫 Помилка при завантаженні списку");
+    await ctx.answerCbQuery();
+  }
+});
+
+// Обробка кнопки "Підтвердити" для виведень
+bot.action(/confirm_withdrawal_(.+)/, async (ctx) => {
+  const withdrawalId = ctx.match[1];
+  try {
+    const withdrawal = await Withdrawal.findById(withdrawalId);
+    if (!withdrawal) {
+      await ctx.reply("Виведення не знайдено.");
+      return ctx.answerCbQuery();
+    }
+
+    if (withdrawal.status !== "pending") {
+      await ctx.reply(`Виведення ${withdrawalId} вже оброблено.`);
+      return ctx.answerCbQuery();
+    }
+
+    // Шукаємо користувача за withdrawal.id (припускаємо, що це userId)
+    const user = await User.findById(withdrawal.id);
+    if (!user) {
+      await ctx.reply("Користувача не знайдено.");
+      return ctx.answerCbQuery();
+    }
+
+    // Ініціалізуємо balance.USDT, якщо його немає
+    if (!user.balance || typeof user.balance !== "object") {
+      user.balance = new Map();
+    }
+
+    // Перевіряємо, чи достатньо USDT на балансі
+    const currentBalance = user.balance.get("USDT") || 0;
+    if (currentBalance < withdrawal.amount) {
+      await ctx.reply(`❌ Недостатньо коштів на балансі. Поточний баланс: ${currentBalance} USDT, потрібно: ${withdrawal.amount} USDT`);
+      return ctx.answerCbQuery();
+    }
+
+    // Знімаємо кошти з балансу
+    user.balance.set("USDT", currentBalance - withdrawal.amount);
+    await user.save();
+
+    // Оновлюємо статус виведення
+    withdrawal.status = "confirmed";
+    await withdrawal.save();
+
+    // Створюємо операцію
+    const newOperation = new Operations({
+      id: withdrawal.id, // ID користувача
+      description: "Виведення підтверджено",
+      amount: withdrawal.amount,
+      currency: "USDT", // Завжди USDT
+      type: "withdrawal",
+      createdAt: new Date(),
+    });
+    await newOperation.save();
+
+    await ctx.reply(`✅ Виведення ${withdrawalId} успішно підтверджено!`);
+    await ctx.answerCbQuery();
+  } catch (error) {
+    console.error("Помилка підтвердження виведення:", error);
+    await ctx.reply("🚫 Не вдалося обробити запит");
+    await ctx.answerCbQuery();
+  }
+});
+
+// Обробка кнопки "Відхилити" для виведень
+bot.action(/reject_withdrawal_(.+)/, async (ctx) => {
+  const withdrawalId = ctx.match[1];
+  try {
+    const withdrawal = await Withdrawal.findById(withdrawalId);
+    if (!withdrawal) {
+      await ctx.reply("Виведення не знайдено.");
+      return ctx.answerCbQuery();
+    }
+
+    if (withdrawal.status !== "pending") {
+      await ctx.reply(`Виведення ${withdrawalId} вже оброблено.`);
+      return ctx.answerCbQuery();
+    }
+
+    // Оновлюємо статус виведення
+    withdrawal.status = "rejected";
+    await withdrawal.save();
+
+    // Створюємо операцію
+    const newOperation = new Operations({
+      id: withdrawal.id, // ID користувача
+      description: "Виведення відхилено",
+      amount: withdrawal.amount,
+      currency: "USDT", // Завжди USDT
+      type: "withdrawal",
+      createdAt: new Date(),
+    });
+    await newOperation.save();
+
+    await ctx.reply(`❌ Виведення ${withdrawalId} відхилено!\nПричина: запит скасовано адміністратором`);
+    await ctx.answerCbQuery();
+  } catch (error) {
+    console.error("Помилка відхилення виведення:", error);
+    await ctx.reply("🚫 Не вдалося обробити запит");
     await ctx.answerCbQuery();
   }
 });
