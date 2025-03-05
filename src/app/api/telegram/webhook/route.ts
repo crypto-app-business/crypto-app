@@ -152,7 +152,7 @@ bot.action(/confirm_(.+)/, async (ctx) => {
 
     const user = await User.findById(deposit.id); // Змінили deposit.userId на deposit.id, якщо id — це userId
     if (user) {
-      user.balance.set(deposit.currency, (user.balance.get(deposit.currency) || 0) + deposit.amount); // Змінили USDT на currency
+      user.balance.set(deposit.USDT, (user.balance.get(deposit.USDT) || 0) + deposit.amount); // Змінили USDT на currency
       await user.save();
     }
 
