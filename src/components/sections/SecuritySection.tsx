@@ -51,25 +51,25 @@ const security = [
           "_type": "article",
           "description": "✅ DDoS-защита и мониторинг – Постоянный мониторинг сети и защита от кибератак обеспечивают стабильную работу платформы.",
           "_key": "e62336a675f9",
-          "span": "Сертификации SOC"
+          "span": ""
         },
         {
           "_type": "article",
           "description": "✅ Прозрачные смарт-контракты – Все операции на блокчейне честные и открытые благодаря технологии смарт-контрактов.",
           "_key": "e62336a675f9",
-          "span": "Сертификации SOC"
+          "span": ""
         },
         {
           "_type": "article",
           "description": "✅ Антифрод-система – Автоматические алгоритмы выявляют подозрительные операции и предотвращают мошенничество.",
           "_key": "e62336a675f9",
-          "span": "Сертификации SOC"
+          "span": ""
         },
         {
           "_type": "article",
           "description": "✅ Круглосуточная поддержка – Наша команда 24/7 готова помочь в любых вопросах и оперативно реагирует на запросы.",
           "_key": "e62336a675f9",
-          "span": "Сертификации SOC"
+          "span": ""
         }
       ],
       en: [
@@ -170,10 +170,10 @@ export function SecuritySection() {
               <ul className="my-6">
                 {item.articles[language].map((arr, index) => (
                   <li key={index} className="mb-6">
-                    <span>
+                    {arr.span &&<span>
                       <BsCheckCircleFill className="text-primary inline mr-2" />
                       {arr.span}
-                    </span>
+                    </span>}
                     <p className="text-gray mt-3">{arr.description}</p>
                   </li>
                 ))}

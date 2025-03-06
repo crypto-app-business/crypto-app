@@ -77,7 +77,7 @@ export function CreditCard() {
       whileInView="show"
       viewport={{ once: true, amount: "some" }}
     >
-      <div className="grid lg:grid-cols-2 gap-6">
+      <div id={"watchlist"} className="grid lg:grid-cols-2 gap-6">
         {credit.map((item, index) => (
           <React.Fragment key={index}>
             <motion.figure

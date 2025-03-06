@@ -38,7 +38,14 @@ interface Field {
   value: string;
 }
 
-const CustomSelect = ({ options, selectedWallet, onSelect }) => {
+interface CustomSelectProps {
+  options: { currency: string; address?: string; logo?: string }[];
+  selectedWallet: string;
+  onSelect: (currency: string) => void;
+  titleName?: string; // Тип для titleName — string, опціональний
+}
+
+const CustomSelect = ({ options, selectedWallet, onSelect, titleName }: CustomSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { language } = useLanguageStore();
 
@@ -48,8 +55,8 @@ const CustomSelect = ({ options, selectedWallet, onSelect }) => {
       en: "Currency type",
     },
     currencyType2: {
-      ru: "Тип кошелька",
-      en: "Wallet type",
+      ru: "Кошелёк",
+      en: "Wallet",
     },
   };
 
@@ -86,7 +93,7 @@ const CustomSelect = ({ options, selectedWallet, onSelect }) => {
               height={24}
               className="mr-2 rounded-full"
             />
-            {translations.currencyType[language]}
+            {titleName? translations.currencyType2[language] : translations.currencyType[language]}
           </>
         )}
         <svg className="ml-auto w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
@@ -136,7 +143,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
-
+  console.log(messageWallet)
   const translations = {
     loading: {
       ru: "Загрузка...",
@@ -357,11 +364,12 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
       setMessageWallet(translations.errors.enterAmount[language]);
       return;
     }
-
+  
     if (!selectedSaveWallet) {
       setMessageWallet(translations.errors.selectCrypto[language]);
       return;
     }
+  
     setRequestStatus('loading');
     try {
       const response = await fetch('/api/wallet', {
@@ -375,18 +383,32 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
           wallet: amountWallet,
         }),
       });
-
+  
       const data = await response.json();
       if (data.success) {
+        // Оновлюємо стан walletsAdded, додаючи новий гаманець
+        const newWallet = {
+          _id: data.wallet?._id || Date.now().toString(), // Якщо API повертає ID, використовуємо його, інакше генеруємо тимчасовий
+          network: selectedSaveWallet,
+          wallet: amountWallet,
+          createdAt: new Date().toISOString(), // Додаємо дату створення
+        };
+  
+        setWalletsAdded((prevWallets) => [...prevWallets, newWallet]);
+  
+        // Очищаємо поля вводу після успішного збереження
+        setAmountWallet('');
+        setSelectedSaveWallet('');
         setMessageWallet('');
         setRequestStatus('success');
       } else {
         setRequestStatus('error');
+        setMessageWallet(data.message || 'Помилка при збереженні гаманця');
       }
     } catch (error) {
       setMessageWallet(`${error}`);
       setRequestStatus('error');
-      console.error('Error creating deposit:', error);
+      console.error('Error creating wallet:', error);
     }
   };
 
@@ -713,7 +735,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
                           className="pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]"
                         />
                       </div>
-                      <div>{messageWallet}</div>
+                      <div>{message}</div>
                       <div className="flex justify-center w-full">
                         <button
                           onClick={handleSaveWallet}
@@ -753,7 +775,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
                           type="number"
                           value={amount}
                           onChange={(e) => setAmount(e.target.value)}
-                          placeholder="100"
+                          placeholder="0"
                           className="pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]"
                         />
                       </div>
@@ -772,8 +794,9 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
                         options={outputNetwork}
                         selectedWallet={walletSelection}
                         onSelect={setWalletSelection}
+                        titleName={"sadf"}
                       />
-                      <div>{message}</div>
+                      {/* <div>{messageWallet}</div> */}
                       <div className="flex justify-end w-full">
                         <button
                           onClick={handleWithdrawBalance}

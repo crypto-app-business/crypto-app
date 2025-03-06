@@ -81,7 +81,7 @@ export function HeroSection({ hero }: HeroProps) {
                 {translations.webDefi[language]}
               </SecondButton>
             </Link>
-            <Link className="w-full" href="/login">
+            <Link className="w-full" href="https://t.me/Crypto_corporation_bot" target="_blank" rel="noopener noreferrer">
               <SecondButton className="w-full lg:w-auto mb-2" onClick={undefined}>
                 {translations.tradingBot[language]}
               </SecondButton>

@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { fadeIn } from "@/utils/motion";
 import { useLanguageStore } from '@/store/useLanguageStore';
+import Link from "next/link";
 
 const trading = [
   {
@@ -174,6 +175,7 @@ export function TradingSection() {
     >
       {trading.map((item, index) => (
         <div
+          id={"nft"}
           key={index}
           className="rounded-3xl bg-gradient-to-b from-[#FFFFFF] to-[#F4F9FF] py-20"
         >
@@ -192,12 +194,14 @@ export function TradingSection() {
                   <p className="text-gray">{arr.description}</p>
                 </article>
               ))}
-              <SecondButton className={""} onClick={undefined}>
-                {translations.getStarted[language]}
-              </SecondButton>
-              <a href="#" className="py-4 px-10 text-primary underline">
-                {translations.learnMore[language]}
-              </a>
+              <Link href="/login">
+                <SecondButton className={""} onClick={undefined}>
+                  {translations.getStarted[language]}
+                </SecondButton>
+              </Link>
+                <a href="/login" className="py-4 px-10 text-primary underline">
+                  {translations.learnMore[language]}
+                </a>
             </motion.div>
             <motion.figure
               className="mb-8 row-start-1"

@@ -5,5 +5,5 @@ export interface Header {
       _ref: string;
     };
   };
-  links: string[];
+  links: { text: string; id: string }[];
 }

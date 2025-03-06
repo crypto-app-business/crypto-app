@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         // Verify password
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            return NextResponse.json({ error: 'Неверный пароль' }, { status: 401 });
+            return NextResponse.json({ error: 'Неверный логин или пароль' }, { status: 401 });
         }
 
         // Generate JWT token

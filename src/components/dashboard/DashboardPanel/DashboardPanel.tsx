@@ -186,8 +186,17 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
     }
   }, [user]);
 
-  const handleCopy = (elem) => {
-    navigator.clipboard.writeText(elem);
+  const handleCopy = async (elem) => {
+    setRequestStatus('loading');
+    try {
+      await navigator.clipboard.writeText(elem); // Чекаємо завершення копіювання
+      setTimeout(() => {
+        setRequestStatus('success'); // Показуємо успіх із затримкою
+      }, 500); // Затримка 500 мс для видимості
+    } catch (error) {
+      console.error('Error copying text:', error);
+      setRequestStatus('error'); // Обробка помилки
+    }
   };
 
   const handleDeposit = async () => {
@@ -262,6 +271,10 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
     setRequestStatus(null);
   };
 
+  useEffect(() => {
+    console.log('User prop changed:', user);
+  }, [user]);
+
   return (
     <div className="bg-gray-50 flex flex-wrap sm:flex-row flex-col-reverse gap-[65px] w-full sm:ml-[42px] font-segoeui">
       <RequestStatusIndicator
@@ -297,7 +310,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
               />
             </div>
             <div>
-              <h3 className="text-[20px] font-bold">{user?.username || 'My'}</h3>
+              <h3 className="text-[20px] font-bold">{user?.username || ''}</h3>
               <p className="text-[14px]">{user?.email || 'email@example.com'}</p>
               <p className="text-[13px] text-[#a1a4ad]">ID {user?.username || 'RU001587'}</p>
             </div>
@@ -361,6 +374,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
                   : "Loading..."}
               </a>
               <button
+                type="button"
                 onClick={() => handleCopy(referralLink)}
                 className="ml-2 flex items-center justify-center"
               >
@@ -456,6 +470,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
                               {amount} {selectedWallet}
                             </div>
                             <button
+                              type="button"
                               onClick={() => handleCopy(`${amount} ${selectedWallet}`)}
                               className="flex items-center justify-center"
                             >
@@ -493,6 +508,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
                           {displayAddress()}
                         </div>
                         <button
+                          type="button"
                           onClick={() => handleCopy(findSelectedCrypto()?.address)}
                           className="flex items-center justify-center"
                         >
@@ -512,6 +528,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
                     <div className="flex justify-end w-full">
                       {!isOpen && (
                         <button
+                          type="button"
                           onClick={handleDeposit}
                           className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition"
                         >
@@ -520,6 +537,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
                       )}
                       {isOpen && (
                         <button
+                          type="button"
                           onClick={handlePaid}
                           className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition"
                         >

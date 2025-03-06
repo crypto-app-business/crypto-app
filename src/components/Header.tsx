@@ -18,60 +18,44 @@ interface User {
 export default function Header({ isSidebarOpen, toggleSidebar }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const { language, toggleLanguage } = useLanguageStore();
 
   useEffect(() => {
-    const checkAuth = async () => {
+    const initializeUser = async () => {
+      setIsLoading(true);
       try {
-        const res = await fetch('/api/auth/me');
-        if (res.ok) {
-          const userData = await res.json();
-          setUser(userData);
-        } else {
+        const authRes = await fetch('/api/auth/me');
+        if (!authRes.ok) {
           router.push('/login');
+          return;
         }
-      } catch (error) {
-        console.error('Error checking auth:', error);
-        router.push('/login');
-      }
-    };
-    checkAuth();
-  }, [router, setUser]);
+        const userData = await authRes.json();
+        setUser(userData);
 
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await fetch('/api/auth/me');
-        if (res.ok) {
-          const userData = await res.json();
-          setUser(userData);
+        const userRes = await fetch('/api/user', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (userRes.ok) {
+          const userExtraData = await userRes.json();
+          setUser((prev) => ({
+            ...prev,
+            balance: userExtraData.data.balance,
+            username: userExtraData.data.username,
+          }));
         } else {
-          router.push('/login');
+          console.error('Error fetching user data:', await userRes.json());
         }
       } catch (error) {
-        console.error('Error checking auth:', error);
+        console.error('Error initializing user:', error);
         router.push('/login');
+      } finally {
+        setIsLoading(false);
       }
     };
-    checkAuth();
+    initializeUser();
   }, [router]);
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const response = await fetch('/api/user', {
-        method: 'GET',
-        credentials: 'include',
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setUser((prev) => ({ ...prev, balance: data.data.balance, username: data.data.username }));
-      } else {
-        console.error('Error fetching user data:', await response.json());
-      }
-    };
-    fetchUserData();
-  }, []);
 
   const handleLogout = async (redirect) => {
     try {
@@ -90,6 +74,10 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
       console.error('Error logging out:', error);
     }
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <header className="bg-cover bg-[#3581FF] text-white max-h-[125px] shadow-md flex justify-between items-center">

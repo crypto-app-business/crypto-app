@@ -106,7 +106,7 @@ export function StepSection() {
       whileInView="show"
       viewport={{ once: true, amount: "some" }}
     >
-      <div className="rounded-3xl bg-gradient-to-b from-[#FFFFFF] to-[#F4F9FF] py-20">
+      <div id={"portfolio"} className="rounded-3xl bg-gradient-to-b from-[#FFFFFF] to-[#F4F9FF] py-20">
         {step.map((item, index) => (
           <div key={index} className="container mx-auto text-center">
             <h2 className="font-bold text-4xl mb-6 leading-[1.2]">

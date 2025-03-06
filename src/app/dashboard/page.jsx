@@ -13,82 +13,86 @@ import DashboardPanel from '@/components/dashboard/DashboardPanel/DashboardPanel
 export default function Dashboard() {
   const router = useRouter();
   const [user, setUser] = useState(null);
-
-  // register?referrer=ABCD1234
-
+  const [isLoading, setIsLoading] = useState(true);
+  // register?referrer=ABCD1234З
   useEffect(() => {
-    const checkAuth = async () => {
+    const initializeUser = async () => {
+      setIsLoading(true);
       try {
-        const res = await fetch('/api/auth/me');
-        if (res.ok) {
-          const userData = await res.json();
-          setUser(userData);
+        const authRes = await fetch('/api/auth/me');
+        if (!authRes.ok) {
+          router.push('/login');
+          return;
+        }
+        const userData = await authRes.json();
+        setUser(userData);
+
+        const userRes = await fetch('/api/user', {
+          method: 'GET',
+          credentials: 'include',
+        });
+        if (userRes.ok) {
+          const userExtraData = await userRes.json();
+          setUser((prev) => ({
+            ...prev,
+            balance: userExtraData.data.balance,
+            username: userExtraData.data.username,
+          }));
         } else {
-          router.push('/login'); // Перенаправлення на вхід
+          console.error('Error fetching user data:', await userRes.json());
         }
       } catch (error) {
-        console.error('Error checking auth:', error);
+        console.error('Error initializing user:', error);
         router.push('/login');
+      } finally {
+        setIsLoading(false);
       }
     };
-    checkAuth();
+    initializeUser();
   }, [router]);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const response = await fetch('/api/user', {
-        method: 'GET',
-        credentials: 'include', // Включає cookies у запит
-      });
-    
-      if (response.ok) {
-        const data = await response.json();
-        setUser((prev) => ({ ...prev, balance: data.data.balance, username: data.data.username }));
-      } else {
-        console.error('Error fetching user data:', await response.json());
+    if (!user?.id) return;
+
+    const updateMiningBalances = async () => {
+      try {
+        const miningRes = await fetch('/api/mining/complete', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id }),
+        });
+        if (!miningRes.ok) {
+          console.error('Ошибка обновления баланса для майнинга.');
+        }
+
+        const listingRes = await fetch('/api/listing/complete', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id }),
+        });
+        if (!listingRes.ok) {
+          console.error('Ошибка обновления баланса для листинга.');
+        }
+      } catch (error) {
+        console.error('Ошибка сервера при обновлении баланса:', error);
       }
     };
-    fetchUserData();
-  }, [])
 
-    useEffect(() => {
-      const updateMiningBalances = async () => {
-        try {
-          const response = await fetch('/api/mining/complete', { method: 'PATCH', body: JSON.stringify({ userId: user?.id }), });
-          if (!response.ok) {
-            console.error('Ошибка обновления баланса для майнинга.');
-          }
-        } catch (error) {
-          console.error('Ошибка сервера при обновлении баланса:', error);
-          }
-        };
-    
-        updateMiningBalances(); // Додаємо виклик для оновлення балансу
-      }, [user?.id]);
+    updateMiningBalances();
+  }, [user?.id]);
 
-      useEffect(() => {
-        const updateMiningBalances = async () => {
-          try {
-            const response = await fetch('/api/listing/complete', { method: 'PATCH', body: JSON.stringify({ userId: user?.id }), });
-            if (!response.ok) {
-              console.error('Ошибка обновления баланса для майнинга.');
-            }
-          } catch (error) {
-            console.error('Ошибка сервера при обновлении баланса:', error);
-            }
-          };
-      
-          updateMiningBalances(); // Додаємо виклик для оновлення балансу
-        }, [user?.id]);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-    return (
+  return (
+    <div className="">
       <div className="">
-        <div className="">
-          {user?.role ==="admin"&& <AdminDeposits user={user}/>}
-          {user?.role ==="admin"&& <AdminWithdrawal user={user}/>}
-          {user?.role ==="admin"&& <AdminTable user={user}/>}
-          <DashboardPanel user={user}></DashboardPanel>
-        </div>
+        {user?.role === 'admin' && <AdminDeposits user={user} />}
+        {user?.role === 'admin' && <AdminWithdrawal user={user} />}
+        {user?.role === 'admin' && <AdminTable user={user} />}
+        <DashboardPanel user={user} />
       </div>
-    );
+    </div>
+  );
 }

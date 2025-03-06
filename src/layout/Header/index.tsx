@@ -38,11 +38,11 @@ const header = [
     _rev: "gnkOZoscrUXGAbmI48Stkn",
     _type: "header",
     links: [
-      "Cryptocurrency",
-      "Exchanges",
-      "Watchlist",
-      "NFT",
-      "Portfolio",
+      { text: "Cryptocurrency", id: "cryptocurrency" },
+      { text: "Exchanges", id: "exchanges" },
+      { text: "Watchlist", id: "watchlist" },
+      { text: "NFT", id: "nft" },
+      { text: "Portfolio", id: "portfolio" },
     ],
     _id: "063453e3-8b2c-4b4e-ae7d-7633b46e049a",
     _updatedAt: "2023-05-30T01:13:26Z",
@@ -56,9 +56,9 @@ export default function Header() {
 
   const handleWindowScroll = () => {
     const height = window.scrollY;
-    const tresholdHeigth = 50;
+    const tresholdHeight = 50;
 
-    if (height > tresholdHeigth) {
+    if (height > tresholdHeight) {
       setBackgroundWhite(true);
     } else {
       setBackgroundWhite(false);
@@ -98,7 +98,7 @@ export default function Header() {
               width={66}
               height={66}
               alt={item.image.alt}
-              object-fit="cover"
+              objectFit="cover"
               priority={false}
             />
           </figure>

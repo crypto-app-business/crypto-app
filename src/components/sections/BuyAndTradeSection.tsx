@@ -45,8 +45,8 @@ const buy = [
 
 export function BuyAndTradeSection() {
   const { language } = useLanguageStore();
-  const [inputFirstValue, setInputFirstValue] = useState<string>('1000');
-  const [inputSecondValue, setInputSecondValue] = useState<string>('10000');
+  const [inputFirstValue, setInputFirstValue] = useState<number>(1000);
+  const [inputSecondValue, setInputSecondValue] = useState<number>(10000);
 
   const translations = {
     amount: {
@@ -71,22 +71,22 @@ export function BuyAndTradeSection() {
   const handleFirstInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/,/g, '');
     if (!isNaN(Number(value))) {
-      setInputFirstValue(value);
-      setInputSecondValue((Number(value) * 10).toString());
+      setInputFirstValue(+value);
+      setInputSecondValue(Number(value) * 10);
     }
   };
 
   const handleSecondInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/,/g, '');
     if (!isNaN(Number(value))) {
-      setInputSecondValue(value);
-      setInputFirstValue((Number(value) / 10).toString());
+      setInputSecondValue(+value);
+      setInputFirstValue(Number(value) / 10);
     }
   };
 
-  const formatNumber = (value: string) => {
-    return Number(value).toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US');
-  };
+  // const formatNumber = (value: string) => {
+  //   return Number(value).toLocaleString(language === 'ru' ? 'ru-RU' : 'en-US');
+  // };
 
   return (
     <motion.section
@@ -95,7 +95,7 @@ export function BuyAndTradeSection() {
       whileInView="show"
       viewport={{ once: true, amount: "some" }}
     >
-      <div className="grid lg:grid-cols-2 max-md:justify-items-center gap-10 px-[15px] sm:px-16 lg:p-12">
+      <div id={"exchanges"} className="grid lg:grid-cols-2 max-md:justify-items-center gap-10 px-[15px] sm:px-16 lg:p-12">
         <div className="flex items-center md:justify-center">
           <motion.div
             className="max-w-xl"
@@ -122,7 +122,7 @@ export function BuyAndTradeSection() {
                     <input
                       type="text"
                       id="firstvalue"
-                      value={formatNumber(inputFirstValue)}
+                      value={inputFirstValue}
                       onChange={handleFirstInputChange}
                       className="text-right outline-none w-full"
                     />
@@ -140,7 +140,7 @@ export function BuyAndTradeSection() {
                     <input
                       type="text"
                       id="secondvalue"
-                      value={formatNumber(inputSecondValue)}
+                      value={inputSecondValue}
                       onChange={handleSecondInputChange}
                       className="text-right outline-none w-full"
                     />
