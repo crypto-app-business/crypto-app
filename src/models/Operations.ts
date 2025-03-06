@@ -5,7 +5,7 @@ interface OperationsSchema {
   description: string;
   amount: number;
   currency: string;
-  type: 'deposit' | 'withdrawal' | 'mining' | 'staking' | 'listing' | 'depositFromUser';
+  type: 'deposit' | 'withdrawal' | 'mining' | 'staking' | 'listing' | 'depositFromUser'| 'transfer';
   createdAt: Date;
 }
 
@@ -14,7 +14,7 @@ const OperationsSchema = new Schema<OperationsSchema>({
   description: { type: String, required: true },
   amount: { type: Number, required: true },
   currency: { type: String, required: true },
-  type: { type: String, enum: ['deposit', 'withdrawal' , 'mining' , 'staking' , 'listing' , 'depositFromUser'], required: true },
+  type: { type: String, enum: ['deposit', 'withdrawal' , 'mining' , 'staking' , 'listing' , 'depositFromUser', 'transfer'], required: true },
   createdAt: { type: Date, default: Date.now },
 });
 

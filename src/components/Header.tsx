@@ -95,7 +95,7 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
           <div>
             <div className='flex items-center gap-[10px] justify-end'>
               <div className='uppercase text-[24px] bold hidden sm:block'>{language === 'ru' ? 'Баланс' : 'Balance'}</div>
-              {user?.balance && <div className='uppercase text-[24px] bold text-[#3581FF] hidden sm:block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
+              {user?.balance && <div className='uppercase text-[24px] bold text-white hidden sm:block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
               
               {/* Кнопка перемикання мови */}
               <button onClick={toggleLanguage} className="flex items-center justify-center gap-2 px-[3px] py-[2px] text-black hover:bg-gray-600">
@@ -117,7 +117,7 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
             </div>
             <div className='flex gap-[5px]'>
               {user?.balance && <div className='uppercase text-[14px] bold sm:hidden block'>{language === 'ru' ? 'Баланс' : 'Balance'}</div>}
-              {user?.balance && <div className='uppercase text-[14px] bold text-[#3581FF] sm:hidden block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
+              {user?.balance && <div className='uppercase text-[14px] bold text-white sm:hidden block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
             </div>
           </div>
         </div>
