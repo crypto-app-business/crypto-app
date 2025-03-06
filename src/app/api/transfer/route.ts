@@ -6,7 +6,7 @@ import Operations from '@/models/Operations';
 
 interface TransferRequest {
   userId: string; // Відправник
-  receiverUsername: string; // Одержувач
+  username: string; // Одержувач
   amount: number;
   currency: string;
 }
@@ -14,9 +14,9 @@ interface TransferRequest {
 export async function POST(request: Request) {
   try {
     // Парсимо запит
-    const { userId, receiverUsername, amount, currency }: TransferRequest = await request.json();
+    const { userId, username, amount, currency }: TransferRequest = await request.json();
 
-    if (!userId || !receiverUsername || !amount || !currency) {
+    if (!userId || !username || !amount || !currency) {
       return NextResponse.json(
         { error: 'userId, receiverUsername, amount, currency - обов’язкові' },
         { status: 400 }
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     }
 
     // Знаходимо одержувача за username
-    const receiver = await User.findOne({ username: receiverUsername });
+    const receiver = await User.findOne({ username });
     if (!receiver) {
       return NextResponse.json({ error: 'Одержувач не знайдений' }, { status: 404 });
     }

@@ -101,6 +101,7 @@ const faq = [
 
 // Функція для обробки тексту з підтримкою посилань і переносів рядків
 const renderContentWithLinks = (content) => {
+  const { language } = useLanguageStore();
   const urlRegex = /(https?:\/\/[^\s]+)|(@\w+)/g;
   const lines = content.split("\n");
 
@@ -139,7 +140,7 @@ const renderContentWithLinks = (content) => {
             return (
               <a
                 key={`${lineIndex}-${partIndex}`}
-                href={`/CryptoCorporationRU.pdf`}
+                href={`${language==='ru'? '/CryptoCorporationRU.pdf' : '/CryptoCorporationENG.pdf'}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue hover:underline"

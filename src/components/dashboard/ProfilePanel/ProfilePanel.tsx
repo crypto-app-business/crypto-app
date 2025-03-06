@@ -482,7 +482,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
         body: JSON.stringify({
           userId: user?.id,
           amount: userAmount,
-          receiverUsername: userName,
+          username: userName,
           currency: "USDT",
         }),
       });
