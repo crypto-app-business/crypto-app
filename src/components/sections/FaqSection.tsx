@@ -100,8 +100,7 @@ const faq = [
 ];
 
 // Функція для обробки тексту з підтримкою посилань і переносів рядків
-const renderContentWithLinks = (content) => {
-  const { language } = useLanguageStore();
+const renderContentWithLinks = (content, language) => {
   const urlRegex = /(https?:\/\/[^\s]+)|(@\w+)/g;
   const lines = content.split("\n");
 
@@ -159,6 +158,7 @@ const renderContentWithLinks = (content) => {
 };
 
 const FaqItem = ({ open, title, children }: FaqItemProps) => {
+  const { language } = useLanguageStore();
   const [isOpen, setIsOpen] = useState(!!open);
 
   const iconClass = classNames({
@@ -183,7 +183,7 @@ const FaqItem = ({ open, title, children }: FaqItemProps) => {
       </aside>
       <aside className={contentClass}>
         <p className="select-none">
-          {children && renderContentWithLinks(children)}
+          {children && renderContentWithLinks(children, language)}
         </p>
       </aside>
     </article>
