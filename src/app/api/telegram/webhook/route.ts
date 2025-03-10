@@ -2,6 +2,7 @@ import { Telegraf, Markup } from "telegraf";
 import { NextResponse } from "next/server";
 import Deposit from "@/models/Deposit";
 import Withdrawal from "@/models/Withdrawal";
+import Transfer from "@/models/Transfer";
 import User from "@/models/User";
 import connectDB from "@/utils/connectDB";
 import Operations from "@/models/Operations";
@@ -52,6 +53,7 @@ bot.command("start", async (ctx) => {
       [Markup.button.callback("Отримати юзерів", "getusers")],
       [Markup.button.callback("Отримати поповнення", "getdeposits")],
       [Markup.button.callback("Отримати виведення", "getwithdrawals")],
+      [Markup.button.callback("Отримати трансфери", "gettransfers")],
       [Markup.button.callback("Пошук юзера за email", "searchuserbyemail")],
     ])
   );
@@ -127,6 +129,138 @@ bot.action("getusers", async (ctx) => {
   } catch (error) {
     console.error("Error getting users:", error);
     await ctx.reply("Помилка при отриманні списку користувачів.");
+    await ctx.answerCbQuery();
+  }
+});
+
+bot.action("gettransfers", async (ctx) => {
+  try {
+    const transfers = await Transfer.find({ status: "pending" }).sort({ createdAt: -1 });
+    if (!transfers.length) {
+      await ctx.reply("Трансфери зі статусом 'pending' не знайдені.");
+      return ctx.answerCbQuery();
+    }
+
+    for (const transfer of transfers) {
+      const sender = await User.findById(transfer.id);
+      const receiver = await User.findOne({ username: transfer.username });
+      const transferInfo = `
+ID: ${transfer._id}
+Відправник: ${sender?.username || "Невідомо"}
+Одержувач: ${receiver?.username || "Невідомо"}
+Валюта: ${transfer.currency}
+Сума: ${transfer.amount}
+Статус: ${transfer.status}
+Дата: ${new Date(transfer.createdAt).toLocaleString()}
+      `;
+
+      await ctx.reply(transferInfo, {
+        reply_markup: Markup.inlineKeyboard([
+          [
+            Markup.button.callback("✅ Підтвердити", `confirm_transfer_${transfer._id}`),
+            Markup.button.callback("❌ Відхилити", `reject_transfer_${transfer._id}`),
+          ],
+        ]).reply_markup,
+      });
+    }
+
+    await ctx.answerCbQuery();
+  } catch (error) {
+    console.error("Помилка при отриманні трансферів:", error);
+    await ctx.reply("🚫 Помилка при завантаженні списку");
+    await ctx.answerCbQuery();
+  }
+});
+
+// Підтвердження трансферу
+bot.action(/confirm_transfer_(.+)/, async (ctx) => {
+  const transferId = ctx.match[1];
+  try {
+    const transfer = await Transfer.findById(transferId);
+    if (!transfer) {
+      await ctx.reply("Трансфер не знайдено.");
+      return ctx.answerCbQuery();
+    }
+
+    if (transfer.status !== "pending") {
+      await ctx.reply(`Трансфер ${transferId} вже оброблено.`);
+      return ctx.answerCbQuery();
+    }
+
+    const sender = await User.findById(transfer.id);
+    const receiver = await User.findOne({ username: transfer.username });
+    if (!sender || !receiver) {
+      await ctx.reply("Відправник або одержувач не знайдені.");
+      return ctx.answerCbQuery();
+    }
+
+    const senderBalance = sender.balance.get(transfer.currency) || 0;
+    if (senderBalance < transfer.amount) {
+      await ctx.reply("Недостатньо коштів у відправника.");
+      return ctx.answerCbQuery();
+    }
+
+    // Виконуємо трансфер
+    sender.balance.set(transfer.currency, senderBalance - transfer.amount);
+    receiver.balance.set(transfer.currency, (receiver.balance.get(transfer.currency) || 0) + transfer.amount);
+
+    // Оновлюємо статус трансферу
+    transfer.status = "confirmed";
+    await Promise.all([sender.save(), receiver.save(), transfer.save()]);
+
+    // Записуємо операції
+    const senderOperation = new Operations({
+      id: sender._id,
+      description: `Отправлено юзеру ${receiver.username}`,
+      amount: transfer.amount,
+      currency: transfer.currency,
+      type: 'transfer',
+      createdAt: new Date(),
+    });
+
+    const receiverOperation = new Operations({
+      id: receiver._id,
+      description: `Получено от ${sender.username}`,
+      amount: transfer.amount,
+      currency: transfer.currency,
+      type: 'transfer',
+      createdAt: new Date(),
+    });
+
+    await Promise.all([senderOperation.save(), receiverOperation.save()]);
+
+    await ctx.reply(`✅ Трансфер ${transferId} успішно підтверджено!`);
+    await ctx.answerCbQuery();
+  } catch (error) {
+    console.error("Помилка підтвердження трансферу:", error);
+    await ctx.reply("🚫 Не вдалося обробити запит");
+    await ctx.answerCbQuery();
+  }
+});
+
+// Відхилення трансферу
+bot.action(/reject_transfer_(.+)/, async (ctx) => {
+  const transferId = ctx.match[1];
+  try {
+    const transfer = await Transfer.findById(transferId);
+    if (!transfer) {
+      await ctx.reply("Трансфер не знайдено.");
+      return ctx.answerCbQuery();
+    }
+
+    if (transfer.status !== "pending") {
+      await ctx.reply(`Трансфер ${transferId} вже оброблено.`);
+      return ctx.answerCbQuery();
+    }
+
+    transfer.status = "rejected";
+    await transfer.save();
+
+    await ctx.reply(`❌ Трансфер ${transferId} відхилено!`);
+    await ctx.answerCbQuery();
+  } catch (error) {
+    console.error("Помилка відхилення трансферу:", error);
+    await ctx.reply("🚫 Не вдалося обробити запит");
     await ctx.answerCbQuery();
   }
 });

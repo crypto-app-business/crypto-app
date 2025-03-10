@@ -1,8 +1,10 @@
 import { NextResponse } from 'next/server';
 import User from '@/models/User';
+import Transfer from '@/models/Transfer'; // Імпортуємо нову модель Transfer
 import connectDB from '@/utils/connectDB';
-import Operations from '@/models/Operations';
+import { Telegraf } from 'telegraf';
 
+const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || "");
 
 interface TransferRequest {
   userId: string; // Відправник
@@ -13,12 +15,11 @@ interface TransferRequest {
 
 export async function POST(request: Request) {
   try {
-    // Парсимо запит
     const { userId, username, amount, currency }: TransferRequest = await request.json();
 
     if (!userId || !username || !amount || !currency) {
       return NextResponse.json(
-        { error: 'userId, receiverUsername, amount, currency - обов’язкові' },
+        { error: 'userId, username, amount, currency - обов’язкові' },
         { status: 400 }
       );
     }
@@ -43,40 +44,54 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Одержувач не знайдений' }, { status: 404 });
     }
 
-    // Виконуємо трансфер
-    sender.balance.set(currency, senderBalance - amount);
-    receiver.balance.set(currency, (Number(receiver.balance.get(currency)) || 0) + +amount);
-
-    const newOperationSender = new Operations({
-      id: userId,
-      description: `Отправлено юзеру ${receiver.username}`,
-      amount: amount,
-      currency: "USDT",
-      type: 'transfer',
+    // Створюємо запис про трансфер зі статусом 'pending'
+    const transfer = new Transfer({
+      id: userId, // ID відправника
+      username: receiver.username, // Username одержувача
+      currency,
+      amount,
+      status: 'pending',
       createdAt: new Date(),
     });
-    await newOperationSender.save();
 
-    const newOperationReceiver = new Operations({
-      id: receiver.id,
-      description: `Получено от ${sender.username}`,
-      amount: amount,
-      currency: "USDT",
-      type: 'transfer',
-      createdAt: new Date(),
-    });
-    await newOperationReceiver.save();
+    await transfer.save();
 
-    // Зберігаємо оновлені баланси
-    await sender.save();
-    await receiver.save();
+    // Відправляємо сповіщення адміну в Telegram
+    const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
+    if (adminChatId) {
+      const message = `
+Новий трансфер створено:
+ID: ${transfer._id}
+Відправник: ${sender.username}
+Одержувач: ${receiver.username}
+Валюта: ${currency}
+Сума: ${amount}
+Статус: ${transfer.status}
+Дата: ${new Date(transfer.createdAt).toLocaleString()}
+      `;
+      await bot.telegram.sendMessage(adminChatId, message);
+    } else {
+      console.warn("TELEGRAM_ADMIN_CHAT_ID не вказано");
+    }
 
     return NextResponse.json(
-      { success: true, message: `Трансфер ${amount} ${currency} отправлен к ${receiver.username}` },
+      { success: true, message: 'Трансфер створено, чекає на підтвердження', transferId: transfer._id },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Помилка трансферу:', error);
+    console.error('Помилка створення трансферу:', error);
+    return NextResponse.json({ error: 'Помилка сервера' }, { status: 500 });
+  }
+}
+
+// Отримання всіх трансферів зі статусом 'pending'
+export async function GET() {
+  try {
+    await connectDB();
+    const transfers = await Transfer.find({ status: 'pending' });
+    return NextResponse.json({ success: true, transfers }, { status: 200 });
+  } catch (error) {
+    console.error('Помилка отримання трансферів:', error);
     return NextResponse.json({ error: 'Помилка сервера' }, { status: 500 });
   }
 }

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import DepositComponent from '@/components/dashboard/DepositComponent/DepositComponent';
 import PendingDeposits from '@/components/dashboard/PendingDeposits/PendingDeposits';
 import AdminDeposits from '@/components/dashboard/AdminDeposits/AdminDeposits';
+import AdminTransfer from '@/components/dashboard/AdminTransfer/AdminTransfer';
 import AdminWithdrawal from '@/components/dashboard/AdminWithdrawal/AdminWithdrawal';
 import AdminTable from '@/components/dashboard/AdminTable/AdminTable';
 import MiningActivation from '@/components/dashboard/MiningActivation/MiningActivation';
@@ -90,6 +91,7 @@ export default function Dashboard() {
       <div className="">
         {user?.role === 'admin' && <AdminDeposits user={user} />}
         {user?.role === 'admin' && <AdminWithdrawal user={user} />}
+        {user?.role === 'admin' && <AdminTransfer user={user} />}
         {user?.role === 'admin' && <AdminTable user={user} />}
         <DashboardPanel user={user} />
       </div>
