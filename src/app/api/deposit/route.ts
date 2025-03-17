@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { Telegraf } from 'telegraf';
 import Deposit from '@/models/Deposit';
+import User from '@/models/Deposit';
 import connectDB from '@/utils/connectDB';
 
 // Ініціалізація бота (токен із .env)
@@ -40,6 +41,8 @@ export async function POST(request: Request) {
     // Збереження поповнення у базі даних
     await deposit.save();
 
+    const user = await User.findById(id);;
+
     // Відправка сповіщення адміну
     const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
     if (adminChatId) {
@@ -47,6 +50,7 @@ export async function POST(request: Request) {
 Новий депозит створено:
 ID: ${deposit._id}
 Користувач: ${id}
+Email: ${user.email}
 Валюта: ${currency}
 Сума: ${amount} USD
 Статус: ${deposit.status}

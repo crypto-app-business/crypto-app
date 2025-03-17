@@ -91,7 +91,10 @@ const OperationsComponent: React.FC<TeamComponentProps> = ({ userId }) => {
         if (!response.ok) throw new Error(`API error: ${response.status} ${response.statusText}`);
         const data = await response.json();
         if (data.success && Array.isArray(data.operations)) {
-          setOperations(data.operations);
+          const sortedOperations = data.operations.sort((a: Operation, b: Operation) => 
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+          setOperations(sortedOperations);
         } else {
           setOperations([]);
         }
@@ -133,10 +136,10 @@ const OperationsComponent: React.FC<TeamComponentProps> = ({ userId }) => {
             key={index}
             className="flex gap-[15px] justify-between px-[15px] sm:px-[35px] py-[10px] border border-[#00163A] rounded-[15px] text-[14px] text-[#00163A] w-full mb-2"
           >
-            <div>{new Date(operation.createdAt).toLocaleString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+            <div>{new Date(operation.createdAt).toUTCString()}</div>
             <div className="font-bold">{operation.description}</div>
             <div className="font-bold text-[#3581FF]">
-              {operation.amount} {operation.currency}
+              {operation.amount.toFixed(2)} {operation.currency}
             </div>
           </div>
         ))

@@ -77,6 +77,7 @@ export async function POST(request: Request) {
 Нове виведення створено:
 ID: ${withdrawal._id}
 Користувач: ${id}
+Email: ${user.email}
 Валюта: ${currency}
 Сума: ${amount} USD
 Статус: ${withdrawal.status}

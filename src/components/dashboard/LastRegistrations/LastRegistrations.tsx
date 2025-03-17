@@ -66,7 +66,11 @@ export default function LastRegistrations({ userId }) {
             <div>
               {new Date(registrationDate.split('.').reverse().join('-')).toLocaleTimeString(
                 language === 'ru' ? 'uk-UA' : 'en-US',
-                { hour: '2-digit', minute: '2-digit' }
+                {
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  timeZone: 'UTC'
+                }
               )}
             </div>
             <div>{username}</div>

@@ -153,11 +153,11 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       </div>
                       <div className="flex justify-between text-[14px] font-semibold">
                         <div>{translations.opened[language]}</div>
-                        <div>{new Date(session.startDate).toLocaleDateString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+                        <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                       </div>
                       <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                         <div>{translations.closes[language]}</div>
-                        <div>{new Date(session.endDate).toLocaleDateString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+                        <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
                       </div>
                       <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
                         <div>{translations.earned[language]}</div>
@@ -200,7 +200,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       </div>
                       <div className="flex justify-between text-[14px] font-semibold">
                         <div>{translations.opened[language]}</div>
-                        <div>{new Date(session.startDate).toLocaleDateString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+                        <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                       </div>
                       <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                         {/* <div>{translations.closes[language]}</div>
@@ -247,11 +247,11 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       </div>
                       <div className="flex justify-between text-[14px] font-semibold text-white">
                         <div>{translations.opened[language]}</div>
-                        <div>{new Date(session.startDate).toLocaleDateString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+                        <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                       </div>
                       <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
                         <div>{translations.closes[language]}</div>
-                        <div>{new Date(session.endDate).toLocaleDateString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+                        <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
                       </div>
                       <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
                         <div>{translations.earned[language]}</div>
@@ -280,11 +280,11 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         </div>
                         <div className="flex justify-between text-[14px] font-semibold">
                           <div>{translations.opened[language]}</div>
-                          <div>{new Date(session.startDate).toLocaleDateString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+                          <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                         </div>
                         <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                           <div>{translations.closes[language]}</div>
-                          <div>{new Date(session.endDate).toLocaleDateString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+                          <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
                         </div>
                         <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
                           <div>{translations.earned[language]}</div>
@@ -309,7 +309,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         </div>
                         <div className="flex justify-between text-[14px] font-semibold">
                           <div>{translations.opened[language]}</div>
-                          <div>{new Date(session.startDate).toLocaleDateString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+                          <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                         </div>
                         <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                           <div>{translations.closes[language]}</div>
@@ -338,11 +338,11 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         </div>
                         <div className="flex justify-between text-[14px] font-semibold text-white">
                           <div>{translations.opened[language]}</div>
-                          <div>{new Date(session.startDate).toLocaleDateString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+                          <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                         </div>
                         <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
                           <div>{translations.closes[language]}</div>
-                          <div>{new Date(session.endDate).toLocaleDateString(language === 'ru' ? 'uk-UA' : 'en-US')}</div>
+                          <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
                         </div>
                         <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
                           <div>{translations.earned[language]}</div>

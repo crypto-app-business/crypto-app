@@ -84,10 +84,10 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
       <div className='w-full p-4' style={{ background: 'linear-gradient(180deg, rgba(53, 191, 255, 0) 33.1%, rgba(53, 191, 255, 0.74) 100%)' }}>
         <div className='flex justify-between w-full max-w-[1149px] mr-auto ml-auto items-center'>
           <div className='flex items-center gap-[10px]'>
-            <div className='flex gap-[20px] items-center bg-white rounded-full'>
+            <div className='flex gap-[20px] items-center bg-white rounded-full w-[50px] sm:w-[83px]'>
               <Image src="/logo.png" alt="Logo" width={83} height={66} style={{ objectFit: "cover" }} priority={false} />
             </div>
-            <div className='text-[25px]'>
+            <div className='sm:text-[25px] text-[12px]'>
               <div>Crypto</div>
               <div>Corporation</div>
             </div>

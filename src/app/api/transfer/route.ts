@@ -63,7 +63,9 @@ export async function POST(request: Request) {
 Новий трансфер створено:
 ID: ${transfer._id}
 Відправник: ${sender.username}
+Відправник Email: ${sender.email}
 Одержувач: ${receiver.username}
+Одержувач Email: ${receiver.email}
 Валюта: ${currency}
 Сума: ${amount}
 Статус: ${transfer.status}

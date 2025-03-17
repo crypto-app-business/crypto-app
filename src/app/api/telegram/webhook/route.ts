@@ -147,7 +147,9 @@ bot.action("gettransfers", async (ctx) => {
       const transferInfo = `
 ID: ${transfer._id}
 Відправник: ${sender?.username || "Невідомо"}
+Відправник Email: ${sender?.email || "Невідомо"}
 Одержувач: ${receiver?.username || "Невідомо"}
+Одержувач Email: ${receiver?.email || "Невідомо"}
 Валюта: ${transfer.currency}
 Сума: ${transfer.amount}
 Статус: ${transfer.status}
@@ -275,8 +277,10 @@ bot.action("getdeposits", async (ctx) => {
     }
 
     for (const deposit of deposits) {
+      const sender = await User.findById(deposit.id);
       const depositInfo = `
 ID: ${deposit._id}
+Email: ${sender.email}
 Валюта: ${deposit.currency}
 Сума: ${deposit.amount} USD
 Статус: ${deposit.status}
@@ -311,8 +315,10 @@ bot.action("getwithdrawals", async (ctx) => {
     }
 
     for (const withdrawal of withdrawals) {
+      const sender = await User.findById(withdrawal.id);
       const withdrawalInfo = `
 ID: ${withdrawal._id}
+Email: ${sender.email}
 Валюта: ${withdrawal.currency}
 Сума: ${withdrawal.amount} USD
 Статус: ${withdrawal.status}

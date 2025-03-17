@@ -422,7 +422,7 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
                         fontWeight: 'bold',
                       }}
                     >
-                      {user.balance.USDT?.toFixed(0) || 0}
+                      {user.balance.USDT?.toFixed(2) || 0}
                     </h4>
                     <h4 className="text-[14px] font-regular">USDT</h4>
                   </div>

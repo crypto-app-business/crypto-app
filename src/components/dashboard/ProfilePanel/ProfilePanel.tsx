@@ -82,7 +82,7 @@ const CustomSelect = ({ options, selectedWallet, onSelect, titleName }: CustomSe
               height={24}
               className="mr-2 rounded-full"
             />}
-            {selectedCrypto.currency}
+            <span className="truncate flex-1">{selectedCrypto.currency}</span>
           </>
         ) : (
           <>
@@ -102,7 +102,7 @@ const CustomSelect = ({ options, selectedWallet, onSelect, titleName }: CustomSe
       </div>
 
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-white border rounded-[5px] shadow-lg">
+        <div className="absolute z-10 w-full mt-1 bg-white border rounded-[5px] shadow-lg max-h-[200px] overflow-y-auto">
           {options.map((crypto, index) => (
             <div
               key={`${crypto.currency}-${index}`}
@@ -116,7 +116,7 @@ const CustomSelect = ({ options, selectedWallet, onSelect, titleName }: CustomSe
                 height={24}
                 className="mr-2 rounded-full"
               />}
-              {crypto.currency}
+              <span className="truncate flex-1">{crypto.currency}</span>
             </div>
           ))}
         </div>
@@ -826,14 +826,16 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
             >
               <div>
                 {wallet.createdAt &&
-                  new Date(wallet.createdAt).toLocaleString(language === 'ru' ? "uk-UA" : "en-US", {
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false,
-                  })}
+                  new Date(wallet.createdAt).toLocaleString('en-US', {
+                    timeZone: 'UTC',
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                  }).replace(/, /g, 'T').replace(/(\d+)\/(\d+)\/(\d+)/, '$3-$1-$2')
+                }
               </div>
               <div className="font-bold">{wallet.wallet}</div>
               <div>{wallet.network}</div>
