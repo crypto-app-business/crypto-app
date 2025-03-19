@@ -39,6 +39,28 @@ interface DepositRequest {
   createdAt: string;
 }
 
+interface WithdrawalRequest {
+  id: string;
+  currency: string;
+  amount: number;
+  status: string;
+  createdAt: string;
+}
+
+interface TransferResponse {
+  success: boolean;
+  sentTransfers: TransferRequest[];
+  receivedTransfers: TransferRequest[];
+}
+interface TransferRequest {
+  id: string;
+  username: string;
+  currency: string;
+  amount: number;
+  status: string;
+  createdAt: string;
+}
+
 const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
   const { language } = useLanguageStore();
   const [loading, setLoading] = useState<boolean>(true);
@@ -49,6 +71,9 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
   const [stakingClosedSessions, setStakingClosedSessions] = useState<MiningSession[]>([]);
   const [listingClosedSessions, setListingClosedSessions] = useState<MiningSession[]>([]);
   const [depositReport, setDepositReport] = useState<DepositRequest[]>([]);
+  const [transferSendReport, setTransferSendReport] = useState<TransferRequest[]>([]);
+  const [transferGetReport, setTransferGetReport] = useState<TransferRequest[]>([]);
+  const [withdrawalReport, setWithdrawalReport] = useState<WithdrawalRequest[]>([]);
   const [activeTab, setActiveTab] = useState<string>('mining');
   const [activeContratcTab, setActiveContratcTab] = useState<string>('open');
   const [activeButton, setActiveButton] = useState<string>('Заработано');
@@ -150,7 +175,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
       if (!userId) return;
 
       try {
-        const [miningRes, stakingRes, listingRes, miningClosedRes, stakingClosedRes, listingClosedRes, depositRes] = await Promise.all([
+        const [miningRes, stakingRes, listingRes, miningClosedRes, stakingClosedRes, listingClosedRes, depositRes, transferRes, withdrawalRes] = await Promise.all([
           fetch(`/api/mining?userId=${userId}`),
           fetch(`/api/staking?userId=${userId}`),
           fetch(`/api/listing?userId=${userId}`),
@@ -158,6 +183,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
           fetch(`/api/staking/closed?userId=${userId}`),
           fetch(`/api/listing/closed?userId=${userId}`),
           fetch(`/api/get-report-deposit?userId=${userId}`),
+          fetch(`/api/get-report-transfer?userId=${userId}`),
+          fetch(`/api/get-report-withdrawal?userId=${userId}`),
         ]);
 
         if (miningRes.ok) {
@@ -202,6 +229,20 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
           setDepositReport(depositData.deposits.filter((deposit) => deposit.status === 'confirmed'));
         }
 
+        if (transferRes.ok) {
+          const transferData: TransferResponse = await transferRes.json();
+          setTransferSendReport(
+            transferData.sentTransfers.filter((transfer) => transfer.status === 'confirmed')
+          );
+          setTransferGetReport(
+            transferData.receivedTransfers.filter((transfer) => transfer.status === 'confirmed')
+          );
+        }
+        if (withdrawalRes.ok) {
+          const withdrawalData: { withdrawals: WithdrawalRequest[] } = await withdrawalRes.json();
+          setWithdrawalReport(withdrawalData.withdrawals.filter((withdrawal) => withdrawal.status === 'confirmed'));
+        }
+
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -237,6 +278,28 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
           ...miningClosedSessions,
           ...stakingClosedSessions,
           ...listingClosedSessions,
+        ].reduce((sum, session) => sum + (session.amount || 0), 0);
+        return { ...button, sum: Number(totalContracts.toFixed(2)) };
+      }
+
+      if (button.label === translations.depositOperations[language]) {
+        const totalContracts = [
+          ...depositReport,
+        ].reduce((sum, session) => sum + (session.amount || 0), 0);
+        return { ...button, sum: Number(totalContracts.toFixed(2)) };
+      }
+
+      if (button.label === translations.withdrawals[language]) {
+        const totalContracts = [
+          ...withdrawalReport,
+        ].reduce((sum, session) => sum + (session.amount || 0), 0);
+        return { ...button, sum: Number(totalContracts.toFixed(2)) };
+      }
+
+      if (button.label === translations.transfers[language]) {
+        const totalContracts = [
+          ...transferGetReport,
+          ...transferSendReport,
         ].reduce((sum, session) => sum + (session.amount || 0), 0);
         return { ...button, sum: Number(totalContracts.toFixed(2)) };
       }
@@ -1267,7 +1330,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
               <div className="flex gap-[10px]">
                 <div className="w-full">
                   <div className="flex flex-wrap gap-[15px]">
-                    {depositReport.map((deposit, index) => (
+                    {withdrawalReport.map((deposit, index) => (
                       <div
                         key={`deposit-plus-${index}`}
                         className="w-[358px] px-[35px] py-[10px] rounded-full bg-[#00163A26] text-[#00163A]"
@@ -1293,7 +1356,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
               <div className="flex gap-[10px]">
                 <div className="w-full flex flex-wrap sm:flex-nowrap">
                   <div className="flex flex-wrap gap-[15px]">
-                    {depositReport.map((deposit, index) => (
+                    {transferSendReport.map((deposit, index) => (
                       <div
                         key={`deposit-plus-${index}`}
                         className="w-[378px] px-[35px] py-[10px] rounded-full bg-[#FFFFFF80] text-[#00163A]"
@@ -1303,7 +1366,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                             <div>{new Date(deposit.createdAt).toISOString().slice(0, 10)}</div>
                             <div>{new Date(deposit.createdAt).toISOString().slice(11, 16)}</div>
                           </div>
-                          <div>alex25</div>
+                          <div>{deposit.username}</div>
                           <div>{translations.sent[language]}</div>
                           <div>→</div>
                           <div className="flex gap-[10px] text-[14px]">
@@ -1314,7 +1377,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                     ))}
                   </div>
                   <div className="flex flex-wrap gap-[15px]">
-                    {depositReport.map((deposit, index) => (
+                    {transferGetReport.map((deposit, index) => (
                       <div
                         key={`deposit-plus-${index}`}
                         className="w-[378px] px-[35px] py-[10px] rounded-full bg-[#00163A26] text-[#00163A]"
@@ -1324,7 +1387,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                             <div>{new Date(deposit.createdAt).toISOString().slice(0, 10)}</div>
                             <div>{new Date(deposit.createdAt).toISOString().slice(11, 16)}</div>
                           </div>
-                          <div>alex25</div>
+                          <div>{deposit.username}</div>
                           <div>{translations.received[language]}</div>
                           <div>←</div>
                           <div className="flex gap-[10px] text-[14px]">
