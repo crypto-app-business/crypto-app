@@ -307,7 +307,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
     });
 
     setButtons(updatedButtons);
-  }, [miningSessions, stakingSessions, listingSessions, miningClosedSessions, stakingClosedSessions, listingClosedSessions, language]);
+  }, [miningSessions, stakingSessions, listingSessions, miningClosedSessions, stakingClosedSessions, listingClosedSessions, language, depositReport, withdrawalReport, transferGetReport, transferSendReport,]);
 
   return (
     <div className="">
@@ -1354,12 +1354,12 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
 
             {activeButton === translations.transfers[language] && (
               <div className="flex gap-[10px]">
-                <div className="w-full flex flex-wrap sm:flex-nowrap">
+                <div className="w-full flex flex-wrap gap-[15px ] sm:flex-nowrap">
                   <div className="flex flex-wrap gap-[15px]">
                     {transferSendReport.map((deposit, index) => (
                       <div
                         key={`deposit-plus-${index}`}
-                        className="w-[378px] px-[35px] py-[10px] rounded-full bg-[#FFFFFF80] text-[#00163A]"
+                        className="w-[378px] px-[35px] py-[10px] rounded-full bg-[#3581FF4D] text-[#00163A]"
                       >
                         <div className="flex justify-between gap-[10px]">
                           <div className="flex gap-[10px] text-[14px]">
@@ -1377,7 +1377,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                     ))}
                   </div>
                   <div className="flex flex-wrap gap-[15px]">
-                    {transferGetReport.map((deposit, index) => (
+                    {transferSendReport.map((deposit, index) => (
                       <div
                         key={`deposit-plus-${index}`}
                         className="w-[378px] px-[35px] py-[10px] rounded-full bg-[#00163A26] text-[#00163A]"

@@ -20,8 +20,9 @@ export default function UsersTable() {
   const [error, setError] = useState("");
   const [token, setToken] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeUserId, setActiveUserId] = useState<number | null>(0); // Залишаємо одну змінну стану
-  console.log(error)
+  const [activeUserId, setActiveUserId] = useState<number | null>(null);
+  const [editedBalance, setEditedBalance] = useState<Record<string, number> | null>(null);
+
   useEffect(() => {
     const fetchToken = async () => {
       try {
@@ -71,6 +72,57 @@ export default function UsersTable() {
     fetchUsers();
   }, [token]);
 
+  const toggleAccordion = (userId: number) => {
+    setActiveUserId(userId === activeUserId ? null : userId);
+    if (userId !== activeUserId) {
+      const user = users[userId];
+      setEditedBalance({
+        CC: user.balance.CC ?? 0,
+        USDT: user.balance.USDT ?? 0,
+      });
+    } else {
+      setEditedBalance(null);
+    }
+  };
+
+  const handleBalanceChange = (currency: string, value: string) => {
+    if (editedBalance) {
+      setEditedBalance({
+        ...editedBalance,
+        [currency]: value === "" ? 0 : parseFloat(value) || 0,
+      });
+    }
+  };
+
+  const saveBalance = async (username: string) => {
+    if (!token || !editedBalance) return;
+
+    try {
+      const response = await fetch("/api/admin/update-balance", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ username, balance: editedBalance }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setUsers(users.map((user) =>
+          user.username === username ? { ...user, balance: editedBalance } : user
+        ));
+        alert("Баланс успішно оновлено!");
+      } else {
+        alert("Помилка при оновленні балансу: " + (data.error || "Невідома помилка"));
+      }
+    } catch (err) {
+      console.error("Помилка при збереженні балансу:", err);
+      alert("Помилка при збереженні балансу");
+    }
+  };
+
   if (loading) {
     return <p className="text-center text-gray-600">Загрузка...</p>;
   }
@@ -81,13 +133,9 @@ export default function UsersTable() {
     )
   );
 
-  const toggleAccordion = (userId: number) => {
-    // Якщо той самий користувач, закриваємо акордеон, інакше відкриваємо для цього ID
-    setActiveUserId(userId === activeUserId ? null : userId);
-  };
-
   return (
     <div className="p-2 max-w-full mx-auto">
+      <div className="text-red">{error}</div>
       <h3 className="text-lg font-semibold mb-2">Список користувачів</h3>
 
       <div className="mb-2">
@@ -115,7 +163,7 @@ export default function UsersTable() {
                 <React.Fragment key={`${user.id}-${index}`}>
                   <tr
                     onClick={() => toggleAccordion(index)}
-                    className="border-b hover:bg-gray-50 transition-colors cursor-pointer"
+                    className={`border-b hover:bg-gray-50 transition-colors cursor-pointer ${activeUserId === index ? 'bg-[#dbefea]' : ''}`}
                   >
                     <td className="py-1 px-2 text-xs md:text-sm">{user.username}</td>
                     <td className="py-1 px-2 text-xs md:text-sm">{user.phone}</td>
@@ -126,7 +174,7 @@ export default function UsersTable() {
                   {activeUserId === index && (
                     <tr
                       key={`${user.id}-${index}-accordion`}
-                      className="bg-gray-50"
+                      className="bg-[#dbefea]"
                     >
                       <td colSpan={3} className="py-2 px-2 text-xs md:text-sm">
                         <div>
@@ -136,11 +184,32 @@ export default function UsersTable() {
                           <p>
                             <strong>Баланс:</strong>
                           </p>
-                          {Object.entries(user.balance).map(([currency, amount]) => (
-                            <span key={currency} className="block text-xs md:text-sm">
-                              {currency}: {amount.toFixed(2)}
-                            </span>
-                          ))}
+                          <div className="flex items-center gap-2 mb-2">
+                            <span>CC:</span>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={editedBalance?.CC ?? 0}
+                              onChange={(e) => handleBalanceChange("CC", e.target.value)}
+                              className="w-24 p-1 border border-gray-300 rounded text-sm"
+                            />
+                          </div>
+                          <div className="flex items-center gap-2 mb-2">
+                            <span>USDT:</span>
+                            <input
+                              type="number"
+                              step="0.01"
+                              value={editedBalance?.USDT ?? 0}
+                              onChange={(e) => handleBalanceChange("USDT", e.target.value)}
+                              className="w-24 p-1 border border-gray-300 rounded text-sm"
+                            />
+                          </div>
+                          <button
+                            onClick={() => saveBalance(user.username)}
+                            className="mt-2 px-4 py-1 bg-blue text-white rounded hover:bg-gray text-sm"
+                          >
+                            Зберегти
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -187,11 +256,32 @@ export default function UsersTable() {
                   <p className="text-xs">
                     <strong>Баланс:</strong>
                   </p>
-                  {Object.entries(user.balance).map(([currency, amount]) => (
-                    <span key={currency} className="block text-xs">
-                      {currency}: {amount.toFixed(2)}
-                    </span>
-                  ))}
+                  <div className="flex items-center gap-2 mb-2">
+                    <span>CC:</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editedBalance?.CC ?? 0}
+                      onChange={(e) => handleBalanceChange("CC", e.target.value)}
+                      className="w-24 p-1 border border-gray-300 rounded text-sm"
+                    />
+                  </div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span>USDT:</span>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={editedBalance?.USDT ?? 0}
+                      onChange={(e) => handleBalanceChange("USDT", e.target.value)}
+                      className="w-24 p-1 border border-gray-300 rounded text-sm"
+                    />
+                  </div>
+                  <button
+                    onClick={() => saveBalance(user.username)}
+                    className="mt-2 px-4 py-1 bg-blue text-white rounded hover:bg-blue text-sm"
+                  >
+                    Зберегти
+                  </button>
                 </div>
               )}
             </div>

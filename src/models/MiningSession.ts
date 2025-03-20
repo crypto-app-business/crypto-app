@@ -11,6 +11,7 @@ const MiningSessionSchema = new mongoose.Schema({
   paidDays: { type: Number, default: 0 },
   isCompleted: { type: Boolean, default: false },
   fullAmount: { type: Number, default:0},
+  bonusesReceivedUser: { type: [String], default: []},
 });
 
 export default mongoose.models.MiningSession ||

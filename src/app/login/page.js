@@ -121,7 +121,7 @@ export default function LoginPage() {
             </a>
           </div>
           <Link
-            href="/forgot-password"
+            href="https://t.me/Crypto_corporation_support"
             className="text-blue-500 hover:underline"
           >
             {loginContent[language].forgotPassword}
