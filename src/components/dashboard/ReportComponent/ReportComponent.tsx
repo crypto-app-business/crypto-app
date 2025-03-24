@@ -196,7 +196,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                     <div className="min-w-[205px]">
                       <div className="flex justify-between text-[16px] font-bold mb-[5px]">
                         <div>{translations.contract[language]} {index + 1}</div>
-                        <div>${session?.amount.toFixed(2)}</div>
+                        <div>CC {session?.amount.toFixed(2)}</div>
                       </div>
                       <div className="flex justify-between text-[14px] font-semibold">
                         <div>{translations.opened[language]}</div>
@@ -305,7 +305,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div className="min-w-[205px]">
                         <div className="flex justify-between text-[16px] font-bold mb-[5px]">
                           <div>{translations.contract[language]} {index + 1}</div>
-                          <div>${session.amount}</div>
+                          <div>CC {session.amount}</div>
                         </div>
                         <div className="flex justify-between text-[14px] font-semibold">
                           <div>{translations.opened[language]}</div>

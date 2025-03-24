@@ -134,7 +134,8 @@ export default function RegisterPage() {
             {...register("username", {
               required: registerContent[language].usernameRequired,
               validate: async (value) => {
-                await checkUsername(value);
+                const trimmedValue = value.trim();
+                await checkUsername(trimmedValue);
                 return isUsernameUnique || registerContent[language].usernameTaken;
               },
             })}
