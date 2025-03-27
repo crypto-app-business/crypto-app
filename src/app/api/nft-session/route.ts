@@ -54,7 +54,7 @@ export async function POST(request) {
       description: `Покупка NFT: ${nft.name}`,
       amount: nft.price,
       currency: "USDT",
-      type: 'nft_purchase',
+      type: 'nft',
       createdAt: new Date(),
     });
     await newOperation.save();
@@ -121,7 +121,7 @@ export async function PATCH(request) {
           description: `Ежедневная выплата NFT`,
           amount: totalReward,
           currency: "USDT",
-          type: 'nft_reward',
+          type: 'nft',
           createdAt: new Date(),
         });
         await newOperation.save();
@@ -136,7 +136,7 @@ export async function PATCH(request) {
             description: `Возврат тела NFT`,
             amount: amount,
             currency: "USDT",
-            type: 'nft_return',
+            type: 'nft',
             createdAt: new Date(),
           });
           await returnOperation.save();

@@ -10,7 +10,7 @@ export default function Sidebar({ isSidebarOpen, toggleSidebar, setActiveTab, ac
     { text: { ru: "Майнинг", en: "Mining" }, href: "/dashboard/mining", icon: "/dashboard/sidebar-icon/node-3-connections.svg", iconBlue: "/dashboard/sidebar-icon/blue/node-3-connections.svg" },
     { text: { ru: "Стейкинг", en: "Staking" }, href: "/dashboard/staking", icon: "/dashboard/sidebar-icon/invoice.svg", iconBlue: "/dashboard/sidebar-icon/blue/invoice.svg" },
     { text: { ru: "Листинг", en: "Listing" }, href: "/dashboard/listing", icon: "/dashboard/sidebar-icon/mnemonic.svg", iconBlue: "/dashboard/sidebar-icon/blue/mnemonic.svg" },
-    // { text: { ru: "NFT", en: "NFT" }, href: "/dashboard/NFT", icon: "/dashboard/sidebar-icon/nft.svg", iconBlue: "/dashboard/sidebar-icon/blue/nft.svg" },
+    { text: { ru: "NFT", en: "NFT" }, href: "/dashboard/NFT", icon: "/dashboard/sidebar-icon/nft.svg", iconBlue: "/dashboard/sidebar-icon/blue/nft.svg" },
     { text: { ru: "Профиль", en: "Profile" }, href: "/dashboard/profile", icon: "/dashboard/sidebar-icon/contacts.svg", iconBlue: "/dashboard/sidebar-icon/blue/contacts.svg" },
     { text: { ru: "Отчет", en: "Report" }, href: "/dashboard/report", icon: "/dashboard/sidebar-icon/calendar.svg", iconBlue: "/dashboard/sidebar-icon/blue/calendar.svg" },
     { text: { ru: "Команда", en: "Team" }, href: "/dashboard/teams", icon: "/dashboard/sidebar-icon/lightning.svg", iconBlue: "/dashboard/sidebar-icon/blue/lightning.svg" },
