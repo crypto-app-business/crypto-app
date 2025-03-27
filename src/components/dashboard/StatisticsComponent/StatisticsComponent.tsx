@@ -30,6 +30,15 @@ interface MiningSession {
   percentage: number[];
   fullAmount: number;
 }
+interface Bonus {
+  id: string;
+  rang: number;
+  rangWait: number;
+  bonus: number;
+  bonusRef: number;
+  createdAt: string;
+  bonusGet: number[];
+}
 
 interface DepositRequest {
   id: string;
@@ -64,6 +73,7 @@ interface TransferRequest {
 const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
   const { language } = useLanguageStore();
   const [loading, setLoading] = useState<boolean>(true);
+  const [bonus, setBonus] = useState<Bonus | null>(null);
   const [miningSessions, setMiningSessions] = useState<MiningSession[]>([]);
   const [stakingSessions, setStakingSessions] = useState<MiningSession[]>([]);
   const [listingSessions, setListingSessions] = useState<MiningSession[]>([]);
@@ -188,8 +198,9 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
         ]);
 
         if (miningRes.ok) {
-          const miningData: { sessions: MiningSession[] } = await miningRes.json();
+          const miningData: { sessions: MiningSession[], bonus: Bonus } = await miningRes.json();
           setMiningSessions(miningData.sessions);
+          setBonus(miningData.bonus);
         }
 
         if (stakingRes.ok) {
@@ -1289,12 +1300,12 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   <div className="text-[20px] font-bold uppercase mb-[10px]">{translations.referralProgram[language]}</div>
                   <div className="flex gap-[10px] mb-[30px]">
                     <div className="text-[16px]">{translations.totalEarned[language]}</div>
-                    <div className="text-[#3581FF]">0</div>
+                    <div className="text-[#3581FF]">{bonus?.bonus}</div>
                   </div>
                   <div className="text-[20px] font-bold uppercase mb-[10px]">{translations.bonuses[language]}</div>
                   <div className="flex gap-[10px]">
                     <div>{translations.totalEarned[language]}</div>
-                    <div className="text-[#3581FF]">0</div>
+                    <div className="text-[#3581FF]">{bonus?.bonusRef}</div>
                   </div>
                 </div>
               </div>

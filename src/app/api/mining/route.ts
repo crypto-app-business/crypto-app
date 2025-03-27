@@ -242,8 +242,10 @@ export async function GET(request) {
     }
 
     const userSessions = await MiningSession.find({ userId, isCompleted: false });
-    
-    return NextResponse.json({ success: true, sessions: userSessions });
+
+    const userBonus = await Bonus.findOne({ id: userId });
+
+    return NextResponse.json({ success: true, sessions: userSessions, bonus: userBonus });
   } catch (error) {
     console.error('Помилка отримання майнінг-сесій:', error);
     return NextResponse.json({ error: 'Помилка сервера.' }, { status: 500 });
