@@ -33,7 +33,7 @@ export async function GET(req: Request) {
             username: user.username,
             referrer: user.referrer  !== 'none' ? user.referrer : 'None',
             registrationDate: user.createdAt,
-            deposits: deposits.map(({ currency, amount }) => ({ currency, amount })),
+            deposits: deposits.map(({ currency, amount, isCompleted }) => ({ currency, amount, isCompleted })),
             line: depth,
             subTree: await buildReferralTree(user.username, depth + 1, maxDepth, visited),
             firstName: user.firstName,

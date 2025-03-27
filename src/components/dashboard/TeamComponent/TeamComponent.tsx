@@ -6,6 +6,7 @@ import { useLanguageStore } from '@/store/useLanguageStore';
 interface Deposit {
   currency: string;
   amount: number;
+  isCompleted: boolean
 }
 
 interface RawUserData {
@@ -94,21 +95,20 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
     const members = team.filter(member => member.line === line);
     return (
       <div className="flex flex-wrap gap-4">
-        {members.map((member, index) => (
+        {members.map((member, index) => {
+          const pendingDepositsTotal = member.deposits
+          .filter(deposit => !deposit.isCompleted) // Фільтруємо незавершені депозити
+          .reduce((sum, deposit) => sum + deposit.amount, 0); // Підсумовуємо amount
+        
+        return(
           <div
             key={index}
             className="flex flex-wrap justify-around border border-white py-[7px] rounded-[5px] text-[14px] w-[230px] ml-auto mr-auto"
           >
-            <div className="font-bold text-white">{member.firstName || '-'}</div>
-            <div>
-              {new Date(member.registrationDate).toLocaleTimeString(language === 'ru' ? 'uk-UA' : 'en-US', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </div>
-            <div>{member.username}</div>
+            <div className="font-bold text-white">{member.email || '-'}</div>
+            <div className="font-bold text-white">${pendingDepositsTotal}</div>
           </div>
-        ))}
+        )})}
       </div>
     );
   };
@@ -122,6 +122,8 @@ const TeamComponent: React.FC<TeamComponentProps> = ({ userId }) => {
   const personalPartnersCount = useMemo(() => {
     return team.filter(member => member.line === 1).length;
   }, [team]);
+  
+  console.log(team)
 
   return (
     <div className="">

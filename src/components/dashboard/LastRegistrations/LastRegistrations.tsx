@@ -36,7 +36,7 @@ export default function LastRegistrations({ userId }) {
             .map(({ username, line, registrationDate, firstName }) => ({
               username,
               line,
-              registrationDate: new Date(registrationDate).toLocaleDateString(language === 'ru' ? "uk-UA" : "en-US"),
+              registrationDate: new Date(registrationDate).toISOString(),
               firstName,
             }));
           setLastRegistrations(sortedData);
@@ -64,14 +64,16 @@ export default function LastRegistrations({ userId }) {
               {translations.line[language]}: {line}
             </div>
             <div>
-              {new Date(registrationDate.split('.').reverse().join('-')).toLocaleTimeString(
+              {/* {new Date(registrationDate.split('.').reverse().join('-')).toLocaleTimeString(
                 language === 'ru' ? 'uk-UA' : 'en-US',
                 {
                   hour: '2-digit',
                   minute: '2-digit',
                   timeZone: 'UTC'
                 }
-              )}
+              )} */}
+              <div>{new Date(registrationDate).toISOString().slice(11, 16)}</div>
+
             </div>
             <div>{username}</div>
           </div>
