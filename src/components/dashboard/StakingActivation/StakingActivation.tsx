@@ -71,6 +71,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
   const [miningSessions, setMiningSessions] = useState<MiningSession[]>([]);
   const [balance, setBalance] = useState<number>(0);
   const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
+  const [loading, setLoading] = useState(true); 
 
   const translations = {
     simulateStaking: {
@@ -186,16 +187,16 @@ export default function StakingActivation({ user }: StakingActivationProps) {
       }
     } catch (error) {
       console.error('Server error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchMiningSessions();
+    setBalance(+user?.balance?.CC?.toFixed(2));
   }, [user?.id]);
 
-  useEffect(() => {
-    setBalance(+user?.balance?.CC?.toFixed(2));
-  }, [user]);
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>, action: string) => {
     e.preventDefault();
@@ -326,6 +327,8 @@ export default function StakingActivation({ user }: StakingActivationProps) {
   const handleSpinnerHide = () => {
     setRequestStatus(null);
   };
+
+  if(loading) return(<div>Loading...</div>)
 
   return (
     <div className="bg-gray-50 flex flex-wrap flex-row sm:gap-[4%] sm:justify-start justify-center w-full">
