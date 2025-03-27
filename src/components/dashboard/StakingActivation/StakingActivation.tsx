@@ -197,6 +197,9 @@ export default function StakingActivation({ user }: StakingActivationProps) {
     setBalance(+user?.balance?.CC?.toFixed(2));
   }, [user?.id]);
 
+  useEffect(() => {
+    setBalance(+user?.balance?.CC?.toFixed(2));
+  }, [user]);
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>, action: string) => {
     e.preventDefault();
