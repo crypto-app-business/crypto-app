@@ -108,13 +108,18 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
 
+    const user = await User.findById(userId);
+    if (!user) {
+      return NextResponse.json({ error: 'Пользователь не найден.' }, { status: 404 });
+    }
+
     if (!userId) {
       return NextResponse.json({ error: 'userId є обов’язковим.' }, { status: 400 });
     }
 
     const userSessions = await StakingSession.find({ userId, isCompleted: false });
     
-    return NextResponse.json({ success: true, sessions: userSessions });
+    return NextResponse.json({ success: true, sessions: userSessions, user : user });
   } catch (error) {
     console.error('Помилка отримання стейкінг-сесій:', error);
     return NextResponse.json({ error: 'Помилка сервера.' }, { status: 500 });
