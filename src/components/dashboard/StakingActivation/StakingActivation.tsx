@@ -182,6 +182,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
         const data: { sessions: MiningSession[] } = await response.json();
         const filteredSessions = data.sessions.filter(session => session.currency === 'CC');
         setMiningSessions(filteredSessions);
+        // setBalance(+user?.balance?.CC?.toFixed(2));
       } else {
         console.error('Error fetching staking data.');
       }
@@ -194,11 +195,17 @@ export default function StakingActivation({ user }: StakingActivationProps) {
 
   useEffect(() => {
     fetchMiningSessions();
-    setBalance(+user?.balance?.CC?.toFixed(2));
+    // setBalance(+user?.balance?.CC?.toFixed(2));
   }, [user?.id]);
 
   useEffect(() => {
-    setBalance(+user?.balance?.CC?.toFixed(2));
+    // console.log(user)
+    // console.log(user?.balance)
+    // console.log(user?.balance?.CC)
+    // console.log(user?.balance?.CC?.toFixed(2))
+    // console.log(+user?.balance?.CC?.toFixed(2))
+
+    setBalance(+user?.balance?.CC);
   }, [user]);
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>, action: string) => {
