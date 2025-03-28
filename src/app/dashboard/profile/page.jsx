@@ -71,6 +71,14 @@ export default function Dashboard() {
         if (!listingRes.ok) {
           console.error('Ошибка обновления баланса для листинга.');
         }
+        const nftRes = await fetch('/api/nft-session', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user.id }),
+        });
+        if (!nftRes.ok) {
+          console.error('Ошибка обновления баланса для листинга.');
+        }
       } catch (error) {
         console.error('Ошибка сервера при обновлении баланса:', error);
       }

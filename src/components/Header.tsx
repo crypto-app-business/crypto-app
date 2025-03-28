@@ -2,7 +2,6 @@
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { useLanguageStore } from '@/store/useLanguageStore';
 
 interface Balance {
@@ -13,11 +12,13 @@ interface Balance {
 interface User {
   balance: Balance;
   username: string;
+  id: string;
 }
 
 export default function Header({ isSidebarOpen, toggleSidebar }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
+  const [bonusRang, setBonusRang] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { language, toggleLanguage } = useLanguageStore();
 
@@ -43,6 +44,7 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
             ...prev,
             balance: userExtraData.data.balance,
             username: userExtraData.data.username,
+            id: userExtraData.data.id,
           }));
         } else {
           console.error('Error fetching user data:', await userRes.json());
@@ -57,7 +59,36 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
     initializeUser();
   }, [router]);
 
-  const handleLogout = async (redirect) => {
+  useEffect(() => {
+    if (user?.id) {
+      getBonus(user.id);
+    }
+  }, [user?.id]);
+
+  const getBonus = async (id: string) => {
+    try {
+      const bonusRes = await fetch(`/api/bonus?userId=${id}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (!bonusRes.ok) {
+        console.error('Помилка пошуку бонусу:', await bonusRes.json());
+        return;
+      }
+
+      const bonusData = await bonusRes.json();
+      if (bonusData.bonus.rang) {
+        setBonusRang(+bonusData.bonus.rang);
+      } else {
+        console.error('Невірний формат даних бонусу:', bonusData);
+      }
+    } catch (error) {
+      console.error('Помилка сервера при отриманні бонусу:', error);
+    }
+  };
+
+  const handleLogout = async (redirect: string) => {
     try {
       const res = await fetch('/api/auth/logout', {
         method: 'POST',
@@ -79,6 +110,13 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
     return <div>Loading...</div>;
   }
 
+  const translations = {
+    accountRank: {
+      ru: "Ранг аккаунта",
+      en: "Account rank",
+    },
+  }
+
   return (
     <header className="bg-cover bg-[#3581FF] text-white max-h-[125px] shadow-md flex justify-between items-center">
       <div className='w-full p-4' style={{ background: 'linear-gradient(180deg, rgba(53, 191, 255, 0) 33.1%, rgba(53, 191, 255, 0.74) 100%)' }}>
@@ -96,19 +134,30 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
             <div className='flex items-center gap-[10px] justify-end'>
               <div className='uppercase text-[24px] bold hidden sm:block'>{language === 'ru' ? 'Баланс' : 'Balance'}</div>
               {user?.balance && <div className='uppercase text-[24px] bold text-white hidden sm:block'>{user?.balance?.USDT?.toFixed(2)} USDT</div>}
-              
+
               {/* Кнопка перемикання мови */}
               <button onClick={toggleLanguage} className="flex items-center justify-center gap-2 px-[3px] py-[2px] text-black hover:bg-gray-600">
                 <Image src="/dashboard/globe.svg" alt="Change language" width={45} height={45} style={{ objectFit: "cover" }} priority={false} />
               </button>
 
-              <Link href='/dashboard/profile' className="flex items-center justify-center rounded-full hover:bg-gray-600">
-                <Image src="/dashboard/contacts.svg" alt="Profile" width={45} height={45} style={{ objectFit: "cover" }} priority={false} />
-              </Link>
+              {/* <div className='w-[35px] h-[35px] rounded-full border-[4px] border-white flex justify-center items-center font-bold'
+                // title={language === 'ru' ? translations.accountRank.ru : translations.accountRank.en}
+                title={language === 'ru' ? "ranslations.accountRank.ru" : "translations.accountRank.en"}
+              >
+                {bonusRang}
+              </div> */}
+              <div className="relative group">
+                <div className="w-[35px] h-[35px] rounded-full border-[4px] border-white flex justify-center items-center font-bold">
+                  {bonusRang}
+                </div>
+                <div className="absolute hidden group-hover:block bg-black text-white text-xs rounded py-1 px-2 -top-8 left-1/2 transform -translate-x-1/2 whitespace-nowrap">
+                  {language === 'ru' ? translations.accountRank.ru : translations.accountRank.en}
+                </div>
+              </div>
               <button onClick={() => handleLogout('/')} className="flex items-center justify-center rounded-full hover:bg-gray-600">
                 <Image src="/dashboard/exit.svg" alt="Logout" width={45} height={45} style={{ objectFit: "cover" }} priority={false} />
               </button>
-              
+
               {!isSidebarOpen && (
                 <div onClick={toggleSidebar} className="sm:hidden">
                   <Image src="/dashboard/menu.svg" alt="Menu" width={45} height={45} style={{ objectFit: "cover" }} priority={false} />

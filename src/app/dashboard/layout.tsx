@@ -2,17 +2,105 @@
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import DashboardHeader from '@/components/DashboardHeader';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+
+
+interface User {
+  balance: { [key: string]: number }; // Наприклад, { USDT: number, BTC: number }
+  username: string;
+  id: string;
+}
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<string>("Главная");
+  const router = useRouter();
+  const [user, setUser] = useState<User| null>(null);
+
+    useEffect(() => {
+      const initializeUser = async () => {
+        try {
+          const authRes = await fetch('/api/auth/me');
+          if (!authRes.ok) {
+            router.push('/login');
+            return;
+          }
+          const userData = await authRes.json();
+          if (!userData.id) {
+            // Якщо id немає, перенаправляємо на логін
+            router.push('/login');
+            return;
+          }
+          setUser(userData);
+  
+          const userRes = await fetch('/api/user', {
+            method: 'GET',
+            credentials: 'include',
+          });
+          if (userRes.ok) {
+            const userExtraData = await userRes.json();
+            setUser((prev) => ({
+              ...prev,
+              balance: userExtraData.data.balance,
+              username: userExtraData.data.username,
+              id: userData.id,
+            }));
+          } else {
+            console.error('Error fetching user data:', await userRes.json());
+          }
+        } catch (error) {
+          console.error('Error initializing user:', error);
+          router.push('/login');
+        } finally {
+        }
+      };
+      initializeUser();
+    }, [router]);
 
 
   const toggleSidebar = () => {
     if (window.innerWidth > 768) return
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+    useEffect(() => {
+      if (!user?.id) return;
+  
+      const updateMiningBalances = async () => {
+        try {
+          const miningRes = await fetch('/api/mining/complete', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id }),
+          });
+          if (!miningRes.ok) {
+            console.error('Ошибка обновления баланса для майнинга.');
+          }
+  
+          const listingRes = await fetch('/api/listing/complete', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id }),
+          });
+          if (!listingRes.ok) {
+            console.error('Ошибка обновления баланса для листинга.');
+          }
+          const nftRes = await fetch('/api/nft-session', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id }),
+          });
+          if (!nftRes.ok) {
+            console.error('Ошибка обновления баланса для листинга.');
+          }
+        } catch (error) {
+          console.error('Ошибка сервера при обновлении баланса:', error);
+        }
+      };
+  
+      updateMiningBalances();
+    }, [user?.id]);
 
   return (
     <div className="min-h-screen !bg-none"

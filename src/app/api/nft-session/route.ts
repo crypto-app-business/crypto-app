@@ -155,3 +155,30 @@ export async function PATCH(request) {
     return NextResponse.json({ error: 'Ошибка сервера.' }, { status: 500 });
   }
 }
+
+export async function GET(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const userId = searchParams.get('userId');
+
+    if (!userId) {
+      return NextResponse.json({ error: 'userId є обов’язковим параметром.' }, { status: 400 });
+    }
+
+    await connectDB();
+
+    // Перевірка користувача
+    const user = await User.findById(userId);
+    if (!user) {
+      return NextResponse.json({ error: 'Користувач не знайдений.' }, { status: 404 });
+    }
+
+    // Отримання активних NFT-сесій (isCompleted: false)
+    const activeSessions = await NFTSession.find({ userId, isCompleted: false }).lean();
+
+    return NextResponse.json({ success: true, sessions: activeSessions });
+  } catch (error) {
+    console.error('Помилка при отриманні активних NFT-сесій:', error);
+    return NextResponse.json({ error: 'Помилка сервера.' }, { status: 500 });
+  }
+}

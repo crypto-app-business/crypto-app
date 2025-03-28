@@ -70,6 +70,21 @@ interface TransferRequest {
   createdAt: string;
 }
 
+interface NFTSession {
+  id: string;
+  userId: string;
+  nftId: string;
+  currency: string;
+  amount: number;
+  percentage: number;
+  durationDays: number;
+  startDate: string;
+  endDate: string;
+  paidDays: number;
+  isCompleted: boolean;
+  totalReward: number;
+}
+
 const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
   const { language } = useLanguageStore();
   const [loading, setLoading] = useState<boolean>(true);
@@ -87,6 +102,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
   const [activeTab, setActiveTab] = useState<string>('mining');
   const [activeContratcTab, setActiveContratcTab] = useState<string>('open');
   const [activeButton, setActiveButton] = useState<string>('Заработано');
+  const [nftSessions, setNftSessions] = useState<NFTSession[]>([]);
+  const [nftClosedSessions, setNftClosedSessions] = useState<NFTSession[]>([]);
 
   const translations = {
     loading: {
@@ -169,6 +186,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
       ru: "получен",
       en: "received",
     },
+    nft: {
+      ru: "NFT",
+      en: "NFT",
+    },
   };
 
   const [buttons, setButtons] = useState([
@@ -185,7 +206,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
       if (!userId) return;
 
       try {
-        const [miningRes, stakingRes, listingRes, miningClosedRes, stakingClosedRes, listingClosedRes, depositRes, transferRes, withdrawalRes] = await Promise.all([
+        const [miningRes, stakingRes, listingRes, miningClosedRes, stakingClosedRes, listingClosedRes, depositRes, transferRes, withdrawalRes, nftRes, nftClosedRes] = await Promise.all([
           fetch(`/api/mining?userId=${userId}`),
           fetch(`/api/staking?userId=${userId}`),
           fetch(`/api/listing?userId=${userId}`),
@@ -195,6 +216,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
           fetch(`/api/get-report-deposit?userId=${userId}`),
           fetch(`/api/get-report-transfer?userId=${userId}`),
           fetch(`/api/get-report-withdrawal?userId=${userId}`),
+          fetch(`/api/nft-session?userId=${userId}`),
+          fetch(`/api/nft-session/closed?userId=${userId}`),
         ]);
 
         if (miningRes.ok) {
@@ -253,6 +276,15 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
           const withdrawalData: { withdrawals: WithdrawalRequest[] } = await withdrawalRes.json();
           setWithdrawalReport(withdrawalData.withdrawals.filter((withdrawal) => withdrawal.status === 'confirmed'));
         }
+        if (nftRes.ok) {
+          const nftData: { sessions: NFTSession[] } = await nftRes.json();
+          setNftSessions(nftData.sessions.filter((session) => !session.isCompleted));
+        }
+  
+        if (nftClosedRes.ok) {
+          const nftClosedData: { sessions: NFTSession[] } = await nftClosedRes.json();
+          setNftClosedSessions(nftClosedData.sessions.filter((session) => session.isCompleted));
+        }
 
         setLoading(false);
       } catch (error) {
@@ -286,9 +318,11 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
           ...miningSessions,
           ...stakingSessions,
           ...listingSessions,
+          ...nftSessions,
           ...miningClosedSessions,
           ...stakingClosedSessions,
           ...listingClosedSessions,
+          ...nftClosedSessions,
         ].reduce((sum, session) => sum + (session.amount || 0), 0);
         return { ...button, sum: Number(totalContracts.toFixed(2)) };
       }
@@ -314,11 +348,18 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
         ].reduce((sum, session) => sum + (session.amount || 0), 0);
         return { ...button, sum: Number(totalContracts.toFixed(2)) };
       }
+      if (button.label === translations.nft[language]) {
+        const totalNftInvested = [...nftSessions, ...nftClosedSessions].reduce(
+          (sum, session) => sum + (session.amount || 0),
+          0
+        );
+        return { ...button, sum: Number(totalNftInvested.toFixed(2)) };
+      }
       return button;
     });
 
     setButtons(updatedButtons);
-  }, [miningSessions, stakingSessions, listingSessions, miningClosedSessions, stakingClosedSessions, listingClosedSessions, language, depositReport, withdrawalReport, transferGetReport, transferSendReport,]);
+  }, [miningSessions, stakingSessions, listingSessions, miningClosedSessions, stakingClosedSessions, listingClosedSessions, language, depositReport, withdrawalReport, transferGetReport, transferSendReport, nftSessions, nftClosedSessions]);
 
   return (
     <div className="">
@@ -724,7 +765,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   </div>
                 </div>
                 {activeContratcTab !== 'ref-prog' && activeContratcTab !== 'bonus' && (
-                  <div className="flex gap-[5px] sm:hidden mb-[20px]">
+                  <div className="flex flex-wrap gap-[5px] sm:hidden mb-[20px]">
                     <div>
                       <div
                         onClick={() => setActiveTab('mining')}
@@ -780,6 +821,25 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                           priority={false}
                         />
                         <div className="text-[16px]">{translations.listing[language]}</div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        onClick={() => setActiveTab('nft')}
+                        className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeTab === 'nft'
+                            ? 'bg-[#3581FF] text-white rounded-[15px]'
+                            : 'text-[#00163A] border border-[#00163A]'
+                          }`}
+                      >
+                        <Image
+                          src={`${activeTab === 'nft' ? '/dashboard/report/nft-white.svg' : '/dashboard/report/nft.svg'}`}
+                          alt="Listing Icon"
+                          width={19}
+                          height={19}
+                          objectFit="cover"
+                          priority={false}
+                        />
+                        <div className="text-[16px]">{translations.nft[language]}</div>
                       </div>
                     </div>
                   </div>
@@ -875,13 +935,42 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         ))}
                       </div>
                     )}
+                    {activeTab === 'nft' && (
+                      <div className="flex flex-col gap-[15px]">
+                        {nftSessions.map((session, index) => (
+                          <div
+                            key={index}
+                            className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#00163A] rounded-[15px] w-[257px]"
+                          >
+                            <div className="min-w-[205px]">
+                              <div className="flex justify-between text-[16px] mb-[5px] text-white gap-[10px]">
+                                <div className="font-bold">{translations.contract[language]} {index + 1}</div>
+                                <div>${session.amount}</div>
+                              </div>
+                              <div className="flex justify-between text-[14px] font-semibold text-white">
+                                <div>{translations.opened[language]}</div>
+                                <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
+                              </div>
+                              <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
+                                <div>{translations.closes[language]}</div>
+                                <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
+                              </div>
+                              <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
+                                <div>{translations.earned[language]}</div>
+                                <div>{(session?.paidDays*session?.amount *session?.percentage/100/session?.durationDays).toFixed(2)}</div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
                 {activeContratcTab === 'ref-prog' && (
                   <div>
                     <div className="flex gap-[10px] mb-[30px]">
                       <div className="text-[16px]">{translations.totalEarned[language]}</div>
-                      <div className="text-[#3581FF]">0</div>
+                      <div className="text-[#3581FF]">{bonus?.bonusRef}</div>
                     </div>
                   </div>
                 )}
@@ -889,7 +978,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   <div>
                     <div className="flex gap-[10px]">
                       <div>{translations.totalEarned[language]}</div>
-                      <div className="text-[#3581FF]">0</div>
+                      <div className="text-[#3581FF]">{bonus?.bonus}</div>
                     </div>
                   </div>
                 )}
@@ -983,6 +1072,35 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                         ))}
                       </div>
                     )}
+                    {activeTab === 'nft' && (
+                      <div className="flex flex-col gap-[15px]">
+                        {nftClosedSessions.map((session, index) => (
+                          <div
+                            key={index}
+                            className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#00163A] rounded-[15px] w-[257px]"
+                          >
+                            <div className="min-w-[205px]">
+                              <div className="flex justify-between text-[16px] mb-[5px] text-white gap-[10px]">
+                                <div className="font-bold">{translations.contract[language]} {index + 1}</div>
+                                <div>${session.amount}</div>
+                              </div>
+                              <div className="flex justify-between text-[14px] font-semibold text-white">
+                                <div>{translations.opened[language]}</div>
+                                <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
+                              </div>
+                              <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
+                                <div>{translations.closes[language]}</div>
+                                <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
+                              </div>
+                              <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
+                                <div>{translations.earned[language]}</div>
+                                <div>{(session?.paidDays*session?.amount *session?.percentage/100/session?.durationDays).toFixed(2)}</div>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -1044,6 +1162,25 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                           priority={false}
                         />
                         <div className="text-[16px]">{translations.listing[language]}</div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        onClick={() => setActiveTab('nft')}
+                        className={`flex items-center gap-[12px] justify-center w-[255px] h-[35px] rounded-full ${activeTab === 'nft'
+                            ? 'bg-[#3581FF] text-white rounded-[15px]'
+                            : 'text-[#00163A] border border-[#00163A]'
+                          }`}
+                      >
+                        <Image
+                          src={`${activeTab === 'nft' ? '/dashboard/report/nft-white.svg' : '/dashboard/report/nft.svg'}`}
+                          alt="Listing Icon"
+                          width={25}
+                          height={25}
+                          objectFit="cover"
+                          priority={false}
+                        />
+                        <div className="text-[16px]">{translations.nft[language]}</div>
                       </div>
                     </div>
                     <div className="flex flex-wrap fap-[20px]">
@@ -1136,6 +1273,35 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                             ))}
                           </div>
                         )}
+                        {activeTab === 'nft' && (
+                          <div className="flex flex-col gap-[15px]">
+                            {nftSessions.map((session, index) => (
+                              <div
+                                key={index}
+                                className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#00163A] rounded-[15px] w-[257px]"
+                              >
+                                <div className="min-w-[205px]">
+                                  <div className="flex justify-between text-[16px] mb-[5px] text-white gap-[10px]">
+                                    <div className="font-bold">{translations.nft[language]} {index + 1}</div>
+                                    <div>${session.amount}</div>
+                                  </div>
+                                  <div className="flex justify-between text-[14px] font-semibold text-white">
+                                    <div>{translations.opened[language]}</div>
+                                    <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
+                                  </div>
+                                  <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
+                                    <div>{translations.closes[language]}</div>
+                                    <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
+                                  </div>
+                                  <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
+                                    <div>{translations.earned[language]}</div>
+                                    <div>{(session?.paidDays*session?.amount *session?.percentage/100/session?.durationDays).toFixed(2)}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1199,6 +1365,25 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                           priority={false}
                         />
                         <div className="text-[16px]">{translations.listing[language]}</div>
+                      </div>
+                    </div>
+                    <div>
+                      <div
+                        onClick={() => setActiveTab('nft')}
+                        className={`flex items-center gap-[12px] justify-center w-[255px] h-[35px] rounded-full ${activeTab === 'nft'
+                            ? 'bg-[#3581FF] text-white rounded-[15px]'
+                            : 'text-[#00163A] border border-[#00163A]'
+                          }`}
+                      >
+                        <Image
+                          src={`${activeTab === 'nft' ? '/dashboard/report/nft-white.svg' : '/dashboard/report/nft.svg'}`}
+                          alt="Listing Icon"
+                          width={25}
+                          height={25}
+                          objectFit="cover"
+                          priority={false}
+                        />
+                        <div className="text-[16px]">{translations.nft[language]}</div>
                       </div>
                     </div>
                     <div className="flex flex-wrap fap-[20px]">
@@ -1291,6 +1476,35 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                             ))}
                           </div>
                         )}
+                        {activeTab === 'nft' && (
+                          <div className="flex flex-col gap-[15px]">
+                            {nftClosedSessions.map((session, index) => (
+                              <div
+                                key={index}
+                                className="flex justify-center gap-[18px] px-[20px] py-[10px] bg-[#00163A] rounded-[15px] w-[257px]"
+                              >
+                                <div className="min-w-[205px]">
+                                  <div className="flex justify-between text-[16px] mb-[5px] text-white gap-[10px]">
+                                    <div className="font-bold">{translations.contract[language]} {index + 1}</div>
+                                    <div>${session.amount}</div>
+                                  </div>
+                                  <div className="flex justify-between text-[14px] font-semibold text-white">
+                                    <div>{translations.opened[language]}</div>
+                                    <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
+                                  </div>
+                                  <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
+                                    <div>{translations.closes[language]}</div>
+                                    <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
+                                  </div>
+                                  <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
+                                    <div>{translations.earned[language]}</div>
+                                    <div>{(session?.paidDays*session?.amount *session?.percentage/100/session?.durationDays).toFixed(2)}</div>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -1300,12 +1514,12 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   <div className="text-[20px] font-bold uppercase mb-[10px]">{translations.referralProgram[language]}</div>
                   <div className="flex gap-[10px] mb-[30px]">
                     <div className="text-[16px]">{translations.totalEarned[language]}</div>
-                    <div className="text-[#3581FF]">{bonus?.bonus}</div>
+                    <div className="text-[#3581FF]">{bonus?.bonusRef}</div>
                   </div>
                   <div className="text-[20px] font-bold uppercase mb-[10px]">{translations.bonuses[language]}</div>
                   <div className="flex gap-[10px]">
                     <div>{translations.totalEarned[language]}</div>
-                    <div className="text-[#3581FF]">{bonus?.bonusRef}</div>
+                    <div className="text-[#3581FF]">{bonus?.bonus}</div>
                   </div>
                 </div>
               </div>
