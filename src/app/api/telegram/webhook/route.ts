@@ -481,7 +481,7 @@ bot.action(/confirm_(.+)/, async (ctx) => {
     // Створюємо операцію
     const newOperation = new Operations({
       id: deposit.id, // ID користувача
-      description: "Пополнения баланса",
+      description: "Пополнение баланса",
       amount: deposit.amount,
       currency: "USDT", // Завжди USDT
       type: "deposit",

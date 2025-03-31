@@ -63,7 +63,7 @@ Email: ${user.email}
     }
 
     return NextResponse.json(
-      { success: true, message: 'Пополнения создано успешно', depositId: deposit._id },
+      { success: true, message: 'Пополнение создано успешно', depositId: deposit._id },
       { status: 200 }
     );
   } catch (error) {

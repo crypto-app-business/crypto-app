@@ -32,7 +32,7 @@ export async function POST(request) {
       exchangedAmount = amount / EXCHANGE_RATE;
       const newOperation = new Operations({
         id: userId,
-        description: `Пополнения баланса`,
+        description: `Пополнение баланса`,
         amount: amount,
         currency: "USDT",
         type: 'staking',
@@ -63,7 +63,7 @@ export async function POST(request) {
 
       const newOperation2 = new Operations({
         id: userId,
-        description: `Пополнения баланса`,
+        description: `Пополнение баланса`,
         amount: amount*10,
         currency: "CC",
         type: 'staking',

@@ -35,7 +35,7 @@ export async function POST(request) {
 
       const newOperation = new Operations({
         id: userId,
-        description: `Вложенно в стейкинг`,
+        description: `Вложено в стейкинг`,
         amount: amount,
         currency: "CC",
         type: 'staking',

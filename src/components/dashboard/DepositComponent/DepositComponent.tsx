@@ -73,7 +73,7 @@ export default function DepositComponent({ id, selectedWallet }) {
         </button>}
       </div>
       {isOpen && <div className=' flex flex-col'>
-        <h2>Пополнения депозита</h2>
+        <h2>Пополнение депозита</h2>
         <div className='mb-[10px] flex flex-col gap-[10px]'>
           <label htmlFor="amount">Выбрать сумму:</label>
           <input

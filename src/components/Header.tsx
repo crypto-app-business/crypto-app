@@ -18,7 +18,7 @@ interface User {
 export default function Header({ isSidebarOpen, toggleSidebar }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [bonusRang, setBonusRang] = useState<number | null>(null);
+  const [bonusRang, setBonusRang] = useState<number | null>(1);
   const [isLoading, setIsLoading] = useState(true);
   const { language, toggleLanguage } = useLanguageStore();
 
@@ -73,18 +73,18 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
       });
 
       if (!bonusRes.ok) {
-        console.error('Помилка пошуку бонусу:', await bonusRes.json());
+        console.error('Ошибка поиска баланса:', await bonusRes.json());
         return;
       }
 
       const bonusData = await bonusRes.json();
-      if (bonusData.bonus.rang) {
+      if (bonusData?.bonus?.rang) {
         setBonusRang(+bonusData.bonus.rang);
       } else {
-        console.error('Невірний формат даних бонусу:', bonusData);
+        console.error('Неправильный формат данных:', bonusData);
       }
     } catch (error) {
-      console.error('Помилка сервера при отриманні бонусу:', error);
+      console.error('Ошибка сервреа:', error);
     }
   };
 
