@@ -116,48 +116,72 @@ export async function POST(request: Request) {
       userBonus = await Bonus.create({ id: userId, rang: 1, rangWait: 1, bonus: 0, bonusRef: 0, bonusGet: [] });
     }
 
-    // Якщо новий ранг більший за поточний rangWait і його немає в bonusGet
     if (newRank > userBonus.rangWait && !userBonus.bonusGet.includes(newRank)) {
       userBonus.rangWait = newRank;
       await userBonus.save();
     }
 
-    // Якщо rang === rangWait, нічого не робимо
-    if (userBonus.rang === userBonus.rangWait) {
-      // Пропускаємо
-    } else {
-      // Перевіряємо turnover по реферальним лініям
-      let totalTurnover = 0;
-      const referralLines: string[][] = [[]]; // Масив для зберігання ліній
+    if (userBonus.rang !== userBonus.rangWait) {
+      const rankData = tableData.find(
+        (data) => amount >= data.contractMin && amount <= data.contractMax
+      );
+      const potentialRank = rankData ? rankData.rank : 1;
 
-      // Знаходимо всіх користувачів, де я є реферером (1 лінія)
-      const firstLineUsers = await User.find({ referrer: user.username });
-      referralLines[0] = firstLineUsers.map(u => u.username);
+      const userTotalTurnover = await calculateTurnover(user, rankData?.lines || 3);
 
-      // Отримуємо суму майнінгів 1 лінії
-      const firstLineMinings = await MiningSession.find({ userId: { $in: firstLineUsers.map(u => u._id) } });
-      totalTurnover += firstLineMinings.reduce((sum, m) => sum + m.amount, 0);
-
-      // Перевіряємо наступні лінії
-      let currentLineUsers = firstLineUsers;
-      for (let line = 1; line < userBonus.rangWait; line++) {
-        const nextLineUsers = await User.find({ referrer: { $in: currentLineUsers.map(u => u.username) } });
-        referralLines[line] = nextLineUsers.map(u => u.username);
-        const nextLineMinings = await MiningSession.find({ userId: { $in: nextLineUsers.map(u => u._id) } });
-        totalTurnover += nextLineMinings.reduce((sum, m) => sum + m.amount, 0);
-        currentLineUsers = nextLineUsers;
-      }
-
-      // Знаходимо об'єкт у tableData для rangWait
-      const rankWaitData = tableData.find((data) => data.rank === userBonus.rangWait);
-      if (rankWaitData && totalTurnover >= rankWaitData.turnover) {
-        // Нараховуємо бонус
-        user.balance.set('USDT', (user.balance.get('USDT') || 0) + rankWaitData.bonus);
-        userBonus.rang = userBonus.rangWait;
-        userBonus.bonus += rankWaitData.bonus;
-        userBonus.bonusGet.push(userBonus.rangWait);
+      if (rankData && userTotalTurnover >= rankData.turnover) {
+        user.balance.set('USDT', (user.balance.get('USDT') || 0) + rankData.bonus);
+        userBonus.rang = potentialRank;
+        userBonus.rangWait = potentialRank;
+        userBonus.bonus += rankData.bonus;
+        userBonus.bonusGet.push(potentialRank);
         await user.save();
         await userBonus.save();
+      } else {
+        console.log(`[DEBUG] Turnover ${userTotalTurnover} is less than required ${rankData?.turnover} for rank ${potentialRank}`);
+      }
+    }
+
+    // Перевірка рангу для всіх реферерів
+    if (user.referrer) {
+      let currentReferrerUsername = user.referrer;
+      const referrerChain = [userId]; // Починаємо з поточного користувача
+
+      while (currentReferrerUsername) {
+        const referrer = await User.findOne({ username: currentReferrerUsername });
+        if (!referrer) break;
+
+        let referrerBonus = await Bonus.findOne({ id: referrer._id });
+        if (!referrerBonus) {
+          referrerBonus = await Bonus.create({ id: referrer._id, rang: 1, rangWait: 1, bonus: 0, bonusRef: 0, bonusGet: [] });
+        }
+
+        // Обчислюємо оборот реферера, включаючи amount поточного користувача
+        const referrerTotalTurnover = await calculateTurnover(referrer, referrerBonus.rangWait) + amount;
+
+        const referrerRankData = tableData.find((data) => data.rank === referrerBonus.rangWait);
+        if (referrerRankData && referrerTotalTurnover >= referrerRankData.turnover && referrerBonus.rang < referrerBonus.rangWait) {
+          referrer.balance.set('USDT', (referrer.balance.get('USDT') || 0) + referrerRankData.bonus);
+          referrerBonus.rang = referrerBonus.rangWait;
+          referrerBonus.bonus += referrerRankData.bonus;
+          referrerBonus.bonusGet.push(referrerBonus.rangWait);
+          const referrerRankBonusOperation = new Operations({
+            id: referrer._id,
+            description: `Начислен бонус за ранг ${referrerBonus.rangWait}`,
+            amount: referrerRankData.bonus,
+            currency: "USDT",
+            type: 'bonus',
+            createdAt: new Date(),
+          });
+          await referrerRankBonusOperation.save();
+          await referrer.save();
+          await referrerBonus.save();
+        } else {
+          console.log(`[DEBUG] Referrer ${currentReferrerUsername} turnover ${referrerTotalTurnover} is less than required ${referrerRankData?.turnover} for rank ${referrerBonus.rangWait}`);
+        }
+
+        currentReferrerUsername = referrer.referrer;
+        referrerChain.push(referrer._id); // Додаємо до ланцюжка для уникнення циклів
       }
     }
 
@@ -193,10 +217,10 @@ export async function POST(request: Request) {
           const referrerTurnover = await calculateTurnover(referrer, referrerBonus.rangWait);
           const referrerRankData = tableData.find((data) => data.rank === referrerBonus.rangWait);
           if (referrerRankData && referrerTurnover >= referrerRankData.turnover) {
-            console.log(`[DEBUG] Реферер ${referrerUsername} підвищив ранг до ${referrerBonus.rangWait}`);
             referrerBonus.rang = referrerBonus.rangWait;
             referrerBonus.bonus += referrerRankData.bonus;
             referrerBonus.bonusGet.push(referrerBonus.rangWait);
+            
           }
         }
 
@@ -206,12 +230,19 @@ export async function POST(request: Request) {
           if (line < percentageArray.length) {
             const bonusPercentage = percentageArray[line];
             const bonusAmount = (amount * bonusPercentage) / 100;
-            console.log(`[DEBUG] Нараховуємо рефереру ${referrerUsername} бонус ${bonusAmount} USDT (лінія ${line + 1})`);
 
             referrer.balance.set('USDT', (referrer.balance.get('USDT') || 0) + bonusAmount);
             referrerBonus.bonusRef += bonusAmount;
             newSession.bonusesReceivedUser.push(referrerUsername);
-
+            const referrerRankBonusOperation = new Operations({
+              id: referrer._id,
+              description: `Начислен реферальный бонус`,
+              amount: bonusAmount,
+              currency: "USDT",
+              type: 'bonus',
+              createdAt: new Date(),
+            });
+            await referrerRankBonusOperation.save();
             await referrer.save();
             await referrerBonus.save();
           }
@@ -221,7 +252,6 @@ export async function POST(request: Request) {
 
     // Зберігаємо всі зміни в одній транзакції
     await Promise.all([user.save(), newOperation.save(), newSession.save(), userBonus.save()]);
-    console.log(`[DEBUG] Успішно збережено всі зміни для користувача ${userId}`);
 
     return NextResponse.json({ success: true, data: newSession });
   } catch (error) {

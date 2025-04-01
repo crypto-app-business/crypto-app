@@ -414,9 +414,9 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
                     <h4
                       className="font-bold"
                       style={{
-                        fontSize: +user.balance.USDT?.toFixed(0) <= 99999
+                        fontSize: +user.balance.USDT?.toFixed(0) <= 999
                           ? '48px'
-                          : +user.balance.USDT?.toFixed(0) <= 999999
+                          : +user.balance.USDT?.toFixed(0) <= 9999
                           ? '42px'
                           : '30px',
                         fontWeight: 'bold',
