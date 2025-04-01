@@ -115,16 +115,18 @@ export async function PATCH(request) {
         user.balance.set(currency, currentBalance + totalReward);
         session.totalReward += totalReward;
 
-        // Запис операції
-        const newOperation = new Operations({
-          id: userId,
-          description: `Ежедневная выплата NFT`,
-          amount: totalReward,
-          currency: "USDT",
-          type: 'nft',
-          createdAt: new Date(),
-        });
-        await newOperation.save();
+        for (let i = 0; i < daysToPay; i++) {
+          const operationDate = new Date(startDate.getTime() + (paidDays + i + 1) * 24 * 60 * 60 * 1000);
+          const newOperation = new Operations({
+            id: userId,
+            description: `Ежедневная выплата NFT`,
+            amount: dailyReward,
+            currency: "USDT",
+            type: 'nft',
+            createdAt: operationDate,
+          });
+          await newOperation.save();
+        }
 
         // Якщо сесія завершена, повертаємо тіло
         if (daysSinceStart >= durationDays) {

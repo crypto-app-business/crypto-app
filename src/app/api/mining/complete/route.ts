@@ -44,15 +44,18 @@ export async function PATCH(request) {
           
           await user.save();
 
-          const newOperation = new Operations({
-            id: userId,
-            description: `Получено с майнинга`,
-            amount: reward,
-            currency: "USDT",
-            type: 'mining',
-            createdAt: new Date(),
-          });
-          await newOperation.save();
+          for (let i = 0; i < daysToPay; i++) {
+            const operationDate = new Date(startDate.getTime() + (paidDays + i + 1) * 24 * 60 * 60 * 1000);
+            const newOperation = new Operations({
+              id: userId,
+              description: `Получено с майнинга`,
+              amount: dailyReward,
+              currency: "USDT",
+              type: 'mining',
+              createdAt: operationDate,
+            });
+            await newOperation.save();
+          }
 
           // Оновлюємо кількість сплачених днів у сесії
           session.paidDays += daysToPay;

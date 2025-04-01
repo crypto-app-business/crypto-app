@@ -102,15 +102,18 @@ export async function PATCH(request) {
           user.balance.set(currency, currentBalance + totalReward);
           session.fullAmount += totalReward;
 
-          const newOperation = new Operations({
-            id: userId,
-            description: `Пришло с листинга`,
-            amount: totalReward,
-            currency: "USDT",
-            type: 'listing',
-            createdAt: new Date(),
-          });
-          await newOperation.save();
+          for (let i = 0; i < daysToPay; i++) {
+            const operationDate = new Date(startDate.getTime() + (paidDays + i + 1) * 24 * 60 * 60 * 1000);
+            const newOperation = new Operations({
+              id: userId,
+              description: `Пришло с листинга`,
+              amount: dailyReward,
+              currency: "USDT",
+              type: 'listing',
+              createdAt: operationDate,
+            });
+            await newOperation.save();
+          }
 
         } else if (daysSinceStart >= day) {
           // Виплата всієї суми одним платежем після закінчення терміну
