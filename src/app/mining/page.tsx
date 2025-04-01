@@ -3,13 +3,65 @@ import Layout from "@/layout";
 import { motion } from "framer-motion";
 import { fadeIn } from "@/utils/motion";
 import { useLanguageStore } from "@/store/useLanguageStore";
-// import Image from "next/image";
 import Head from "next/head";
+import Image from "next/image"; // Імпорт для іконок
+import Link from "next/link";
+
+// Типізація для translations
+interface Translations {
+  slogan: Record<string, string>;
+  title: Record<string, string>;
+  description: Record<string, string>;
+  webDefi: Record<string, string>;
+  tradingBot: Record<string, string>;
+  miningSection: {
+    ru: {
+      title: string;
+      subtitle: string;
+      howItWorks: string;
+      howItWorks2: string;
+      steps: string[];
+      availableCoins: string;
+      coinList: string[];
+      whyProfitable: string;
+      benefits: string[];
+      callToAction: string;
+    };
+    en: {
+      title: string;
+      subtitle: string;
+      howItWorks: string;
+      howItWorks2: string;
+      steps: string[];
+      availableCoins: string;
+      coinList: string[];
+      whyProfitable: string;
+      benefits: string[];
+      callToAction: string;
+    };
+  };
+  stepsSection: {
+    ru: { [key: string]: string };
+    en: { [key: string]: string };
+  };
+  trustSection: {
+    ru: {
+      title: string;
+      items: { icon: string; text: string }[];
+      button: string;
+    };
+    en: {
+      title: string;
+      items: { icon: string; text: string }[];
+      button: string;
+    };
+  };
+}
 
 export default function Home() {
   const { language } = useLanguageStore();
 
-  const translations = {
+  const translations: Translations = {
     slogan: {
       ru: "Всё так просто, что аж прибыльно!",
       en: "Everything is so simple, it’s downright profitable!",
@@ -30,12 +82,12 @@ export default function Home() {
       ru: "TradingBot",
       en: "Trading Bot",
     },
-    // Додаємо нові переклади з закоментованого тексту
     miningSection: {
       ru: {
         title: "💎 Майнинг с Crypto Corporation 💎",
         subtitle: "Хотите зарабатывать на криптовалютах без сложного оборудования? Crypto Corporation предлагает аренду мощностей для майнинга перспективных альткоинов! 🚀",
         howItWorks: "🔹 Как это работает?",
+        howItWorks2: "Здесь мы объясняем, как работает сам процесс:",
         steps: [
           "1️⃣ Выбираете контракт – у нас 20 вариантов с разными уровнями доходности.",
           "2️⃣ Покупаете мощность – чем больше мощности, тем выше заработок.",
@@ -62,6 +114,7 @@ export default function Home() {
         title: "💎 Mining with Crypto Corporation 💎",
         subtitle: "Want to earn on cryptocurrencies without complicated equipment? Crypto Corporation offers power rental for mining promising altcoins! 🚀",
         howItWorks: "🔹 How it works?",
+        howItWorks2: "Here we explain how the process works:",
         steps: [
           "1️⃣ Choose a contract – we have 20 options with different profitability levels.",
           "2️⃣ Purchase power – the more power, the higher the earnings.",
@@ -103,6 +156,30 @@ export default function Home() {
         step6: "You receive newly mined bitcoins daily, available for withdrawal the same day",
       },
     },
+    trustSection: {
+      ru: {
+        title: "ПОЧЕМУ МОЖНО НАМ ДОВЕРЯТЬ И РАБОТАТЬ С НАМИ?",
+        items: [
+          { icon: "server", text: "Стабильная мощность и 100% защита от сбоев Bitfury и Wattum" },
+          { icon: "block", text: "Майнинг на мощностях Bitfury и Wattum - лидеры отрасли" },
+          { icon: "rocket", text: "Оперативное зачисление монет на ваш счет" },
+          { icon: "bitcoin", text: "Настоящий Майнинг - Все монеты Новые" },
+          { icon: "wallet", text: "Максимальная эффективность при использовании высококачественного оборудования" },
+        ],
+        button: "НАЧАТЬ МАЙНИНГ",
+      },
+      en: {
+        title: "WHY TRUST AND WORK WITH US?",
+        items: [
+          { icon: "server", text: "Stable power and 100% protection from outages by Bitfury and Wattum" },
+          { icon: "block", text: "Mining on Bitfury and Wattum facilities - industry leaders" },
+          { icon: "rocket", text: "Fast crediting of coins to your account" },
+          { icon: "bitcoin", text: "Real Mining - All Coins New" },
+          { icon: "wallet", text: "Maximum efficiency with high-quality equipment" },
+        ],
+        button: "START MINING",
+      },
+    },
   };
 
   return (
@@ -121,78 +198,147 @@ export default function Home() {
       <Layout>
         {/* Секція про майнінг */}
         <motion.section
-          className="w-full bg-green-100 pt-[100px] pb-[100px] mt-[115px] mb-[100px]"
+          className="w-full bg-[#e7e7e7] pt-[50px] pb-[50px] mt-[115px] "
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: "some" }}
         >
-          <div className="container max-w-[1250px] mx-auto px-4">
-            <motion.h1
-              className="text-[37px] font-bold text-center mb-6"
+          <div className="container max-w-[1250px] mx-auto px-4 grid lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <motion.h1
+                className="text-[37px] font-bold text-center mb-6"
+                variants={fadeIn("up", "tween", 0.2, 1)}
+              >
+                {translations.miningSection[language].title}
+              </motion.h1>
+              <motion.h3
+                className="text-[17px] font-medium text-center mb-6"
+                variants={fadeIn("up", "tween", 0.3, 1)}
+              >
+                {translations.miningSection[language].subtitle}
+              </motion.h3>
+              <motion.h4
+                className="text-xl font-semibold mb-2"
+                variants={fadeIn("up", "tween", 0.4, 1)}
+              >
+                {translations.miningSection[language].howItWorks}
+              </motion.h4>
+              <motion.ul
+                className="list-decimal list-inside mb-6 pl-5"
+                variants={fadeIn("up", "tween", 0.5, 1)}
+              >
+                {translations.miningSection[language].steps.map((step, index) => (
+                  <li key={index} className="text-gray-700 mb-2">
+                    {step}
+                  </li>
+                ))}
+              </motion.ul>
+              <motion.h4
+                className="text-xl font-semibold mb-2"
+                variants={fadeIn("up", "tween", 0.6, 1)}
+              >
+                {translations.miningSection[language].availableCoins}
+              </motion.h4>
+              <motion.ul
+                className="list-disc list-inside mb-6 pl-5"
+                variants={fadeIn("up", "tween", 0.7, 1)}
+              >
+                {translations.miningSection[language].coinList.map((coin, index) => (
+                  <li key={index} className="text-gray-700 mb-2">
+                    {coin}
+                  </li>
+                ))}
+              </motion.ul>
+              <motion.h4
+                className="text-xl font-semibold mb-2"
+                variants={fadeIn("up", "tween", 0.8, 1)}
+              >
+                {translations.miningSection[language].whyProfitable}
+              </motion.h4>
+              <motion.ul
+                className="list-disc list-inside mb-6 pl-5"
+                variants={fadeIn("up", "tween", 0.9, 1)}
+              >
+                {translations.miningSection[language].benefits.map((benefit, index) => (
+                  <li key={index} className="text-gray-700 mb-2">
+                    {benefit}
+                  </li>
+                ))}
+              </motion.ul>
+              <motion.h3
+                className="text-[17px] font-medium text-center"
+                variants={fadeIn("up", "tween", 1, 1)}
+              >
+                {translations.miningSection[language].callToAction}
+              </motion.h3>
+            </div>
+            <motion.div
+              className="w-full aspect-[608/1080] max-h-[600px] overflow-hidden"
+              variants={fadeIn("left", "tween", 0.3, 1)}
+            >
+              <video
+                className="w-full h-full object-contain rounded-xl"
+                autoPlay
+                muted
+                loop
+                // controls
+                poster="/placeholder-poster.jpg"
+                preload="metadata"
+              >
+                <source src="/videos/mining-demo.mp4" type="video/webm" />
+                Your browser does not support the video tag.
+              </video>
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* Нова секція "Почему можно нам доверять и работать с нами?" */}
+        <motion.section
+          className="w-full py-[60px]"
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: "some" }}
+        >
+          <div className="container max-w-[1250px] mx-auto px-4 text-center">
+            <motion.h2
+              className="text-[28px] font-bold text-white pt-10 pb-10 mb-[30px] bg-[#f4a261]"
               variants={fadeIn("up", "tween", 0.2, 1)}
             >
-              {translations.miningSection[language].title}
-            </motion.h1>
-            <motion.h3
-              className="text-[17px] font-medium text-center mb-6"
-              variants={fadeIn("up", "tween", 0.3, 1)}
-            >
-              {translations.miningSection[language].subtitle}
-            </motion.h3>
-            <motion.h4
-              className="text-xl font-semibold mb-2"
-              variants={fadeIn("up", "tween", 0.4, 1)}
-            >
-              {translations.miningSection[language].howItWorks}
-            </motion.h4>
-            <motion.ul
-              className="list-decimal list-inside mb-6 pl-5"
-              variants={fadeIn("up", "tween", 0.5, 1)}
-            >
-              {translations.miningSection[language].steps.map((step, index) => (
-                <li key={index} className="text-gray-700 mb-2">
-                  {step}
-                </li>
+              {translations.trustSection[language].title}
+            </motion.h2>
+            <div className="grid grid-cols-1 sm:grid-cols-5 lg:grid-cols-5 gap-6 container max-w-[1250px] mx-auto">
+              {translations.trustSection[language].items.map((item, index) => (
+                <motion.div
+                  key={index}
+                  className="flex flex-col items-center p-4 bg-white bg-opacity-20 rounded-lg"
+                  variants={fadeIn("up", "tween", 0.3 * (index + 1), 0.5)}
+                >
+                  <div className="w-[80px] h-[80px] bg-orange-200 rounded-full flex items-center justify-center mb-4">
+                    <Image
+                      src={`/miningLanding/${item.icon}.png`} // Шлях до іконок у public/miningLanding/
+                      alt={item.icon}
+                      width={80}
+                      height={80}
+                      className="object-contain"
+                    />
+                  </div>
+                  <p className=" text-sm leading-relaxed">{item.text}</p>
+                </motion.div>
               ))}
-            </motion.ul>
-            <motion.h4
-              className="text-xl font-semibold mb-2"
-              variants={fadeIn("up", "tween", 0.6, 1)}
+            </div>
+            <Link
+              href="/login"
+              className="text-blue-500 hover:underline"
             >
-              {translations.miningSection[language].availableCoins}
-            </motion.h4>
-            <motion.ul
-              className="list-disc list-inside mb-6 pl-5"
-              variants={fadeIn("up", "tween", 0.7, 1)}
-            >
-              {translations.miningSection[language].coinList.map((coin, index) => (
-                <li key={index} className="text-gray-700 mb-2">
-                  {coin}
-                </li>
-              ))}
-            </motion.ul>
-            <motion.h4
-              className="text-xl font-semibold mb-2"
-              variants={fadeIn("up", "tween", 0.8, 1)}
-            >
-              {translations.miningSection[language].whyProfitable}
-            </motion.h4>
-            <motion.ul
-              className="list-disc list-inside mb-6 pl-5"
-              variants={fadeIn("up", "tween", 0.9, 1)}
-            >
-              {translations.miningSection[language].benefits.map((benefit, index) => (
-                <li key={index} className="text-gray-700 mb-2">
-                  {benefit}
-                </li>
-              ))}
-            </motion.ul>
-            <motion.h3
-              className="text-[17px] font-medium text-center"
-              variants={fadeIn("up", "tween", 1, 1)}
-            >
-              {translations.miningSection[language].callToAction}
-            </motion.h3>
+              <motion.button
+                className=" px-8 py-3 bg-[#f4a261] text-white font-semibold rounded-full hover:bg-opacity-90 transition"
+                variants={fadeIn("up", "tween", 1, 1)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {translations.trustSection[language].button}
+              </motion.button>
+            </Link>
           </div>
         </motion.section>
 
@@ -205,7 +351,7 @@ export default function Home() {
         >
           <div className="container max-w-[1250px] mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-10">
-              {translations.stepsSection[language].title || "How It Works"}
+              {translations.miningSection[language].howItWorks2}
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {Object.values(translations.stepsSection[language]).map((step, index) => (
@@ -217,58 +363,27 @@ export default function Home() {
                   <div className="w-[40px] h-[40px] bg-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
                     <span className="text-white font-bold">{index + 1}</span>
                   </div>
-                  {/* <p className="text-gray-700">{step}</p> */}
+                  <p className="text-gray-700">{step as string}</p>
                 </motion.div>
               ))}
             </div>
           </div>
         </motion.section>
-
-        <motion.section
-          className="bg-primary bg-opacity-5 relative px-[15px] pt-[120px] sm:px-32 sm:pt-72 pb-24"
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: "some" }}
-        >
-          {/* <div className="container grid lg:grid-cols-2 max-md:justify-items-center max-md:justify-center px-2 mx-auto">
-            <article className="static">
-              <motion.h6
-                className="text-primary text-2xl"
-                variants={fadeIn("right", "tween", 0.3, 2)}
-              >
-                {translations.slogan[language]}
-              </motion.h6>
-              <motion.h1
-                className="text-4xl md:text-5xl lg:text-6xl font-bold leading-[1.2]"
-                variants={fadeIn("right", "tween", 0.3, 2)}
-              >
-                {translations.title[language]}
-              </motion.h1>
-              <motion.div
-                className="mt-4 mb-8"
-                variants={fadeIn("right", "tween", 0.3, 2)}
-              >
-                <p className="text-gray">{translations.description[language]}</p>
-              </motion.div>
-              <motion.div
-                className="col-span-2 flex gap-4 lg:mb-12 w-max"
-                variants={fadeIn("right", "tween", 0.3, 2)}
-              />
-            </article>
-            <motion.article className="hidden relative lg:block">
-              <motion.figure variants={fadeIn("left", "tween", 0.3, 2)}>
-                <Image
-                  src="/hero-section/hero.avif"
-                  alt="Your image description"
-                  width={1920}
-                  height={1595}
-                  objectFit="cover"
-                  priority={false}
-                />
-              </motion.figure>
-            </motion.article>
-          </div> */}
-        </motion.section>
+        <div className="flex justify-center items-center mb-[50px]">
+          <Link
+            href="/login"
+            className="text-blue-500 hover:underline mr-auto ml-auto"
+          >
+            <motion.button
+              className=" px-8 py-3 bg-[#f4a261] text-white font-semibold rounded-full hover:bg-opacity-90 transition"
+              variants={fadeIn("up", "tween", 1, 1)}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {translations.trustSection[language].button}
+            </motion.button>
+          </Link>
+        </div>
       </Layout>
     </>
   );

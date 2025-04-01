@@ -18,7 +18,7 @@ interface User {
 export default function Header({ isSidebarOpen, toggleSidebar }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
-  const [bonusRang, setBonusRang] = useState<number | null>(1);
+  const [bonusRang, setBonusRang] = useState<number | null>(0);
   const [isLoading, setIsLoading] = useState(true);
   const { language, toggleLanguage } = useLanguageStore();
 
