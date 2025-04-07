@@ -4,6 +4,7 @@ import NFT from '@/models/NFTSchema';
 import User from '@/models/User';
 import connectDB, { getGfs } from '@/utils/connectDB';
 import { Readable } from 'stream';
+import mongoose from 'mongoose';
 
 export const config = {
   api: {
@@ -83,6 +84,50 @@ export async function GET() {
     return NextResponse.json({ success: true, data: availableNFTs });
   } catch (error) {
     console.error('Помилка отримання NFT:', error);
+    return NextResponse.json({ error: 'Помилка сервера.' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request) {
+  try {
+    await connectDB();
+    const gfs = getGfs();
+
+    // Отримуємо ID NFT з body або query
+    const { nftId } = await request.json(); // Або використовуйте searchParams, якщо передаєте через URL
+
+    if (!nftId) {
+      return NextResponse.json({ error: 'NFT ID є обов’язковим.' }, { status: 400 });
+    }
+
+    // Перевірка, чи NFT існує
+    const nft = await NFT.findById(nftId);
+    if (!nft) {
+      return NextResponse.json({ error: 'NFT не знайдено.' }, { status: 404 });
+    }
+
+    // Перевірка, чи користувач є адміністратором
+    const userId = request.headers.get('userId'); // Або інший спосіб ідентифікації користувача
+    const user = await User.findById(userId);
+
+    if (!user || user.role !== 'admin') {
+      return NextResponse.json({ error: 'Недостатньо прав.' }, { status: 403 });
+    }
+
+    // Видалення зображення з GridFS (promise-based)
+    try {
+      await gfs.delete(new mongoose.Types.ObjectId(nft.imageId)); // No callback, assume promise
+    } catch (deleteError) {
+      console.error('Помилка видалення зображення з GridFS:', deleteError);
+      return NextResponse.json({ error: 'Помилка видалення зображення.' }, { status: 500 });
+    }
+
+    // Видалення NFT з бази даних
+    await NFT.findByIdAndDelete(nftId);
+
+    return NextResponse.json({ success: true, message: 'NFT успішно видалено.' });
+  } catch (error) {
+    console.error('Помилка видалення NFT:', error);
     return NextResponse.json({ error: 'Помилка сервера.' }, { status: 500 });
   }
 }

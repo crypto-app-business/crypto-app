@@ -1,10 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguageStore } from '@/store/useLanguageStore';
 
 interface AdminNFTFormProps {
   user: { id: string; role: string };
+}
+
+interface NFT {
+  _id: string; // Assuming MongoDB ObjectId is converted to string in the response
+  name: string;
+  imageId: string; // ID of the image in GridFS, also as string
+  percentage: number;
+  durationDays: number;
+  activationDays: number;
+  price: number;
+  createdAt?: Date; // Optional, if included in the response
 }
 
 export default function AdminNFTForm({ user }: AdminNFTFormProps) {
@@ -17,6 +28,7 @@ export default function AdminNFTForm({ user }: AdminNFTFormProps) {
   const [price, setPrice] = useState<number>(0);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [nfts, setNfts] = useState<NFT[]>([]); // State to store existing NFTs
 
   const translations = {
     addNFT: {
@@ -51,15 +63,48 @@ export default function AdminNFTForm({ user }: AdminNFTFormProps) {
       ru: "Создать",
       en: "Create",
     },
+    delete: {
+      ru: "Удалить",
+      en: "Delete",
+    },
     success: {
       ru: "NFT успешно создан!",
       en: "NFT successfully created!",
+    },
+    deleteSuccess: {
+      ru: "NFT успешно удалён!",
+      en: "NFT successfully deleted!",
     },
     error: {
       ru: "Ошибка при создании NFT.",
       en: "Error creating NFT.",
     },
+    deleteError: {
+      ru: "Ошибка при удалении NFT.",
+      en: "Error deleting NFT.",
+    },
+    existingNFTs: { // Add this new property
+      ru: "Существующие NFT",
+      en: "Existing NFTs",
+    },
   };
+
+  // Fetch existing NFTs
+  useEffect(() => {
+    const fetchNFTs = async () => {
+      try {
+        const response = await fetch('/api/nft');
+        const { data } = await response.json();
+        setNfts(data);
+      } catch (error) {
+        console.error('Error fetching NFTs:', error);
+      }
+    };
+
+    if (user.role === 'admin') {
+      fetchNFTs();
+    }
+  }, [user.role]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,13 +139,39 @@ export default function AdminNFTForm({ user }: AdminNFTFormProps) {
         setDurationDays(0);
         setActivationDays(0);
         setPrice(0);
+        // Refresh NFT list
+        const refreshedNFTs = await fetch('/api/nft');
+        const { data } = await refreshedNFTs.json();
+        setNfts(data);
       } else {
         const { error } = await response.json();
         setError(error || translations.error[language]);
       }
     } catch (error) {
       setError(translations.error[language]);
-      console.log(error)
+      console.log(error);
+    }
+  };
+
+  const handleDelete = async (nftId: string) => {
+    try {
+      const response = await fetch('/api/nft', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'userId': user.id }, // Pass user ID for auth
+        body: JSON.stringify({ nftId }),
+      });
+
+      if (response.ok) {
+        setSuccess(translations.deleteSuccess[language]);
+        // Remove deleted NFT from state
+        setNfts(nfts.filter(nft => nft._id !== nftId));
+      } else {
+        const { error } = await response.json();
+        setError(error || translations.deleteError[language]);
+      }
+    } catch (error) {
+      setError(translations.deleteError[language]);
+      console.log(error);
     }
   };
 
@@ -176,6 +247,23 @@ export default function AdminNFTForm({ user }: AdminNFTFormProps) {
           {translations.submit[language]}
         </button>
       </form>
+
+      {/* Display and manage existing NFTs */}
+      <div className="mt-6">
+        <h3 className="text-xl font-bold mb-2">{translations.existingNFTs[language] || "Existing NFTs"}</h3>
+        {nfts.map((nft) => (
+          <div key={nft._id} className="flex items-center justify-between p-2 border-b">
+            <span>{nft.name} - ${nft.price}</span>
+            <button
+              onClick={() => handleDelete(nft._id)}
+              className="px-2 py-1 bg-red text-white rounded hover:bg-red-600"
+            >
+              {translations.delete[language]}
+            </button>
+          </div>
+        ))}
+      </div>
+
       {error && <div className="text-red-500 mt-2">{error}</div>}
       {success && <div className="text-green-500 mt-2">{success}</div>}
     </div>
