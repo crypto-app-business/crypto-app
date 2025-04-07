@@ -31,10 +31,13 @@ export default function Dashboard() {
         });
         if (userRes.ok) {
           const userExtraData = await userRes.json();
+          console.log(userExtraData)
           setUser((prev) => ({
             ...prev,
             balance: userExtraData.data.balance,
             username: userExtraData.data.username,
+            telegramId: userExtraData.data.telegramId,
+            phone: userExtraData.data.phone,
           }));
         } else {
           console.error('Error fetching user data:', await userRes.json());
@@ -94,7 +97,7 @@ export default function Dashboard() {
   return (
     <div className="">
       <div className="">
-        <ProfilePanel user={user} />
+        <ProfilePanel user={user} setUser={setUser} />
       </div>
     </div>
   );

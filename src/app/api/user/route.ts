@@ -45,6 +45,7 @@ export async function GET() {
         balance: user.balance || {}, // Повертаємо баланс або порожній об'єкт
         referrer: user.referrer,
         phone: user.phone,
+        telegramId: user.telegramId,
         registrationDate: user.createdAt,
       },
     });

@@ -13,10 +13,12 @@ interface User {
   referrer: string;
   phone: string;
   registrationDate: string;
+  telegramId: string
 }
 
 interface AdminDepositsProps {
   user: User;
+  setUser: (User)=> void;
 }
 
 interface Wallet {
@@ -125,7 +127,7 @@ const CustomSelect = ({ options, selectedWallet, onSelect, titleName }: CustomSe
   );
 };
 
-export default function ProfilePanel({ user }: AdminDepositsProps) {
+export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
   const { language } = useLanguageStore();
   const [selectedSaveWallet, setSelectedSaveWallet] = useState<string>("");
   const [amount, setAmount] = useState('');
@@ -304,7 +306,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
     { label: translations.fields.email[language], key: 'email', value: user?.email || translations.fields.noData[language] },
     { label: translations.fields.phone[language], key: 'phone', value: user?.phone || translations.fields.noData[language] },
     { label: translations.fields.password[language], key: 'password', value: '*********' },
-    { label: translations.fields.telegramId[language], key: 'telegramId', value: translations.fields.noData[language] },
+    { label: translations.fields.telegramId[language], key: 'telegramId', value: user?.telegramId || translations.fields.noData[language] },
   ];
 
   const [userName, setUserName] = useState<string>('');
@@ -348,6 +350,7 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
 
       const data = await response.json();
       console.log('Data updated:', data);
+      setUser(data.user)
       setEditingField(null);
       setRequestStatus('success');
     } catch (error) {
@@ -583,8 +586,8 @@ export default function ProfilePanel({ user }: AdminDepositsProps) {
               />
             </div>
             <div>
-              <h3 className="text-[20px] font-bold">{user?.username || 'My'}</h3>
-              <p className="text-[13px] text-[#a1a4ad] mb-[20px]">ID {user?.username || 'RU001587'}</p>
+              <h3 className="text-[20px] font-bold">{user?.username || ''}</h3>
+              <p className="text-[13px] text-[#a1a4ad] mb-[20px]">ID {user?.username || ''}</p>
               <button className="text-[17px] font-bold text-white py-[7.5px] px-[16px] bg-[#3581FF4D] rounded-full">
                 {translations.addPhoto[language]}
               </button>
