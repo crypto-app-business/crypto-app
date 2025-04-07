@@ -10,7 +10,7 @@ export async function POST(request) {
     // const { userId, week, currency, amount, percentage } = await request.json();
 
     if (!userId || !day || !currency || !amount ) {
-      return NextResponse.json({ error: 'Усі поля обов’язкові.' }, { status: 400 });
+      return NextResponse.json({ error: 'Все поля обязательны.' }, { status: 400 });
     }
 
     await connectDB();

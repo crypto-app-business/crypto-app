@@ -29,7 +29,7 @@ export async function POST(request) {
 
     // Перевірка, чи всі поля заповнені
     if (!userId || !name || !percentage || !durationDays || !activationDays || !price || !image) {
-      return NextResponse.json({ error: 'Усі поля обов’язкові.' }, { status: 400 });
+      return NextResponse.json({ error: 'Все поля обязательны.' }, { status: 400 });
     }
 
     // Перевірка, чи користувач є адміністратором

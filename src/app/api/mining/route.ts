@@ -39,15 +39,21 @@ const tableData: TableData[] = [
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function calculateTurnover(user: any, maxLines: number): Promise<number> {
   let totalTurnover = 0;
+  // console.log(`[user] Referrer ${user}`)
   let currentLineUsers = await User.find({ referrer: user.username }).select('_id username');
+  // console.log(`[currentLineUsers] Referrer ${currentLineUsers}`)
   for (let line = 0; line < maxLines; line++) {
     if (currentLineUsers.length === 0) break;
     const minings = await MiningSession.find({ userId: { $in: currentLineUsers.map(u => u._id) } });
+    // console.log(`[minings] Referrer ${minings}`)
     totalTurnover += minings.reduce((sum, m) => sum + m.amount, 0);
+    // console.log(`[totalTurnover] Referrer ${totalTurnover}`)
     const nextLineUsers = await User.find({ referrer: { $in: currentLineUsers.map(u => u.username) } }).select('_id username');
+    // console.log(`[nextLineUsers] Referrer ${nextLineUsers}`)
     currentLineUsers = nextLineUsers;
+    // console.log(`[currentLineUsers] Referrer ${currentLineUsers}`)
   }
-  return totalTurnover;
+  return +totalTurnover;
 }
 
 export async function POST(request: Request) {
@@ -55,7 +61,7 @@ export async function POST(request: Request) {
     const { userId, week, currency, amount, percentage, contractNum } = await request.json();
 
     if (!userId || !week || !currency || !amount || !contractNum) {
-      return NextResponse.json({ error: 'Усі поля обов’язкові.' }, { status: 400 });
+      return NextResponse.json({ error: 'Все поля обязательны.' }, { status: 400 });
     }
 
     await connectDB();
@@ -186,29 +192,68 @@ export async function POST(request: Request) {
           referrerBonus = await Bonus.create({ id: referrer._id, rang: 0, rangWait: 0, bonus: 0, bonusRef: 0, bonusGet: [] });
         }
 
+        const referrerRankData2 = tableData.find((data) => data.rank === referrerBonus.rangWait - 1);
+        if (referrerRankData2) {
+
+          const referrerTotalTurnover = await calculateTurnover(referrer, referrerRankData2.lines);
+          // console.log(`[referrerTotalTurnover] Referrer ${referrerTotalTurnover}`)
+          // console.log(`[referrerRankData.turnover] Referrer ${referrerRankData2.turnover}`)
+          // console.log(`[referrerBonus.rang] Referrer ${referrerBonus.rang}`)
+          // console.log(`[referrerBonus.rangWait] Referrer ${referrerBonus.rangWait}`)
+          // console.log(`[+] Referrer ${referrerTotalTurnover >= referrerRankData2.turnover && referrerBonus.rang < referrerBonus.rangWait}`)
+          // console.log(`[+2] Referrer ${referrerBonus.rangWait === 3 || referrerBonus.rangWait === 5 || referrerBonus.rangWait === 6 || referrerBonus.rangWait === 7}`)
+
+          if (referrerBonus.rangWait === 3 || referrerBonus.rangWait === 5 || referrerBonus.rangWait === 6 || referrerBonus.rangWait === 7)
+            if (referrerTotalTurnover >= referrerRankData2.turnover && referrerBonus.rang < referrerBonus.rangWait-1) {
+              referrer.balance.set('USDT', (referrer.balance.get('USDT') || 0) + referrerRankData2.bonus);
+              referrerBonus.rang = referrerBonus.rangWait - 1;
+              referrerBonus.bonus += referrerRankData2.bonus;
+              referrerBonus.bonusGet.push(referrerBonus.rangWait - 1);
+              const referrerRankBonusOperation = new Operations({
+                id: referrer._id,
+                description: `Начислен бонус за ранг ${referrerBonus.rangWait - 1}`,
+                amount: referrerRankData2.bonus,
+                currency: "USDT",
+                type: 'bonus',
+                createdAt: new Date(),
+              });
+              await referrerRankBonusOperation.save();
+              await referrer.save();
+              await referrerBonus.save();
+            } else {
+              console.log(`[DEBUG] Referrer ${currentReferrerUsername} turnover ${referrerTotalTurnover} is less than required ${referrerRankData2?.turnover} for rank ${referrerBonus.rangWait}`);
+            }
+
+        }
+
         const referrerRankData = tableData.find((data) => data.rank === referrerBonus.rangWait);
-        if (!referrerRankData) continue;
+        if (referrerRankData) {
 
-        const referrerTotalTurnover = await calculateTurnover(referrer, referrerRankData.lines) + amount;
-
-        if (referrerTotalTurnover >= referrerRankData.turnover && referrerBonus.rang < referrerBonus.rangWait) {
-          referrer.balance.set('USDT', (referrer.balance.get('USDT') || 0) + referrerRankData.bonus);
-          referrerBonus.rang = referrerBonus.rangWait;
-          referrerBonus.bonus += referrerRankData.bonus;
-          referrerBonus.bonusGet.push(referrerBonus.rangWait);
-          const referrerRankBonusOperation = new Operations({
-            id: referrer._id,
-            description: `Начислен бонус за ранг ${referrerBonus.rangWait}`,
-            amount: referrerRankData.bonus,
-            currency: "USDT",
-            type: 'bonus',
-            createdAt: new Date(),
-          });
-          await referrerRankBonusOperation.save();
-          await referrer.save();
-          await referrerBonus.save();
-        } else {
-          console.log(`[DEBUG] Referrer ${currentReferrerUsername} turnover ${referrerTotalTurnover} is less than required ${referrerRankData?.turnover} for rank ${referrerBonus.rangWait}`);
+          const referrerTotalTurnover = await calculateTurnover(referrer, referrerRankData.lines);
+          // console.log(`[referrerTotalTurnover] Referrer ${referrerTotalTurnover}`)
+          // console.log(`[referrerRankData.turnover] Referrer ${referrerRankData.turnover}`)
+          // console.log(`[referrerBonus.rang] Referrer ${referrerBonus.rang}`)
+          // console.log(`[referrerBonus.rangWait] Referrer ${referrerBonus.rangWait}`)
+          // console.log(`[+] Referrer ${referrerTotalTurnover >= referrerRankData.turnover && referrerBonus.rang < referrerBonus.rangWait}`)
+          if (referrerTotalTurnover >= referrerRankData.turnover && referrerBonus.rang < referrerBonus.rangWait) {
+            referrer.balance.set('USDT', (referrer.balance.get('USDT') || 0) + referrerRankData.bonus);
+            referrerBonus.rang = referrerBonus.rangWait;
+            referrerBonus.bonus += referrerRankData.bonus;
+            referrerBonus.bonusGet.push(referrerBonus.rangWait);
+            const referrerRankBonusOperation = new Operations({
+              id: referrer._id,
+              description: `Начислен бонус за ранг ${referrerBonus.rangWait}`,
+              amount: referrerRankData.bonus,
+              currency: "USDT",
+              type: 'bonus',
+              createdAt: new Date(),
+            });
+            await referrerRankBonusOperation.save();
+            await referrer.save();
+            await referrerBonus.save();
+          } else {
+            console.log(`[DEBUG] Referrer ${currentReferrerUsername} turnover ${referrerTotalTurnover} is less than required ${referrerRankData?.turnover} for rank ${referrerBonus.rangWait}`);
+          }
         }
 
         currentReferrerUsername = referrer.referrer;
@@ -285,8 +330,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, data: newSession });
   } catch (error) {
-    console.error(`[ERROR] Помилка в POST: ${error}`);
-    return NextResponse.json({ error: 'Помилка сервера.' }, { status: 500 });
+    console.error(`[ERROR] Ошибка в POST: ${error}`);
+    return NextResponse.json({ error: 'Ошибка сервера.' }, { status: 500 });
   }
 }
 
@@ -298,7 +343,7 @@ export async function GET(request) {
     const userId = searchParams.get('userId');
 
     if (!userId) {
-      return NextResponse.json({ error: 'userId є обов’язковим.' }, { status: 400 });
+      return NextResponse.json({ error: 'userId обязателен.' }, { status: 400 });
     }
 
     const userSessions = await MiningSession.find({ userId, isCompleted: false });
@@ -308,6 +353,6 @@ export async function GET(request) {
     return NextResponse.json({ success: true, sessions: userSessions, bonus: userBonus });
   } catch (error) {
     console.error('Помилка отримання майнінг-сесій:', error);
-    return NextResponse.json({ error: 'Помилка сервера.' }, { status: 500 });
+    return NextResponse.json({ error: 'Ошибка сервера.' }, { status: 500 });
   }
 }
