@@ -12,33 +12,32 @@ interface TableData {
   bonus: number;
   percentage: number[];
   lines: number;
-  contractMin: number;
-  contractMax: number;
+  contract: number;
 }
 
 const tableData: TableData[] = [
-  { rank: 0, turnover: 0, bonus: 0, percentage: [4, 3], lines: 2, contractMin: 0, contractMax: 99 },
-  { rank: 1, turnover: 500, bonus: 25, percentage: [4, 3], lines: 2, contractMin: 100, contractMax: 249 },
-  { rank: 2, turnover: 1100, bonus: 120, percentage: [5, 3], lines: 3, contractMin: 250, contractMax: 499 },
-  { rank: 3, turnover: 2500, bonus: 250, percentage: [5, 3, 2], lines: 3, contractMin: 500, contractMax: 999 },
-  { rank: 4, turnover: 5200, bonus: 400, percentage: [5, 3, 3], lines: 3, contractMin: 1000, contractMax: 1999 },
-  { rank: 5, turnover: 8500, bonus: 600, percentage: [6, 3, 3], lines: 3, contractMin: 2000, contractMax: 2999 },
-  { rank: 6, turnover: 12500, bonus: 800, percentage: [6, 4, 3], lines: 4, contractMin: 3000, contractMax: 3999 },
-  { rank: 7, turnover: 18000, bonus: 1000, percentage: [6, 4, 4, 3], lines: 4, contractMin: 4000, contractMax: 4999 },
-  { rank: 8, turnover: 27000, bonus: 1500, percentage: [6, 4, 4, 4], lines: 5, contractMin: 5000, contractMax: 7499 },
-  { rank: 9, turnover: 35000, bonus: 1700, percentage: [7, 5, 4, 4, 3], lines: 6, contractMin: 7500, contractMax: 9999 },
-  { rank: 10, turnover: 42000, bonus: 2000, percentage: [7, 5, 5, 5, 4], lines: 7, contractMin: 10000, contractMax: 12499 },
-  { rank: 11, turnover: 55000, bonus: 2400, percentage: [7, 6, 6, 5, 4, 3], lines: 8, contractMin: 12500, contractMax: 17499 },
-  { rank: 12, turnover: 100000, bonus: 5000, percentage: [8, 7, 6, 6, 4, 4, 3], lines: 8, contractMin: 17500, contractMax: 24999 },
-  { rank: 13, turnover: 180000, bonus: 7500, percentage: [9, 7, 7, 7, 5, 5, 4], lines: 9, contractMin: 25000, contractMax: 37499 },
-  { rank: 14, turnover: 250000, bonus: 11500, percentage: [10, 8, 8, 8, 7, 6, 5, 3], lines: 9, contractMin: 37500, contractMax: 49999 },
-  { rank: 15, turnover: 400000, bonus: 20000, percentage: [10, 9, 8, 8, 7, 7, 6, 4, 3], lines: 10, contractMin: 50000, contractMax: 74999 },
-  { rank: 16, turnover: 700000, bonus: 35000, percentage: [11, 10, 9, 9, 8, 8, 7, 5, 4, 4], lines: 11, contractMin: 75000, contractMax: 99999 },
-  { rank: 17, turnover: 1100000, bonus: 50000, percentage: [12, 10, 10, 10, 9, 9, 8, 6, 5, 5], lines: 11, contractMin: 100000, contractMax: 100000000 },
+  { rank: 0, contract: 1, turnover: 0, bonus: 0, percentage: [4, 3], lines: 2, },
+  { rank: 1, contract: 2, turnover: 500, bonus: 25, percentage: [4, 3], lines: 2, },
+  { rank: 2, contract: 3, turnover: 1100, bonus: 120, percentage: [5, 3], lines: 2, },
+  { rank: 3, contract: 3, turnover: 2500, bonus: 250, percentage: [5, 3, 2], lines: 3, },
+  { rank: 4, contract: 4, turnover: 5200, bonus: 400, percentage: [5, 3, 3], lines: 3, },
+  { rank: 5, contract: 5, turnover: 8500, bonus: 600, percentage: [6, 3, 3], lines: 3, },
+  { rank: 6, contract: 5, turnover: 12500, bonus: 800, percentage: [6, 4, 3], lines: 3, },
+  { rank: 7, contract: 6, turnover: 18000, bonus: 1000, percentage: [6, 4, 4, 3], lines: 4, },
+  { rank: 8, contract: 6, turnover: 27000, bonus: 1500, percentage: [6, 4, 4, 4], lines: 4, },
+  { rank: 9, contract: 7, turnover: 35000, bonus: 1700, percentage: [7, 5, 4, 4, 3], lines: 5, },
+  { rank: 10, contract: 7, turnover: 42000, bonus: 2000, percentage: [7, 5, 5, 5, 4], lines: 6, },
+  { rank: 11, contract: 8, turnover: 55000, bonus: 2400, percentage: [7, 6, 6, 5, 4, 3], lines: 7, },
+  { rank: 12, contract: 9, turnover: 100000, bonus: 5000, percentage: [8, 7, 6, 6, 4, 4, 3], lines: 8, },
+  { rank: 13, contract: 10, turnover: 180000, bonus: 7500, percentage: [9, 7, 7, 7, 5, 5, 4], lines: 8, },
+  { rank: 14, contract: 11, turnover: 250000, bonus: 11500, percentage: [10, 8, 8, 8, 7, 6, 5, 3], lines: 9, },
+  { rank: 15, contract: 12, turnover: 400000, bonus: 20000, percentage: [10, 9, 8, 8, 7, 7, 6, 4, 3], lines: 10, },
+  { rank: 16, contract: 13, turnover: 700000, bonus: 35000, percentage: [11, 10, 9, 9, 8, 8, 7, 5, 4, 4], lines: 11, },
+  { rank: 17, contract: 14, turnover: 1100000, bonus: 50000, percentage: [12, 10, 10, 10, 9, 9, 8, 6, 5, 5], lines: 12, },
 ];
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function calculateTurnover(user: any, maxLines: number): Promise<number> {
-
   let totalTurnover = 0;
   let currentLineUsers = await User.find({ referrer: user.username }).select('_id username');
   for (let line = 0; line < maxLines; line++) {
@@ -53,9 +52,9 @@ async function calculateTurnover(user: any, maxLines: number): Promise<number> {
 
 export async function POST(request: Request) {
   try {
-    const { userId, week, currency, amount, percentage } = await request.json();
+    const { userId, week, currency, amount, percentage, contractNum } = await request.json();
 
-    if (!userId || !week || !currency || !amount) {
+    if (!userId || !week || !currency || !amount || !contractNum) {
       return NextResponse.json({ error: 'Усі поля обов’язкові.' }, { status: 400 });
     }
 
@@ -104,11 +103,11 @@ export async function POST(request: Request) {
 
     // --- Перша частина логіки: перевірка рангу та бонусів ---
 
-    // Знаходимо ранг на основі amount
-    const rankData = tableData.find(
-      (data) => amount >= data.contractMin && amount <= data.contractMax
-    );
-    const newRank = rankData ? rankData.rank : 0;
+    // Знаходимо всі ранги, пов’язані з даним contractNum
+    const possibleRanks = tableData.filter((data) => data.contract === contractNum);
+    if (possibleRanks.length === 0) {
+      return NextResponse.json({ error: 'Невірний номер контракту.' }, { status: 400 });
+    }
 
     // Отримуємо або створюємо BonusSchema для користувача
     let userBonus = await Bonus.findOne({ id: userId });
@@ -116,36 +115,67 @@ export async function POST(request: Request) {
       userBonus = await Bonus.create({ id: userId, rang: 0, rangWait: 0, bonus: 0, bonusRef: 0, bonusGet: [] });
     }
 
-    if (newRank > userBonus.rangWait && !userBonus.bonusGet.includes(newRank)) {
-      userBonus.rangWait = newRank;
+    // Визначаємо найвищий ранг, пов’язаний із контрактом
+    const maxContractRank = Math.max(...possibleRanks.map(r => r.rank));
+    let highestEligibleRank = userBonus.rang; // Початкове значення — поточний rang, а не rangWait
+    let anyBonusGranted = false;
+
+    // Перевіряємо кожен можливий ранг від найнижчого до найвищого для бонусів
+    for (const rankData of possibleRanks.sort((a, b) => a.rank - b.rank)) { // Сортуємо за зростанням рангу
+      const newRank = rankData.rank;
+
+      const userTotalTurnover = await calculateTurnover(user, rankData.lines);
+
+      // Якщо оборот достатній і ранг ще не отриманий, нараховуємо бонус
+      if (userTotalTurnover >= rankData.turnover && !userBonus.bonusGet.includes(newRank)) {
+        user.balance.set('USDT', (user.balance.get('USDT') || 0) + rankData.bonus);
+        userBonus.bonus += rankData.bonus;
+        userBonus.bonusGet.push(newRank);
+        if (userBonus.rang < newRank) userBonus.rang = newRank;
+        anyBonusGranted = true;
+
+        // Додаємо запис в Operations про нарахування бонусу за ранг
+        const rankBonusOperation = new Operations({
+          id: userId,
+          description: `Начислен бонус за ранг ${newRank}`,
+          amount: rankData.bonus,
+          currency: "USDT",
+          type: 'bonus',
+          createdAt: new Date(),
+        });
+        await rankBonusOperation.save();
+
+        // Оновлюємо найвищий придатний ранг для бонусів
+        if (newRank > highestEligibleRank) {
+          highestEligibleRank = newRank;
+        }
+
+        await user.save();
+        await userBonus.save();
+      }
+    }
+
+    // Оновлюємо rangWait до найвищого рангу контракту, незалежно від обороту
+    if (maxContractRank > userBonus.rangWait) {
+      userBonus.rangWait = maxContractRank;
       await userBonus.save();
     }
 
-    if (userBonus.rang !== userBonus.rangWait) {
-      const rankData = tableData.find(
-        (data) => amount >= data.contractMin && amount <= data.contractMax
-      );
-      const potentialRank = rankData ? rankData.rank : 1;
-
-      const userTotalTurnover = await calculateTurnover(user, rankData?.lines || 3);
-
-      if (rankData && userTotalTurnover >= rankData.turnover) {
-        user.balance.set('USDT', (user.balance.get('USDT') || 0) + rankData.bonus);
-        userBonus.rang = potentialRank;
-        userBonus.rangWait = potentialRank;
-        userBonus.bonus += rankData.bonus;
-        userBonus.bonusGet.push(potentialRank);
-        await user.save();
-        await userBonus.save();
-      } else {
-        console.log(`[DEBUG] Turnover ${userTotalTurnover} is less than required ${rankData?.turnover} for rank ${potentialRank}`);
-      }
+    // Оновлюємо rang лише якщо був нарахований бонус і найвищий придатний ранг вищий за поточний
+    const currentMaxRank = userBonus.rang;
+    if (anyBonusGranted && highestEligibleRank > currentMaxRank) {
+      userBonus.rang = highestEligibleRank;
     }
+
+    // Забезпечуємо, що rang і rangWait завжди коректні
+    userBonus.rang = currentMaxRank; // Залишаємо rang без змін, якщо бонус не нараховано
+    userBonus.rangWait = Math.max(userBonus.rangWait, maxContractRank);
+    await userBonus.save();
 
     // Перевірка рангу для всіх реферерів
     if (user.referrer) {
       let currentReferrerUsername = user.referrer;
-      const referrerChain = [userId]; // Починаємо з поточного користувача
+      const referrerChain = [userId];
 
       while (currentReferrerUsername) {
         const referrer = await User.findOne({ username: currentReferrerUsername });
@@ -156,11 +186,12 @@ export async function POST(request: Request) {
           referrerBonus = await Bonus.create({ id: referrer._id, rang: 0, rangWait: 0, bonus: 0, bonusRef: 0, bonusGet: [] });
         }
 
-        // Обчислюємо оборот реферера, включаючи amount поточного користувача
-        const referrerTotalTurnover = await calculateTurnover(referrer, referrerBonus.rangWait) + amount;
-
         const referrerRankData = tableData.find((data) => data.rank === referrerBonus.rangWait);
-        if (referrerRankData && referrerTotalTurnover >= referrerRankData.turnover && referrerBonus.rang < referrerBonus.rangWait) {
+        if (!referrerRankData) continue;
+
+        const referrerTotalTurnover = await calculateTurnover(referrer, referrerRankData.lines) + amount;
+
+        if (referrerTotalTurnover >= referrerRankData.turnover && referrerBonus.rang < referrerBonus.rangWait) {
           referrer.balance.set('USDT', (referrer.balance.get('USDT') || 0) + referrerRankData.bonus);
           referrerBonus.rang = referrerBonus.rangWait;
           referrerBonus.bonus += referrerRankData.bonus;
@@ -181,14 +212,13 @@ export async function POST(request: Request) {
         }
 
         currentReferrerUsername = referrer.referrer;
-        referrerChain.push(referrer._id); // Додаємо до ланцюжка для уникнення циклів
+        referrerChain.push(referrer._id);
       }
     }
 
     // --- Друга частина логіки: реферальні відсотки ---
 
     if (user.referrer) {
-      // Будуємо дерево реферерів до 11 ліній
       const referrerTree: string[] = [user.referrer];
       let currentReferrer = user.referrer;
       for (let i = 1; i < 11; i++) {
@@ -201,7 +231,6 @@ export async function POST(request: Request) {
         }
       }
 
-      // Перевіряємо кожного реферера
       for (let line = 0; line < referrerTree.length; line++) {
         const referrerUsername = referrerTree[line];
         const referrer = await User.findOne({ username: referrerUsername });
@@ -212,45 +241,46 @@ export async function POST(request: Request) {
           referrerBonus = new Bonus({ id: referrer._id, rang: 0, rangWait: 0, bonus: 0, bonusRef: 0, bonusGet: [] });
         }
 
-        // Перевіряємо оновлення рангу реферера
         if (referrerBonus.rangWait > referrerBonus.rang) {
-          const referrerTurnover = await calculateTurnover(referrer, referrerBonus.rangWait);
           const referrerRankData = tableData.find((data) => data.rank === referrerBonus.rangWait);
-          if (referrerRankData && referrerTurnover >= referrerRankData.turnover) {
-            referrerBonus.rang = referrerBonus.rangWait;
-            referrerBonus.bonus += referrerRankData.bonus;
-            referrerBonus.bonusGet.push(referrerBonus.rangWait);
-            
+          if (referrerRankData) {
+            const referrerTurnover = await calculateTurnover(referrer, referrerRankData.lines);
+            if (referrerTurnover >= referrerRankData.turnover) {
+              referrerBonus.rang = referrerBonus.rangWait;
+              referrerBonus.bonus += referrerRankData.bonus;
+              referrerBonus.bonusGet.push(referrerBonus.rangWait);
+            }
           }
         }
 
-        // Нараховуємо реферальний бонус
         if (!newSession.bonusesReceivedUser.includes(referrerUsername)) {
-          const percentageArray = tableData.find((data) => data.rank === referrerBonus.rang)?.percentage || [];
-          if (line < percentageArray.length) {
-            const bonusPercentage = percentageArray[line];
-            const bonusAmount = (amount * bonusPercentage) / 100;
+          const referrerRankData = tableData.find((data) => data.rank === referrerBonus.rang);
+          if (referrerRankData) {
+            const percentageArray = referrerRankData.percentage || [];
+            if (line < percentageArray.length) {
+              const bonusPercentage = percentageArray[line];
+              const bonusAmount = (amount * bonusPercentage) / 100;
 
-            referrer.balance.set('USDT', (referrer.balance.get('USDT') || 0) + bonusAmount);
-            referrerBonus.bonusRef += bonusAmount;
-            newSession.bonusesReceivedUser.push(referrerUsername);
-            const referrerRankBonusOperation = new Operations({
-              id: referrer._id,
-              description: `Начислен реферальный бонус`,
-              amount: bonusAmount,
-              currency: "USDT",
-              type: 'bonus',
-              createdAt: new Date(),
-            });
-            await referrerRankBonusOperation.save();
-            await referrer.save();
-            await referrerBonus.save();
+              referrer.balance.set('USDT', (referrer.balance.get('USDT') || 0) + bonusAmount);
+              referrerBonus.bonusRef += bonusAmount;
+              newSession.bonusesReceivedUser.push(referrerUsername);
+              const referrerRankBonusOperation = new Operations({
+                id: referrer._id,
+                description: `Начислен реферальный бонус`,
+                amount: bonusAmount,
+                currency: "USDT",
+                type: 'bonus',
+                createdAt: new Date(),
+              });
+              await referrerRankBonusOperation.save();
+              await referrer.save();
+              await referrerBonus.save();
+            }
           }
         }
       }
     }
 
-    // Зберігаємо всі зміни в одній транзакції
     await Promise.all([user.save(), newOperation.save(), newSession.save(), userBonus.save()]);
 
     return NextResponse.json({ success: true, data: newSession });

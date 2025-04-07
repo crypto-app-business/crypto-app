@@ -92,6 +92,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
   const availableContracts = Object.entries(ContractData());
   const [selectedSessionIndex, setSelectedSessionIndex] = useState<number>(0);
   const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
+  const [contractNum, SetContractNum] = useState<number>(0)
 
   const translations = {
     miningSessions: {
@@ -201,6 +202,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
           currency: "USDT",
           amount,
           percentage,
+          contractNum
         }),
       });
 
@@ -224,6 +226,8 @@ export default function MiningActivation({ user }: MiningActivationProps) {
   const handleSelectSession = (index: number, session: ContractWeeks) => {
     setSelectedSessionIndex(index);
     setWeek(session.weeks[0]?.weekNumber?.toString() || '');
+    console.log(index, session)
+    SetContractNum(index+1)
   };
 
   const handleSimulateTime = async () => {
