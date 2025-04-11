@@ -262,8 +262,8 @@ export default function StakingActivation({ user }: StakingActivationProps) {
 
   const handleSwap = () => {
     setIsUSDTActive((prev) => !prev);
-    setUSDTAmount(ccAmount);
-    setCCAmount(usdtAmount);
+    setUSDTAmount(`${+ccAmount / 10}`);
+    setCCAmount(`${+usdtAmount * 10}`);
   };
 
   const handleUSDTChange = (e: React.ChangeEvent<HTMLInputElement>) => {

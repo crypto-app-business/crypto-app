@@ -115,7 +115,7 @@ export async function PATCH(request) {
         user.balance.set(currency, currentBalance + totalReward);
         session.totalReward += totalReward;
 
-        for (let i = 0; i < daysToPay; i++) {
+        for (let i = 0; i < daysToPay; ++i) {
           const operationDate = new Date(startDate.getTime() + (paidDays + i + 1) * 24 * 60 * 60 * 1000);
           const newOperation = new Operations({
             id: userId,
