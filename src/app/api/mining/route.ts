@@ -111,9 +111,9 @@ export async function POST(request: Request) {
 
     // Знаходимо всі ранги, пов’язані з даним contractNum
     const possibleRanks = tableData.filter((data) => data.contract === contractNum);
-    if (possibleRanks.length === 0) {
-      return NextResponse.json({ error: 'Неправильный номер контракта.' }, { status: 400 });
-    }
+    // if (possibleRanks.length === 0) {
+    //   return NextResponse.json({ error: 'Неправильный номер контракта.' }, { status: 400 });
+    // }
 
     // Отримуємо або створюємо BonusSchema для користувача
     let userBonus = await Bonus.findOne({ id: userId });
