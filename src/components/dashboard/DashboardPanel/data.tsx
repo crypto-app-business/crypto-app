@@ -1,7 +1,7 @@
  export const cryptoOptions = [
     {
         currency: 'USDT TRC20',
-        address: 'TYhGMQrX9hJnAiqx9fRj8ssRsThe7S2Z9x',
+        address: 'TPpTTpzzzAKtGd61xMrfPHeQiFtwgX2Pf6',
         logo: '/dashboard/crypto-logos/tether.svg',
         qr: '/dashboard/crypto-qr/trc20.png'
     },
@@ -13,9 +13,9 @@
     },
     {
         currency: 'USDT BEP20',
-        address: '0x7D396874Ed265E077664e9B882F152e523d5F49f',
+        address: '0xEe093B4Ff790cb65bd90D9e00f20DC70D8Fe9759',
         logo: '/dashboard/crypto-logos/bep20.svg',
-        qr: '/dashboard/crypto-qr/bep20.png'
+        qr: '/dashboard/crypto-qr/bnb.png'
     },
     {
         currency: 'USDT TON',
@@ -25,9 +25,9 @@
     },
     {
         currency: 'TRX',
-        address: 'TYhGMQrX9hJnAiqx9fRj8ssRsThe7S2Z9x',
+        address: 'TPpTTpzzzAKtGd61xMrfPHeQiFtwgX2Pf6',
         logo: '/dashboard/crypto-logos/trx.svg',
-        qr: '/dashboard/crypto-qr/trx.png'
+        qr: '/dashboard/crypto-qr/trc20.png'
     },
     {
         currency: 'TON',
@@ -49,7 +49,7 @@
     },
     {
         currency: 'BNB',
-        address: '0x7D396874Ed265E077664e9B882F152e523d5F49f',
+        address: '0xEe093B4Ff790cb65bd90D9e00f20DC70D8Fe9759',
         logo: '/dashboard/crypto-logos/bnb.svg',
         qr: '/dashboard/crypto-qr/bnb.png'
     },
