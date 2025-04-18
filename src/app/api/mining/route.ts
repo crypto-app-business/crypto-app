@@ -68,16 +68,16 @@ export async function POST(request: Request) {
 
     const user = await User.findById(userId);
     if (!user) {
-      return NextResponse.json({ error: 'Користувач не знайдений.' }, { status: 404 });
+      return NextResponse.json({ error: 'Пользователь не найдет.' }, { status: 404 });
     }
 
     if (!user.balance.has(currency)) {
-      return NextResponse.json({ error: 'Ця криптовалюта відсутня на балансі.' }, { status: 400 });
+      return NextResponse.json({ error: 'Эта криптовалюта отсуствует на балансе.' }, { status: 400 });
     }
 
     const currentBalance = user.balance.get(currency) || 0;
     if (currentBalance < amount) {
-      return NextResponse.json({ error: 'Недостатньо коштів' }, { status: 400 });
+      return NextResponse.json({ error: 'Недостаточно средств' }, { status: 400 });
     }
 
     // Оновлюємо баланс користувача
@@ -112,7 +112,7 @@ export async function POST(request: Request) {
     // Знаходимо всі ранги, пов’язані з даним contractNum
     const possibleRanks = tableData.filter((data) => data.contract === contractNum);
     if (possibleRanks.length === 0) {
-      return NextResponse.json({ error: 'Невірний номер контракту.' }, { status: 400 });
+      return NextResponse.json({ error: 'Неправильный номер контракта.' }, { status: 400 });
     }
 
     // Отримуємо або створюємо BonusSchema для користувача
@@ -352,7 +352,7 @@ export async function GET(request) {
 
     return NextResponse.json({ success: true, sessions: userSessions, bonus: userBonus });
   } catch (error) {
-    console.error('Помилка отримання майнінг-сесій:', error);
+    console.error('Ошибка получения майнинг сесии:', error);
     return NextResponse.json({ error: 'Ошибка сервера.' }, { status: 500 });
   }
 }
