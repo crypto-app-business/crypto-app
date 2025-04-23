@@ -38,6 +38,7 @@ export default function Dashboard() {
             username: userExtraData.data.username,
             telegramId: userExtraData.data.telegramId,
             phone: userExtraData.data.phone,
+            avatar: userExtraData.data.avatar
           }));
         } else {
           console.error('Error fetching user data:', await userRes.json());

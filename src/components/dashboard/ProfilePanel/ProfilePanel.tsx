@@ -13,12 +13,13 @@ interface User {
   referrer: string;
   phone: string;
   registrationDate: string;
-  telegramId: string
+  telegramId: string;
+  avatar?: string;
 }
 
 interface AdminDepositsProps {
   user: User;
-  setUser: (User)=> void;
+  setUser: (user: User) => void;
 }
 
 interface Wallet {
@@ -32,7 +33,7 @@ interface WalletFormated {
   currency: string;
   address: string;
   logo?: string;
-  network?: string; // Додано для фільтрації
+  network?: string;
 }
 
 interface NetworkOption {
@@ -152,6 +153,8 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(user.avatar || null);
 
   const translations = {
     loading: {
@@ -165,6 +168,10 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
     addPhoto: {
       ru: "Добавить фото",
       en: "Add Photo",
+    },
+    uploadPhoto: {
+      ru: "Загрузить фото",
+      en: "Upload Photo",
     },
     fields: {
       username: {
@@ -291,6 +298,22 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
         ru: "Помилка при збереженні",
         en: "Error while saving",
       },
+      selectFile: {
+        ru: "Выберите файл",
+        en: "Select a file",
+      },
+      uploadError: {
+        ru: "Ошибка при загрузке фото",
+        en: "Error uploading photo",
+      },
+      fileTooLarge: {
+        ru: "Файл слишком большой (макс. 20 МБ)",
+        en: "File too large (max 20 MB)",
+      },
+      invalidFileFormat: {
+        ru: "Недопустимый формат файла (SVG не поддерживается)",
+        en: "Invalid file format (SVG is not supported)",
+      },
     },
     requestStatus: {
       success: {
@@ -364,6 +387,67 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
       setRequestStatus('error');
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      // Перевірка розміру файлу (20 МБ = 20 * 1024 * 1024 байт)
+      if (file.size > 20 * 1024 * 1024) {
+        setMessageWallet(translations.errors.fileTooLarge[language]);
+        return;
+      }
+      // Перевірка формату файлу (виключити SVG)
+      if (file.type === 'image/svg+xml') {
+        setMessageWallet(translations.errors.invalidFileFormat[language]);
+        return;
+      }
+      setSelectedFile(file);
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+      setMessageWallet('');
+    }
+  };
+
+  const handleUploadPhoto = async () => {
+    if (!selectedFile) {
+      setMessageWallet(translations.errors.selectFile[language]);
+      return;
+    }
+
+    if (!token) {
+      setMessageWallet(translations.errors.tokenNotFound[language]);
+      return;
+    }
+
+    setRequestStatus('loading');
+    try {
+      const formData = new FormData();
+      formData.append('avatar', selectedFile);
+      formData.append('userId', user.id);
+
+      const response = await fetch('/api/upload-avatar', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setUser({ ...user, avatar: data.avatarUrl });
+        setSelectedFile(null);
+        setRequestStatus('success');
+        setMessageWallet('');
+      } else {
+        throw new Error(data.message || translations.errors.uploadError[language]);
+      }
+    } catch (error) {
+      setMessageWallet(`${error}`);
+      setRequestStatus('error');
+      console.error('Error uploading photo:', error);
     }
   };
 
@@ -554,6 +638,13 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
     setOutputNetworkOptions(uniqueNetworks);
   }, [walletsAdded]);
 
+  // Очищення URL для попереднього перегляду
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
   const handleNetworkSelect = (network: string) => {
     setOutputNetworkValue(network);
     setWalletSelection('');
@@ -573,9 +664,9 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
 
   const filteredNetworks = walletSelection
     ? outputNetworkOptions.filter(option => {
-        const selectedWallet = walletsAdded.find(w => w.wallet === walletSelection);
-        return selectedWallet && selectedWallet.network === option.currency;
-      })
+      const selectedWallet = walletsAdded.find(w => w.wallet === walletSelection);
+      return selectedWallet && selectedWallet.network === option.currency;
+    })
     : outputNetworkOptions;
 
   const handleSpinnerHide = () => {
@@ -586,6 +677,7 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
     return <div>{translations.loading[language]}</div>;
   }
 
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   return (
     <div className="bg-gray-50 flex flex-wrap sm:flex-row flex-col gap-[18px] w-full font-segoeui px-[30px] sm:px-0">
       <RequestStatusIndicator
@@ -594,8 +686,8 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
           requestStatus === 'success'
             ? translations.requestStatus.success[language]
             : requestStatus === 'error'
-            ? translations.requestStatus.error[language]
-            : undefined
+              ? translations.requestStatus.error[language]
+              : undefined
         }
         onHide={handleSpinnerHide}
       />
@@ -610,24 +702,46 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
           }}
         >
           <div className="flex items-center gap-[10px]">
-            <div className="w-[104px] h-[104px] rounded-full bg-gray-200 flex items-center justify-center">
+            <div className="w-[104px] h-[104px] rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
               <Image
-                src="/dashboard/address-book.svg"
+                src={
+                  previewUrl ||
+                  (user.avatar ? `${baseUrl}${user.avatar}?id=${user.avatar.split('/').pop()}` : "/dashboard/address-book.svg")
+                }
                 alt="Profile image"
                 width={104}
                 height={104}
-                objectFit="cover"
+                className="object-cover"
                 priority={false}
               />
             </div>
             <div>
               <h3 className="text-[20px] font-bold">{user?.username || ''}</h3>
-              <p className="text-[13px] text-[#a1a4ad] mb-[20px]">ID {user?.username || ''}</p>
-              <button className="text-[17px] font-bold text-white py-[7.5px] px-[16px] bg-[#3581FF4D] rounded-full">
+              <p className="text-[13px] text-[#a1a4ad] mb-[10px]">ID {user?.username || ''}</p>
+              <input
+                type="file"
+                accept="image/*, !image/svg+xml"
+                onChange={handleFileChange}
+                className="hidden"
+                id="avatar-upload"
+              />
+              <label
+                htmlFor="avatar-upload"
+                className="text-[17px] font-bold text-white py-[7.5px] px-[16px] bg-[#3581FF4D] rounded-full cursor-pointer inline-block mb-[5px]"
+              >
                 {translations.addPhoto[language]}
-              </button>
+              </label>
+              {selectedFile && (
+                <button
+                  onClick={handleUploadPhoto}
+                  className="text-[17px] font-bold text-white py-[7.5px] px-[16px] bg-[#3581FF] rounded-full"
+                >
+                  {translations.uploadPhoto[language]}
+                </button>
+              )}
             </div>
           </div>
+          <div className="text-red-500 text-[12px] min-h-[16px] mt-[5px]">{messageWallet}</div>
         </div>
         <div
           className="w-[294px] bg-white rounded-[15px] p-4 mb-[30px]"
@@ -840,7 +954,7 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
                           onClick={handleWithdrawBalance}
                           className="mt-4 bg-[#71baff] text-white text-[16px] font-bold px-[25px] py-[10px] rounded-full hover:bg-gray-200 transition"
                         >
-                          {translations.withdraw[language]}
+                          {translations.withdrawal[language]}
                         </button>
                       </div>
                     </div>

@@ -16,6 +16,7 @@ interface IUser extends Document {
   telegramId?: string;
   createdAt: Date;
   updatedAt: Date;
+  avatar: string;
 }
 
 const UserSchema: Schema = new Schema(
@@ -32,6 +33,7 @@ const UserSchema: Schema = new Schema(
     balance: { type: Map, of: Number, default: {} },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     telegramId: { type: String },
+    avatar: { type: String },
     createdAt: { type: Date, default: Date.now },
   },
   { timestamps: true }

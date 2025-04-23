@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import User from '@/models/User';
 import { cookies } from 'next/headers'; // Імпортуємо утиліту для роботи з cookies
 import connectDB from '@/utils/connectDB';
+import Avatar from '@/models/Avatar';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
@@ -34,6 +35,7 @@ export async function GET() {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
     }
 
+    const avatar = await Avatar.findOne({ userId: user._id });
     // Повернення балансу
     return NextResponse.json({
       success: true,
@@ -47,6 +49,7 @@ export async function GET() {
         phone: user.phone,
         telegramId: user.telegramId,
         registrationDate: user.createdAt,
+        avatar: avatar ? avatar.avatarUrl : null,
       },
     });
   } catch (error) {
