@@ -32,6 +32,12 @@ interface WalletFormated {
   currency: string;
   address: string;
   logo?: string;
+  network?: string; // Додано для фільтрації
+}
+
+interface NetworkOption {
+  currency: string;
+  logo?: string;
 }
 
 interface Field {
@@ -41,10 +47,10 @@ interface Field {
 }
 
 interface CustomSelectProps {
-  options: { currency: string; address?: string; logo?: string }[];
+  options: { currency: string; address?: string; logo?: string; network?: string }[];
   selectedWallet: string;
   onSelect: (currency: string) => void;
-  titleName?: string; // Тип для titleName — string, опціональний
+  titleName?: string;
 }
 
 const CustomSelect = ({ options, selectedWallet, onSelect, titleName }: CustomSelectProps) => {
@@ -95,7 +101,7 @@ const CustomSelect = ({ options, selectedWallet, onSelect, titleName }: CustomSe
               height={24}
               className="mr-2 rounded-full"
             />
-            {titleName? translations.currencyType2[language] : translations.currencyType[language]}
+            {titleName ? translations.currencyType2[language] : translations.currencyType[language]}
           </>
         )}
         <svg className="ml-auto w-4 h-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
@@ -137,6 +143,7 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
   const [walletsAdded, setWalletsAdded] = useState<Wallet[]>([]);
   const [formattedWallets, setFormattedWalletsd] = useState<WalletFormated[]>([]);
   const [outputNetwork, setOutputNetwork] = useState<WalletFormated[]>([]);
+  const [outputNetworkOptions, setOutputNetworkOptions] = useState<NetworkOption[]>([]);
   const [outputNetworkValue, setOutputNetworkValue] = useState<string>('');
   const [walletSelection, setWalletSelection] = useState<string>('');
   const [editingField, setEditingField] = useState<string | null>(null);
@@ -145,7 +152,7 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
-  console.log(messageWallet)
+
   const translations = {
     loading: {
       ru: "Загрузка...",
@@ -349,8 +356,7 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
       if (!response.ok) throw new Error(translations.errors.saveError[language]);
 
       const data = await response.json();
-      console.log('Data updated:', data);
-      setUser(data.user)
+      setUser(data.user);
       setEditingField(null);
       setRequestStatus('success');
     } catch (error) {
@@ -367,12 +373,12 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
       setMessageWallet(translations.errors.enterAmount[language]);
       return;
     }
-  
+
     if (!selectedSaveWallet) {
       setMessageWallet(translations.errors.selectCrypto[language]);
       return;
     }
-  
+
     setRequestStatus('loading');
     try {
       const response = await fetch('/api/wallet', {
@@ -386,20 +392,17 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
           wallet: amountWallet,
         }),
       });
-  
+
       const data = await response.json();
       if (data.success) {
-        // Оновлюємо стан walletsAdded, додаючи новий гаманець
         const newWallet = {
-          _id: data.wallet?._id || Date.now().toString(), // Якщо API повертає ID, використовуємо його, інакше генеруємо тимчасовий
+          _id: data.wallet?._id || Date.now().toString(),
           network: selectedSaveWallet,
           wallet: amountWallet,
-          createdAt: new Date().toISOString(), // Додаємо дату створення
+          createdAt: new Date().toISOString(),
         };
-  
+
         setWalletsAdded((prevWallets) => [...prevWallets, newWallet]);
-  
-        // Очищаємо поля вводу після успішного збереження
         setAmountWallet('');
         setSelectedSaveWallet('');
         setMessageWallet('');
@@ -431,9 +434,8 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
       setMessageWallet(translations.errors.selectWallet[language]);
       return;
     }
-    console.log(walletSelection);
-    setRequestStatus('loading');
 
+    setRequestStatus('loading');
     try {
       const response = await fetch('/api/withdrawBalance', {
         method: 'POST',
@@ -464,7 +466,6 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
 
   const handleTransfer = async () => {
     setMessageWallet("");
-
     if (!userAmount) {
       setMessageWallet(translations.errors.enterAmount[language]);
       return;
@@ -533,15 +534,49 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
         logo: foundCrypto ? foundCrypto.logo : "/dashboard/crypto-logos/default.svg",
       };
     });
-    const formattedWallets2 = walletsAdded.map(wallet => {
+
+    const formattedWalletsForSelection = walletsAdded.map(wallet => ({
+      currency: wallet.wallet,
+      address: wallet.wallet,
+      network: wallet.network,
+    }));
+
+    const uniqueNetworks = Array.from(new Set(walletsAdded.map(wallet => wallet.network))).map(network => {
+      const foundCrypto = cryptoOptions.find(option => option.currency === network);
       return {
-        currency: wallet.wallet,
-        address: wallet.wallet,
+        currency: network,
+        logo: foundCrypto ? foundCrypto.logo : "/dashboard/crypto-logos/default.svg",
       };
     });
+
     setFormattedWalletsd(formattedWallets);
-    setOutputNetwork(formattedWallets2);
+    setOutputNetwork(formattedWalletsForSelection);
+    setOutputNetworkOptions(uniqueNetworks);
   }, [walletsAdded]);
+
+  const handleNetworkSelect = (network: string) => {
+    setOutputNetworkValue(network);
+    setWalletSelection('');
+  };
+
+  const handleWalletSelect = (wallet: string) => {
+    setWalletSelection(wallet);
+    const selectedWallet = walletsAdded.find(w => w.wallet === wallet);
+    if (selectedWallet) {
+      setOutputNetworkValue(selectedWallet.network);
+    }
+  };
+
+  const filteredWallets = outputNetworkValue
+    ? outputNetwork.filter(wallet => wallet.network === outputNetworkValue)
+    : outputNetwork;
+
+  const filteredNetworks = walletSelection
+    ? outputNetworkOptions.filter(option => {
+        const selectedWallet = walletsAdded.find(w => w.wallet === walletSelection);
+        return selectedWallet && selectedWallet.network === option.currency;
+      })
+    : outputNetworkOptions;
 
   const handleSpinnerHide = () => {
     setRequestStatus(null);
@@ -782,24 +817,24 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
                           className="pl-[15px] w-full rounded-[5px] text-[#A0A5AD] text-[14px] h-[31px]"
                         />
                       </div>
-                      <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">
+                      <label htmlFor="network" className="text-[#00163A] text-[14px] font-semibold">
                         {translations.withdrawalNetwork[language]}
                       </label>
                       <CustomSelect
-                        options={formattedWallets}
+                        options={filteredNetworks}
                         selectedWallet={outputNetworkValue}
-                        onSelect={setOutputNetworkValue}
+                        onSelect={handleNetworkSelect}
                       />
-                      <label htmlFor="amount" className="text-[#00163A] text-[14px] font-semibold">
+                      <label htmlFor="wallet" className="text-[#00163A] text-[14px] font-semibold">
                         {translations.walletSelection[language]}
                       </label>
                       <CustomSelect
-                        options={outputNetwork}
+                        options={filteredWallets}
                         selectedWallet={walletSelection}
-                        onSelect={setWalletSelection}
-                        titleName={"sadf"}
+                        onSelect={handleWalletSelect}
+                        titleName="wallet"
                       />
-                      {/* <div>{messageWallet}</div> */}
+                      <div className="text-red-500 text-[12px] min-h-[16px]">{messageWallet}</div>
                       <div className="flex justify-end w-full">
                         <button
                           onClick={handleWithdrawBalance}
