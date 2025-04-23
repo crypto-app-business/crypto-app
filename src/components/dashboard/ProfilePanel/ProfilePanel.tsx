@@ -664,9 +664,9 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
 
   const filteredNetworks = walletSelection
     ? outputNetworkOptions.filter(option => {
-        const selectedWallet = walletsAdded.find(w => w.wallet === walletSelection);
-        return selectedWallet && selectedWallet.network === option.currency;
-      })
+      const selectedWallet = walletsAdded.find(w => w.wallet === walletSelection);
+      return selectedWallet && selectedWallet.network === option.currency;
+    })
     : outputNetworkOptions;
 
   const handleSpinnerHide = () => {
@@ -685,8 +685,8 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
           requestStatus === 'success'
             ? translations.requestStatus.success[language]
             : requestStatus === 'error'
-            ? translations.requestStatus.error[language]
-            : undefined
+              ? translations.requestStatus.error[language]
+              : undefined
         }
         onHide={handleSpinnerHide}
       />
