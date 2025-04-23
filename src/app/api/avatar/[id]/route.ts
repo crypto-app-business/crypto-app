@@ -2,22 +2,9 @@ import { NextRequest } from 'next/server';
 import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import connectDB from '@/utils/connectDB';
-
-function nodeToWebStream(nodeStream: NodeJS.ReadableStream): ReadableStream<Uint8Array> {
-  return new ReadableStream({
-    start(controller) {
-      nodeStream.on('data', (chunk) => controller.enqueue(chunk));
-      nodeStream.on('end', () => controller.close());
-      nodeStream.on('error', (err) => controller.error(err));
-    },
-  });
-}
-
-export async function GET(
-    request: NextRequest,
-    context: { params: Record<string, string> }
-  ) {
-    const { id } = context.params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(request: NextRequest, context: any) {
+  const { id } = context.params;
 
   if (!ObjectId.isValid(id)) {
     return new Response('Invalid ID format', { status: 400 });
@@ -39,7 +26,14 @@ export async function GET(
     }
 
     const stream = bucket.openDownloadStream(fileId);
-    const webStream = nodeToWebStream(stream);
+
+    const webStream = new ReadableStream({
+      start(controller) {
+        stream.on('data', (chunk) => controller.enqueue(chunk));
+        stream.on('end', () => controller.close());
+        stream.on('error', (err) => controller.error(err));
+      },
+    });
 
     const headers = new Headers();
     headers.set('Content-Type', fileDoc.contentType || 'application/octet-stream');
