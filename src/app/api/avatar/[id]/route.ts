@@ -3,7 +3,8 @@ import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import connectDB from '@/utils/connectDB';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, context: { params: { id: string } }) {
+    const { id } = context.params;
   try {
     await connectDB(); // просто підключення
 
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       bucketName: 'avatars',
     });
 
-    const fileId = new ObjectId(params.id);
+    const fileId = new ObjectId(id);
     const fileDoc = await db.collection('avatars.files').findOne({ _id: fileId });
 
     if (!fileDoc) {
