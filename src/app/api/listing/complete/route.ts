@@ -103,14 +103,14 @@ export async function PATCH(request) {
           session.fullAmount += totalReward;
 
           for (let i = 0; i < daysToPay; ++i) {
-            const operationDate = new Date(startDate.getTime() + (paidDays + i + 1) * 24 * 60 * 60 * 1000);
+            // const operationDate = new Date(startDate.getTime() + (paidDays + i + 1) * 24 * 60 * 60 * 1000);
             const newOperation = new Operations({
               id: userId,
               description: `Пришло с листинга`,
               amount: dailyReward,
               currency: "USDT",
               type: 'listing',
-              createdAt: operationDate,
+              createdAt: new Date(),
             });
             await newOperation.save();
           }

@@ -52,43 +52,43 @@ export default function Dashboard() {
     initializeUser();
   }, [router]);
 
-  useEffect(() => {
-    if (!user?.id) return;
+  // useEffect(() => {
+  //   if (!user?.id) return;
 
-    const updateBalances = async () => {
-      try {
-        const miningRes = await fetch('/api/mining/complete', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id }),
-        });
-        if (!miningRes.ok) {
-          console.error('Ошибка обновления баланса для майнинга.');
-        }
+  //   const updateBalances = async () => {
+  //     try {
+  //       const miningRes = await fetch('/api/mining/complete', {
+  //         method: 'PATCH',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({ userId: user.id }),
+  //       });
+  //       if (!miningRes.ok) {
+  //         console.error('Ошибка обновления баланса для майнинга.');
+  //       }
 
-        const listingRes = await fetch('/api/listing/complete', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id }),
-        });
-        if (!listingRes.ok) {
-          console.error('Ошибка обновления баланса для листинга.');
-        }
-        const nftRes = await fetch('/api/nft-session', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user.id }),
-        });
-        if (!nftRes.ok) {
-          console.error('Ошибка обновления баланса для листинга.');
-        }
-      } catch (error) {
-        console.error('Ошибка сервера при обновлении баланса:', error);
-      }
-    };
+  //       const listingRes = await fetch('/api/listing/complete', {
+  //         method: 'PATCH',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({ userId: user.id }),
+  //       });
+  //       if (!listingRes.ok) {
+  //         console.error('Ошибка обновления баланса для листинга.');
+  //       }
+  //       const nftRes = await fetch('/api/nft-session', {
+  //         method: 'PATCH',
+  //         headers: { 'Content-Type': 'application/json' },
+  //         body: JSON.stringify({ userId: user.id }),
+  //       });
+  //       if (!nftRes.ok) {
+  //         console.error('Ошибка обновления баланса для листинга.');
+  //       }
+  //     } catch (error) {
+  //       console.error('Ошибка сервера при обновлении баланса:', error);
+  //     }
+  //   };
 
-    updateBalances();
-  }, [user?.id]);
+  //   updateBalances();
+  // }, [user?.id]);
 
   if (isLoading) {
     return <div>Loading...</div>;

@@ -28,7 +28,7 @@ export async function PATCH(request) {
       // Визначаємо кількість днів, які ще не були виплачені
       const daysToPay = daysSinceStart - paidDays;
 
-
+console.log(daysToPay)
       if (daysToPay > 0) {
         // Розрахунок винагороди за ці дні
         const dailyReward = (amount * (percentage / 100));
@@ -42,21 +42,23 @@ export async function PATCH(request) {
           // Оновлюємо баланс
           user.balance.set(currency, (currentBalance || 0) + reward);
           
-          await user.save();
 
           for (let i = 0; i < daysToPay; ++i) {
-            const operationDate = new Date(startDate.getTime() + (paidDays + i + 1) * 24 * 60 * 60 * 1000);
+            // const operationDate = new Date(startDate.getTime() + (paidDays + i + 1) * 24 * 60 * 60 * 1000);
             const newOperation = new Operations({
               id: userId,
               description: `Получено с майнинга`,
               amount: dailyReward,
               currency: "USDT",
               type: 'mining',
-              createdAt: operationDate,
+              createdAt: new Date(),
             });
+            console.log(newOperation)
+
             await newOperation.save();
           }
 
+          console.log("all")
           // Оновлюємо кількість сплачених днів у сесії
           session.paidDays += daysToPay;
           session.fullAmount += reward;
@@ -76,7 +78,7 @@ export async function PATCH(request) {
             });
             await newOperation.save();
           }
-
+          await user.save();
           await session.save();
         }
       }
