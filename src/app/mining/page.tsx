@@ -160,22 +160,22 @@ export default function Home() {
       ru: {
         title: "ПОЧЕМУ МОЖНО НАМ ДОВЕРЯТЬ И РАБОТАТЬ С НАМИ?",
         items: [
-          { icon: "server", text: "Стабильная мощность и 100% защита от сбоев Bitfury и Wattum" },
-          { icon: "block", text: "Майнинг на мощностях Bitfury и Wattum - лидеры отрасли" },
-          { icon: "rocket", text: "Оперативное зачисление монет на ваш счет" },
-          { icon: "bitcoin", text: "Настоящий Майнинг - Все монеты Новые" },
-          { icon: "wallet", text: "Максимальная эффективность при использовании высококачественного оборудования" },
+          { icon: "1", text: "Стабильная мощность и 100% защита от сбоев Bitfury и Wattum" },
+          { icon: "2", text: "Майнинг на мощностях Bitfury и Wattum - лидеры отрасли" },
+          { icon: "3", text: "Оперативное зачисление монет на ваш счет" },
+          { icon: "4", text: "Настоящий Майнинг - Все монеты Новые" },
+          { icon: "5", text: "Максимальная эффективность при использовании высококачественного оборудования" },
         ],
         button: "НАЧАТЬ МАЙНИНГ",
       },
       en: {
         title: "WHY TRUST AND WORK WITH US?",
         items: [
-          { icon: "server", text: "Stable power and 100% protection from outages by Bitfury and Wattum" },
-          { icon: "block", text: "Mining on Bitfury and Wattum facilities - industry leaders" },
-          { icon: "rocket", text: "Fast crediting of coins to your account" },
-          { icon: "bitcoin", text: "Real Mining - All Coins New" },
-          { icon: "wallet", text: "Maximum efficiency with high-quality equipment" },
+          { icon: "1", text: "Stable power and 100% protection from outages by Bitfury and Wattum" },
+          { icon: "2", text: "Mining on Bitfury and Wattum facilities - industry leaders" },
+          { icon: "3", text: "Fast crediting of coins to your account" },
+          { icon: "4", text: "Real Mining - All Coins New" },
+          { icon: "5", text: "Maximum efficiency with high-quality equipment" },
         ],
         button: "START MINING",
       },
@@ -293,7 +293,7 @@ export default function Home() {
         </motion.section>
 
         {/* Нова секція "Почему можно нам доверять и работать с нами?" */}
-        <motion.section
+        {/* <motion.section
           className="w-full py-[60px]"
           initial="hidden"
           whileInView="show"
@@ -340,7 +340,7 @@ export default function Home() {
               </motion.button>
             </Link>
           </div>
-        </motion.section>
+        </motion.section> */}
 
         {/* Секція кроків */}
         <motion.section
@@ -361,6 +361,13 @@ export default function Home() {
                   variants={fadeIn("up", "tween", 0.2 * (index + 1), 0.5)}
                 >
                   <div className="w-[40px] h-[40px] bg-red-500 rounded-full mx-auto mb-4 flex items-center justify-center">
+                    <Image
+                      src={`/miningLanding/${index+1}.png`} // Шлях до іконок у public/miningLanding/
+                      alt="icon"
+                      width={80}
+                      height={80}
+                      className="object-contain"
+                    />
                     <span className="text-white font-bold">{index + 1}</span>
                   </div>
                   <p className="text-gray-700">{step as string}</p>
@@ -375,7 +382,7 @@ export default function Home() {
             className="text-blue-500 hover:underline mr-auto ml-auto"
           >
             <motion.button
-              className=" px-8 py-3 bg-[#f4a261] text-white font-semibold rounded-full hover:bg-opacity-90 transition"
+              className=" px-8 py-3 bg-[#71a7fe] text-white font-semibold rounded-full hover:bg-opacity-90 transition"
               variants={fadeIn("up", "tween", 1, 1)}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
