@@ -142,7 +142,7 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
   const [message, setMessage] = useState('');
   const [messageWallet, setMessageWallet] = useState('');
   const [walletsAdded, setWalletsAdded] = useState<Wallet[]>([]);
-  const [formattedWallets, setFormattedWalletsd] = useState<WalletFormated[]>([]);
+  const [, setFormattedWalletsd] = useState<WalletFormated[]>([]);
   const [outputNetwork, setOutputNetwork] = useState<WalletFormated[]>([]);
   const [outputNetworkOptions, setOutputNetworkOptions] = useState<NetworkOption[]>([]);
   const [outputNetworkValue, setOutputNetworkValue] = useState<string>('');
@@ -664,9 +664,9 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
 
   const filteredNetworks = walletSelection
     ? outputNetworkOptions.filter(option => {
-      const selectedWallet = walletsAdded.find(w => w.wallet === walletSelection);
-      return selectedWallet && selectedWallet.network === option.currency;
-    })
+        const selectedWallet = walletsAdded.find(w => w.wallet === walletSelection);
+        return selectedWallet && selectedWallet.network === option.currency;
+      })
     : outputNetworkOptions;
 
   const handleSpinnerHide = () => {
@@ -677,7 +677,6 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
     return <div>{translations.loading[language]}</div>;
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
   return (
     <div className="bg-gray-50 flex flex-wrap sm:flex-row flex-col gap-[18px] w-full font-segoeui px-[30px] sm:px-0">
       <RequestStatusIndicator
@@ -686,8 +685,8 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
           requestStatus === 'success'
             ? translations.requestStatus.success[language]
             : requestStatus === 'error'
-              ? translations.requestStatus.error[language]
-              : undefined
+            ? translations.requestStatus.error[language]
+            : undefined
         }
         onHide={handleSpinnerHide}
       />
@@ -706,7 +705,7 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
               <Image
                 src={
                   previewUrl ||
-                  (user.avatar ? `${baseUrl}${user.avatar}?id=${user.avatar.split('/').pop()}` : "/dashboard/address-book.svg")
+                  (user.avatar ? `${user.avatar}?id=${user.avatar.split('/').pop()}` : "/dashboard/address-book.svg")
                 }
                 alt="Profile image"
                 width={104}

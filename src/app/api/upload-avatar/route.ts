@@ -16,10 +16,11 @@ interface JwtPayload {
 // Функція для підключення до MongoDB
 async function connectToDatabase(): Promise<Db> {
   await connectDB();
-  if (!mongoose.connection.db) {
+  const db = mongoose.connection.db;
+  if (!db) {
     throw new Error('Database connection not established');
   }
-  return mongoose.connection.db;
+  return db;
 }
 
 // Ініціалізація GridFS
@@ -70,12 +71,12 @@ export async function POST(req: NextRequest) {
 
     // Обробка FormData
     const formData = await req.formData();
-    const file = formData.get('avatar') as File;
+    const avatarFile = formData.get('avatar') as File;
     const userIdFromForm = formData.get('userId') as string;
 
     console.log('userId from token:', userId, 'userId from form:', userIdFromForm);
 
-    if (!file || !userIdFromForm) {
+    if (!avatarFile || !userIdFromForm) {
       return NextResponse.json({ success: false, message: 'File and userId are required' }, { status: 400 });
     }
 
@@ -84,37 +85,75 @@ export async function POST(req: NextRequest) {
     }
 
     // Перевірка розміру файлу (20 МБ)
-    if (file.size > 20 * 1024 * 1024) {
+    if (avatarFile.size > 20 * 1024 * 1024) {
       return NextResponse.json({ success: false, message: 'File too large (max 20 MB)' }, { status: 400 });
     }
 
     // Перевірка типу файлу (виключити SVG)
-    if (file.type === 'image/svg+xml') {
+    if (avatarFile.type === 'image/svg+xml') {
       return NextResponse.json({ success: false, message: 'SVG files are not allowed' }, { status: 400 });
     }
 
-    if (!file.type.startsWith('image/')) {
+    if (!avatarFile.type.startsWith('image/')) {
       return NextResponse.json({ success: false, message: 'Only images are allowed' }, { status: 400 });
     }
 
-    // Ініціалізація GridFS
+    // Ініціалізація GridFS і отримання db
     const gfs = await getGridFSBucket();
+    const db = await connectToDatabase();
+
+    // Видалення старого аватара, якщо він існує
+    const existingAvatar = await Avatar.findOne({ userId: new mongoose.Types.ObjectId(userId) });
+    if (existingAvatar) {
+      const oldFileId = existingAvatar.avatarUrl.split('/').pop();
+      if (mongoose.Types.ObjectId.isValid(oldFileId)) {
+        try {
+          await gfs.delete(new mongoose.Types.ObjectId(oldFileId));
+          console.log('Deleted old avatar file:', oldFileId);
+        } catch (error) {
+          console.error('Error deleting old avatar file:', error);
+        }
+      }
+    }
 
     // Конвертація File у Readable Stream
-    const buffer = Buffer.from(await file.arrayBuffer());
+    const buffer = Buffer.from(await avatarFile.arrayBuffer());
     const stream = Readable.from(buffer);
 
     // Завантаження файлу в GridFS
-    const uploadStream = gfs.openUploadStream(`${userId}_${file.name}`, {
-      contentType: file.type,
+    const uploadStream = gfs.openUploadStream(`${userId}_${avatarFile.name}`, {
+      contentType: avatarFile.type || 'image/jpeg',
       metadata: { userId },
     });
 
     await new Promise((resolve, reject) => {
       stream.pipe(uploadStream)
-        .on('error', reject)
-        .on('finish', resolve);
+        .on('error', (error) => {
+          console.error('GridFS upload error:', error);
+          reject(error);
+        })
+        .on('finish', () => {
+          console.log('GridFS upload finished:', uploadStream.id);
+          resolve(null);
+        });
     });
+
+    // Перевірка, чи файл зберігся в GridFS
+    const uploadedFile = await gfs.find({ _id: uploadStream.id }).toArray();
+    if (!uploadedFile.length) {
+      console.log('File not found in GridFS:', uploadStream.id);
+      return NextResponse.json({ success: false, message: 'Failed to save file' }, { status: 500 });
+    }
+    console.log('GridFS file saved:', uploadedFile[0]);
+
+    // Перевірка чанків
+    const chunks = await db.collection('avatars.chunks').find({ files_id: uploadStream.id }).toArray();
+    if (!chunks.length) {
+      console.log('No chunks found for file:', uploadStream.id);
+      await gfs.delete(uploadStream.id);
+      return NextResponse.json({ success: false, message: 'Failed to save file chunks' }, { status: 500 });
+    }
+    console.log('Chunks saved:', chunks.length);
 
     // Створення або оновлення аватара
     console.log('Saving avatar for userId:', userId);
@@ -130,9 +169,10 @@ export async function POST(req: NextRequest) {
       success: true,
       avatarUrl: `/api/avatar/${uploadStream.id}`,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error uploading avatar:', error);
-    return NextResponse.json({ success: false, message: error.message || 'Server error' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Server error';
+    return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }
 
@@ -144,19 +184,53 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const fileId = searchParams.get('id');
 
+    console.log('Fetching avatar with fileId:', fileId);
+
     if (!fileId || !mongoose.Types.ObjectId.isValid(fileId)) {
+      console.log('Invalid file ID:', fileId);
       return NextResponse.json({ success: false, message: 'Invalid file ID' }, { status: 400 });
     }
 
+    const files = await gfs.find({ _id: new mongoose.Types.ObjectId(fileId) }).toArray();
+    if (!files.length) {
+      console.log('File not found in GridFS:', fileId);
+      return NextResponse.json({ success: false, message: 'File not found' }, { status: 404 });
+    }
+
+    console.log('Found file in GridFS:', files[0]);
+
     const downloadStream = gfs.openDownloadStream(new mongoose.Types.ObjectId(fileId));
 
-    return new NextResponse(downloadStream as any, {
+    // Обробка помилок потоку
+    downloadStream.on('error', (error) => {
+      console.error('Download stream error:', error);
+      downloadStream.destroy();
+    });
+
+    // Перевірка, чи потік читається
+    let dataReceived = false;
+    downloadStream.on('data', () => {
+      dataReceived = true;
+      console.log('Download stream data received for fileId:', fileId);
+    });
+
+    downloadStream.on('end', () => {
+      if (!dataReceived) {
+        console.log('No data received from download stream:', fileId);
+      }
+    });
+
+    return new NextResponse(downloadStream as unknown as ReadableStream, {
+      status: 200,
       headers: {
-        'Content-Type': 'image/*',
+        'Content-Type': files[0].contentType || 'image/jpeg',
+        'Cache-Control': 'no-cache',
+        'Content-Length': files[0].length.toString(),
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error retrieving avatar:', error);
-    return NextResponse.json({ success: false, message: error.message || 'Server error' }, { status: 500 });
+    const message = error instanceof Error ? error.message : 'Server error';
+    return NextResponse.json({ success: false, message }, { status: 500 });
   }
 }
