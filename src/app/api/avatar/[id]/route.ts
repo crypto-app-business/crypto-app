@@ -22,11 +22,20 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 
     const stream = bucket.openDownloadStream(fileId);
 
+    const webStream = new ReadableStream({
+      start(controller) {
+        stream.on('data', (chunk) => controller.enqueue(chunk));
+        stream.on('end', () => controller.close());
+        stream.on('error', (err) => controller.error(err));
+      },
+    });
+    
     const headers = new Headers();
     headers.set('Content-Type', fileDoc.contentType || 'application/octet-stream');
     headers.set('Cache-Control', 'public, max-age=31536000, immutable');
-
-    return new Response(stream as any, { headers });
+    
+    return new Response(webStream, { headers });
+    
   } catch (error) {
     console.error('🔥 GridFS read error:', error);
     return new Response('Internal Server Error', { status: 500 });
