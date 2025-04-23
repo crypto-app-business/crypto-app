@@ -13,8 +13,11 @@ function nodeToWebStream(nodeStream: NodeJS.ReadableStream): ReadableStream<Uint
   });
 }
 
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
-  const { id } = context.params;
+export async function GET(
+    request: NextRequest,
+    context: { params: Record<string, string> }
+  ) {
+    const { id } = context.params;
 
   if (!ObjectId.isValid(id)) {
     return new Response('Invalid ID format', { status: 400 });
