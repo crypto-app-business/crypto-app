@@ -3,13 +3,27 @@ import { ObjectId } from 'mongodb';
 import mongoose from 'mongoose';
 import connectDB from '@/utils/connectDB';
 
+function nodeToWebStream(nodeStream: NodeJS.ReadableStream): ReadableStream<Uint8Array> {
+  return new ReadableStream({
+    start(controller) {
+      nodeStream.on('data', (chunk) => controller.enqueue(chunk));
+      nodeStream.on('end', () => controller.close());
+      nodeStream.on('error', (err) => controller.error(err));
+    },
+  });
+}
+
 export async function GET(request: NextRequest, context: { params: { id: string } }) {
-    const { id } = context.params;
+  const { id } = context.params;
+
+  if (!ObjectId.isValid(id)) {
+    return new Response('Invalid ID format', { status: 400 });
+  }
+
   try {
-    await connectDB(); // просто підключення
+    await connectDB();
 
-    const db = mongoose.connection.db!; // тут вже можна брати connection
-
+    const db = mongoose.connection.db!;
     const bucket = new mongoose.mongo.GridFSBucket(db, {
       bucketName: 'avatars',
     });
@@ -22,21 +36,13 @@ export async function GET(request: NextRequest, context: { params: { id: string 
     }
 
     const stream = bucket.openDownloadStream(fileId);
+    const webStream = nodeToWebStream(stream);
 
-    const webStream = new ReadableStream({
-      start(controller) {
-        stream.on('data', (chunk) => controller.enqueue(chunk));
-        stream.on('end', () => controller.close());
-        stream.on('error', (err) => controller.error(err));
-      },
-    });
-    
     const headers = new Headers();
     headers.set('Content-Type', fileDoc.contentType || 'application/octet-stream');
     headers.set('Cache-Control', 'public, max-age=31536000, immutable');
-    
+
     return new Response(webStream, { headers });
-    
   } catch (error) {
     console.error('🔥 GridFS read error:', error);
     return new Response('Internal Server Error', { status: 500 });
