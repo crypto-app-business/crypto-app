@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { cryptoOptions } from "./data";
 import RequestStatusIndicator from '@/components/dashboard/RequestStatusIndicator/RequestStatusIndicator';
 import { useLanguageStore } from '@/store/useLanguageStore';
+import Link from "next/link";
 
 interface User {
   id: string;
@@ -18,6 +19,16 @@ interface User {
 
 interface AdminDepositsProps {
   user: User;
+}
+
+interface MiningSession {
+  id: string;
+  currency: string;
+  amount: number;
+  startDate: string;
+  endDate: string;
+  percentage: number[];
+  fullAmount: number;
 }
 
 const CustomSelect = ({ options, selectedWallet, onSelect }) => {
@@ -106,6 +117,8 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
   const [isPending, setIsPending] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
+  const [miningSessions, setMiningSessions] = useState<MiningSession[]>([]);
+
 
   console.log(isPending)
   const translations = {
@@ -124,6 +137,10 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
     notActive: {
       ru: "Не активный",
       en: "Not active",
+    },
+    active: {
+      ru: "Активный",
+      en: "Active",
     },
     contact: {
       ru: "Связаться:",
@@ -275,6 +292,29 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
     console.log('User prop changed:', user);
   }, [user]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!user.id) return;
+
+      try {
+        const [miningRes] = await Promise.all([
+          fetch(`/api/mining?userId=${user.id}`), ,
+        ]);
+
+        if (miningRes.ok) {
+          const miningData: { sessions: MiningSession[] } = await miningRes.json();
+          setMiningSessions(miningData.sessions);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, [user.id]);
+
+  console.log(user, "456")
+
   return (
     <div className="bg-gray-50 flex flex-wrap sm:flex-row flex-col-reverse gap-[65px] w-full sm:ml-[42px] font-segoeui">
       <RequestStatusIndicator
@@ -283,8 +323,8 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
           requestStatus === 'success'
             ? translations.requestStatus.success[language]
             : requestStatus === 'error'
-            ? translations.requestStatus.error[language]
-            : undefined
+              ? translations.requestStatus.error[language]
+              : undefined
         }
         onHide={handleSpinnerHide}
       />
@@ -318,30 +358,40 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
           <div className="mt-4">
             <p className="text-[14px] font-semibold mb-[10px]">
               {translations.registrationDate[language]}{" "}
-              <span className="text-[#a1a4ad]">{user?.registrationDate || 'нет данных'}</span>
+              <span className="text-[#a1a4ad]">{new Date(user?.registrationDate).toUTCString() || 'нет данных'}</span>
             </p>
             <p className="text-[14px] font-semibold mb-[10px]">
               {translations.accountStatus[language]}{" "}
-              <span className="text-[#a1a4ad]">{translations.notActive[language]}</span>
+              <span className="text-[#a1a4ad]">{miningSessions.length ? translations.active[language] : translations.notActive[language]}</span>
             </p>
             <p className="text-[14px] font-semibold mb-[10px] flex items-center gap-2">
               {translations.contact[language]}
-              <Image
-                src="/dashboard/devices.svg"
-                alt="Phone icon"
-                width={11}
-                height={18}
-                objectFit="cover"
-                priority={false}
-              />
-              <Image
-                src="/dashboard/envelope-fill.svg"
-                alt="Email icon"
-                width={17}
-                height={16}
-                objectFit="cover"
-                priority={false}
-              />
+              <Link
+                href="https://t.me/Crypto_corporation_support"
+                className="text-blue-500 hover:underline"
+              >
+                <Image
+                  src="/dashboard/devices.svg"
+                  alt="Phone icon"
+                  width={11}
+                  height={18}
+                  objectFit="cover"
+                  priority={false}
+                />
+              </Link>
+              <Link
+                href="https://www.youtube.com/@Crypto_CC_Corporation"
+                className="text-blue-500 hover:underline"
+              >
+                <Image
+                  src="/dashboard/envelope-fill.svg"
+                  alt="Email icon"
+                  width={18}
+                  height={18}
+                  objectFit="cover"
+                  priority={false}
+                />
+              </Link>
             </p>
             {user?.referrer && (
               <p className="text-[14px] font-semibold mb-[10px]">
@@ -417,8 +467,8 @@ export default function DashboardPanel({ user }: AdminDepositsProps) {
                         fontSize: +user.balance.USDT?.toFixed(0) <= 999
                           ? '48px'
                           : +user.balance.USDT?.toFixed(0) <= 9999
-                          ? '42px'
-                          : '30px',
+                            ? '42px'
+                            : '30px',
                         fontWeight: 'bold',
                       }}
                     >

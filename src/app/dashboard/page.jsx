@@ -38,6 +38,8 @@ export default function Dashboard() {
             ...prev,
             balance: userExtraData.data.balance,
             username: userExtraData.data.username,
+            registrationDate: userExtraData.data.registrationDate,
+            referrer: userExtraData.data.referrer
           }));
         } else {
           console.error('Error fetching user data:', await userRes.json());
