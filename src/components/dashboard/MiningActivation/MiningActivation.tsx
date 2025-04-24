@@ -223,7 +223,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
     }
   };
 
-  const handleSelectSession = (index: number, session: ContractWeeks) => {
+  const handleSelectSession = (index: number) => {
     setSelectedSessionIndex(index);
     setWeek(''); // Скидаємо week
     setPercentage(''); // Скидаємо percentage
@@ -290,7 +290,7 @@ export default function MiningActivation({ user }: MiningActivationProps) {
                   className={`px-[15px] py-[10px] border rounded-[15px] cursor-pointer w-full max-w-[284px] ${
                     selectedSessionIndex === index ? 'bg-blue text-white' : ''
                   }`}
-                  onClick={() => handleSelectSession(index, { weeks })}
+                  onClick={() => handleSelectSession(index)}
                 >
                   <div className="flex justify-between items-center">
                     <div className="text-[24px] font-bold">#{index + 1}</div>
