@@ -225,9 +225,9 @@ export default function MiningActivation({ user }: MiningActivationProps) {
 
   const handleSelectSession = (index: number, session: ContractWeeks) => {
     setSelectedSessionIndex(index);
-    setWeek(session.weeks[0]?.weekNumber?.toString() || '');
-    console.log(index, session)
-    SetContractNum(index+1)
+    setWeek(''); // Скидаємо week
+    setPercentage(''); // Скидаємо percentage
+    SetContractNum(index + 1);
   };
 
   const handleSimulateTime = async () => {

@@ -60,7 +60,7 @@ export async function POST(request: Request) {
   try {
     const { userId, week, currency, amount, percentage, contractNum } = await request.json();
 
-    if (!userId || !week || !currency || !amount || !contractNum) {
+    if (!userId || !week || !currency || !amount || contractNum == null) {
       return NextResponse.json({ error: 'Все поля обязательны.' }, { status: 400 });
     }
 
