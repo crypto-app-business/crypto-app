@@ -30,7 +30,7 @@ interface DepositInputProps {
   amount: string;
   setAmount: (value: string) => void;
   selectedSessionIndex: number;
-  availableContracts: ContractData;
+ availableContracts: ContractData;
 }
 
 const DepositInput = ({
@@ -86,13 +86,13 @@ export default function MiningActivation({ user }: MiningActivationProps) {
   const { language } = useLanguageStore();
   const [week, setWeek] = useState('');
   const [percentage, setPercentage] = useState('');
-  const [currency, setCurrency] = useState('');
+  const [, setCurrency] = useState('');
   const [amount, setAmount] = useState('');
   const [error, setError] = useState<string>('');
   const availableContracts = Object.entries(ContractData());
   const [selectedSessionIndex, setSelectedSessionIndex] = useState<number>(0);
   const [requestStatus, setRequestStatus] = useState<'loading' | 'success' | 'error' | null>(null);
-  const [contractNum, SetContractNum] = useState<number>(0)
+  const [contractNum, setContractNum] = useState<number>(0);
 
   const translations = {
     miningSessions: {
@@ -202,22 +202,21 @@ export default function MiningActivation({ user }: MiningActivationProps) {
           currency: "USDT",
           amount,
           percentage,
-          contractNum
+          contractNum,
         }),
       });
 
       if (response.ok) {
-        const updatedBalance = { ...user.balance };
-        updatedBalance[currency] -= numericAmount;
-
         setRequestStatus('success');
+        // Викликаємо подію для оновлення балансу в хедері
+        window.dispatchEvent(new CustomEvent('updateBalance'));
       } else {
         const { error: responseError } = await response.json();
         setRequestStatus('error');
         setError(responseError || translations.errors.activationFailed[language]);
       }
     } catch (error) {
-      console.log(error);
+      console.error('Error:', error);
       setRequestStatus('error');
       setError(translations.errors.serverError[language]);
     }
@@ -225,9 +224,9 @@ export default function MiningActivation({ user }: MiningActivationProps) {
 
   const handleSelectSession = (index: number) => {
     setSelectedSessionIndex(index);
-    setWeek(''); // Скидаємо week
-    setPercentage(''); // Скидаємо percentage
-    SetContractNum(index + 1);
+    setWeek('');
+    setPercentage('');
+    setContractNum(index + 1);
   };
 
   const handleSimulateTime = async () => {

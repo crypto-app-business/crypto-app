@@ -15,12 +15,34 @@ interface User {
   id: string;
 }
 
-export default function Header({ isSidebarOpen, toggleSidebar }) {
+export default function Header({ isSidebarOpen, toggleSidebar }: { isSidebarOpen: boolean; toggleSidebar: () => void }) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [bonusRang, setBonusRang] = useState<number | null>(0);
   const [isLoading, setIsLoading] = useState(true);
   const { language, toggleLanguage } = useLanguageStore();
+
+  const fetchUserData = async () => {
+    try {
+      const userRes = await fetch('/api/user', {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (userRes.ok) {
+        const userExtraData = await userRes.json();
+        setUser((prev) => ({
+          ...prev,
+          balance: userExtraData.data.balance,
+          username: userExtraData.data.username,
+          id: userExtraData.data.id,
+        }));
+      } else {
+        console.error('Error fetching user data:', await userRes.json());
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
   useEffect(() => {
     const initializeUser = async () => {
@@ -34,21 +56,7 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
         const userData = await authRes.json();
         setUser(userData);
 
-        const userRes = await fetch('/api/user', {
-          method: 'GET',
-          credentials: 'include',
-        });
-        if (userRes.ok) {
-          const userExtraData = await userRes.json();
-          setUser((prev) => ({
-            ...prev,
-            balance: userExtraData.data.balance,
-            username: userExtraData.data.username,
-            id: userExtraData.data.id,
-          }));
-        } else {
-          console.error('Error fetching user data:', await userRes.json());
-        }
+        await fetchUserData();
       } catch (error) {
         console.error('Error initializing user:', error);
         router.push('/login');
@@ -58,6 +66,17 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
     };
     initializeUser();
   }, [router]);
+
+  useEffect(() => {
+    const handleUpdateBalance = () => {
+      fetchUserData();
+    };
+
+    window.addEventListener('updateBalance', handleUpdateBalance);
+    return () => {
+      window.removeEventListener('updateBalance', handleUpdateBalance);
+    };
+  }, []);
 
   useEffect(() => {
     if (user?.id) {
@@ -84,7 +103,7 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
         console.error('Неправильный формат данных:', bonusData);
       }
     } catch (error) {
-      console.error('Ошибка сервреа:', error);
+      console.error('Ошибка сервера:', error);
     }
   };
 
@@ -115,7 +134,7 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
       ru: "Ранг аккаунта",
       en: "Account rank",
     },
-  }
+  };
 
   return (
     <header className="bg-cover bg-[#3581FF] text-white max-h-[125px] shadow-md flex justify-between items-center">
@@ -140,12 +159,6 @@ export default function Header({ isSidebarOpen, toggleSidebar }) {
                 <Image src="/dashboard/globe.svg" alt="Change language" width={45} height={45} style={{ objectFit: "cover" }} priority={false} />
               </button>
 
-              {/* <div className='w-[35px] h-[35px] rounded-full border-[4px] border-white flex justify-center items-center font-bold'
-                // title={language === 'ru' ? translations.accountRank.ru : translations.accountRank.en}
-                title={language === 'ru' ? "ranslations.accountRank.ru" : "translations.accountRank.en"}
-              >
-                {bonusRang}
-              </div> */}
               <div className="relative group">
                 <div className="w-[35px] h-[35px] rounded-full border-[4px] border-white flex justify-center items-center font-bold">
                   {bonusRang}
