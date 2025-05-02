@@ -4,7 +4,6 @@ import User from '@/models/User';
 import connectDB from '@/utils/connectDB';
 import Operations from '@/models/Operations';
 
-
 export async function PATCH(request) {
   try {
     await connectDB();
@@ -22,13 +21,15 @@ export async function PATCH(request) {
       const { startDate, percentage, currency, amount, paidDays, week } = session;
 
       const now = new Date();
-      const daysSinceStart = Math.floor((now.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+      // Нормалізуємо today до початку поточного дня в UTC для обчислення daysSinceStart
+      const today = new Date(now);
+      today.setUTCHours(0, 0, 0, 0);
+      // Обчислюємо кількість днів, включаючи поточний день
+      const daysSinceStart = Math.ceil((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
 
-      
       // Визначаємо кількість днів, які ще не були виплачені
       const daysToPay = daysSinceStart - paidDays;
 
-console.log(daysToPay)
       if (daysToPay > 0) {
         // Розрахунок винагороди за ці дні
         const dailyReward = (amount * (percentage / 100));
@@ -41,17 +42,18 @@ console.log(daysToPay)
 
           // Оновлюємо баланс
           user.balance.set(currency, (currentBalance || 0) + reward);
-          
 
           for (let i = 0; i < daysToPay; ++i) {
-            // const operationDate = new Date(startDate.getTime() + (paidDays + i + 1) * 24 * 60 * 60 * 1000);
+            // Обчислюємо дату, віднімаючи дні від now
+            const operationDate = new Date(now);
+            operationDate.setUTCDate(now.getUTCDate() - (daysToPay - 1 - i));
             const newOperation = new Operations({
               id: userId,
               description: `Получено с майнинга`,
               amount: dailyReward,
               currency: "USDT",
               type: 'mining',
-              createdAt: new Date(),
+              createdAt: operationDate, // Використовуємо дату з актуальним часом
             });
             console.log(newOperation)
 
@@ -74,7 +76,7 @@ console.log(daysToPay)
               amount: amount,
               currency: "USDT",
               type: 'mining',
-              createdAt: new Date(),
+              createdAt: new Date(), // Для завершення сесії залишаємо поточну дату
             });
             await newOperation.save();
           }

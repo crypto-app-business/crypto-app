@@ -174,6 +174,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
       ru: "Открыт:",
       en: "Opened:",
     },
+    percentage: {
+      ru: "Проценты:",
+      en: "Percentage:",
+    },
     closes: {
       ru: "Закрывается:",
       en: "Closes:",
@@ -280,7 +284,7 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
           const nftData: { sessions: NFTSession[] } = await nftRes.json();
           setNftSessions(nftData.sessions.filter((session) => !session.isCompleted));
         }
-  
+
         if (nftClosedRes.ok) {
           const nftClosedData: { sessions: NFTSession[] } = await nftClosedRes.json();
           setNftClosedSessions(nftClosedData.sessions.filter((session) => session.isCompleted));
@@ -401,8 +405,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                     <div
                       onClick={() => setActiveTab('mining')}
                       className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeTab === 'mining'
-                          ? 'bg-[#3581FF] text-white rounded-[15px]'
-                          : 'text-[#00163A] border border-[#00163A]'
+                        ? 'bg-[#3581FF] text-white rounded-[15px]'
+                        : 'text-[#00163A] border border-[#00163A]'
                         }`}
                     >
                       <Image
@@ -420,8 +424,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                     <div
                       onClick={() => setActiveTab('staking')}
                       className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeTab === 'staking'
-                          ? 'bg-[#3581FF] text-white rounded-[15px]'
-                          : 'text-[#00163A] border border-[#00163A]'
+                        ? 'bg-[#3581FF] text-white rounded-[15px]'
+                        : 'text-[#00163A] border border-[#00163A]'
                         }`}
                     >
                       <Image
@@ -439,8 +443,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                     <div
                       onClick={() => setActiveTab('listing')}
                       className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeTab === 'listing'
-                          ? 'bg-[#3581FF] text-white rounded-[15px]'
-                          : 'text-[#00163A] border border-[#00163A]'
+                        ? 'bg-[#3581FF] text-white rounded-[15px]'
+                        : 'text-[#00163A] border border-[#00163A]'
                         }`}
                     >
                       <Image
@@ -459,8 +463,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   <div
                     onClick={() => setActiveTab('mining')}
                     className={`hidden sm:flex items-center gap-[5px] justify-center w-[257px] h-[65px] ${activeTab === 'mining'
-                        ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]'
-                        : 'text-[#00163A]'
+                      ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]'
+                      : 'text-[#00163A]'
                       }`}
                   >
                     <div className="text-[24px] font-bold uppercase">{translations.mining[language]}</div>
@@ -508,8 +512,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   <div
                     onClick={() => setActiveTab('staking')}
                     className={`hidden sm:flex items-center gap-[12px] justify-center w-[254px] h-[65px] ${activeTab === 'staking'
-                        ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]'
-                        : 'text-[#00163A]'
+                      ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]'
+                      : 'text-[#00163A]'
                       }`}
                   >
                     <div className="text-[24px] font-bold uppercase">{translations.staking[language]}</div>
@@ -559,8 +563,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                   <div
                     onClick={() => setActiveTab('listing')}
                     className={`hidden sm:flex items-center gap-[12px] justify-center w-[257px] h-[65px] ${activeTab === 'listing'
-                        ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]'
-                        : 'text-[#00163A]'
+                      ? 'bg-[#3581FF] sm:bg-white text-white sm:text-[#00163A] rounded-[15px]'
+                      : 'text-[#00163A]'
                       }`}
                   >
                     <div className="text-[24px] font-bold uppercase">{translations.listing[language]}</div>
@@ -723,8 +727,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                     <div
                       onClick={() => setActiveContratcTab('open')}
                       className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeContratcTab === 'open'
-                          ? 'bg-[#3581FF] text-white rounded-[15px]'
-                          : 'text-[#00163A] border border-[#00163A]'
+                        ? 'bg-[#3581FF] text-white rounded-[15px]'
+                        : 'text-[#00163A] border border-[#00163A]'
                         }`}
                     >
                       <div className="text-[16px] font-bold uppercase">{translations.open[language]}</div>
@@ -734,8 +738,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                     <div
                       onClick={() => setActiveContratcTab('ref-prog')}
                       className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeContratcTab === 'ref-prog'
-                          ? 'bg-[#3581FF] text-white rounded-[15px]'
-                          : 'text-[#00163A] border border-[#00163A]'
+                        ? 'bg-[#3581FF] text-white rounded-[15px]'
+                        : 'text-[#00163A] border border-[#00163A]'
                         }`}
                     >
                       <div className="text-[16px] font-bold uppercase">{translations.referralProgram[language]}</div>
@@ -745,8 +749,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                     <div
                       onClick={() => setActiveContratcTab('bonus')}
                       className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeContratcTab === 'bonus'
-                          ? 'bg-[#3581FF] text-white rounded-[15px]'
-                          : 'text-[#00163A] border border-[#00163A]'
+                        ? 'bg-[#3581FF] text-white rounded-[15px]'
+                        : 'text-[#00163A] border border-[#00163A]'
                         }`}
                     >
                       <div className="text-[16px] font-bold uppercase">{translations.bonuses[language]}</div>
@@ -756,8 +760,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                     <div
                       onClick={() => setActiveContratcTab('close')}
                       className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeContratcTab === 'close'
-                          ? 'bg-[#3581FF] text-white rounded-[15px]'
-                          : 'text-[#00163A] border border-[#00163A]'
+                        ? 'bg-[#3581FF] text-white rounded-[15px]'
+                        : 'text-[#00163A] border border-[#00163A]'
                         }`}
                     >
                       <div className="text-[16px] font-bold uppercase">{translations.closed[language]}</div>
@@ -770,8 +774,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('mining')}
                         className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeTab === 'mining'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -789,8 +793,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('staking')}
                         className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeTab === 'staking'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -808,8 +812,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('listing')}
                         className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeTab === 'listing'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -827,8 +831,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('nft')}
                         className={`flex items-center gap-[5px] px-[8px] py-[5px] justify-center rounded-full ${activeTab === 'nft'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -868,6 +872,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                 <div>{translations.closes[language]}</div>
                                 <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
                               </div>
+                              <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
+                                <div>{translations.percentage[language]}</div>
+                                <div>{session.percentage}</div>
+                              </div>
                               <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
                                 <div>{translations.earned[language]}</div>
                                 <div>{session?.fullAmount.toFixed(2)}</div>
@@ -892,6 +900,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                               <div className="flex justify-between text-[14px] font-semibold">
                                 <div>{translations.opened[language]}</div>
                                 <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
+                              </div>
+                              <div className="flex justify-between text-[14px] font-semibold">
+                                <div>{translations.percentage[language]}</div>
+                                <div>0.3%</div>
                               </div>
                               <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                                 <div>{translations.closes[language]}</div>
@@ -922,6 +934,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                 <div>{translations.opened[language]}</div>
                                 <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                               </div>
+                              <div className="flex justify-between text-[14px] font-semibold text-white">
+                                <div>{translations.percentage[language]}</div>
+                                <div>{session.percentage}</div>
+                              </div>
                               <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
                                 <div>{translations.closes[language]}</div>
                                 <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
@@ -951,13 +967,17 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                 <div>{translations.opened[language]}</div>
                                 <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                               </div>
+                              <div className="flex justify-between text-[14px] font-semibold text-white">
+                                <div>{translations.percentage[language]}</div>
+                                <div>{session.percentage}</div>
+                              </div>
                               <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
                                 <div>{translations.closes[language]}</div>
                                 <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
                               </div>
                               <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
                                 <div>{translations.earned[language]}</div>
-                                <div>{(session?.paidDays*session?.amount *session?.percentage/100/session?.durationDays).toFixed(2)}</div>
+                                <div>{(session?.paidDays * session?.amount * session?.percentage / 100 / session?.durationDays).toFixed(2)}</div>
                               </div>
                             </div>
                           </div>
@@ -1001,6 +1021,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                 <div>{translations.opened[language]}</div>
                                 <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                               </div>
+                              <div className="flex justify-between text-[14px] font-semibold">
+                                <div>{translations.percentage[language]}</div>
+                                <div>{session.percentage}</div>
+                              </div>
                               <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                                 <div>{translations.closes[language]}</div>
                                 <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
@@ -1029,6 +1053,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                               <div className="flex justify-between text-[14px] font-semibold">
                                 <div>{translations.opened[language]}</div>
                                 <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
+                              </div>
+                              <div className="flex justify-between text-[14px] font-semibold">
+                                <div>{translations.percentage[language]}</div>
+                                <div>0.3%</div>
                               </div>
                               <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                                 <div>{translations.closes[language]}</div>
@@ -1059,6 +1087,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                 <div>{translations.opened[language]}</div>
                                 <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                               </div>
+                              <div className="flex justify-between text-[14px] font-semibold text-white">
+                                <div>{translations.percentage[language]}</div>
+                                <div>{session.percentage}</div>
+                              </div>
                               <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
                                 <div>{translations.closes[language]}</div>
                                 <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
@@ -1088,13 +1120,17 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                 <div>{translations.opened[language]}</div>
                                 <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                               </div>
+                              <div className="flex justify-between text-[14px] font-semibold text-white">
+                                <div>{translations.percentage[language]}</div>
+                                <div>{session.percentage}</div>
+                              </div>
                               <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
                                 <div>{translations.closes[language]}</div>
                                 <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
                               </div>
                               <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
                                 <div>{translations.earned[language]}</div>
-                                <div>{(session?.paidDays*session?.amount *session?.percentage/100/session?.durationDays).toFixed(2)}</div>
+                                <div>{(session?.paidDays * session?.amount * session?.percentage / 100 / session?.durationDays).toFixed(2)}</div>
                               </div>
                             </div>
                           </div>
@@ -1111,8 +1147,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('mining')}
                         className={`flex items-center gap-[12px] justify-center w-[255px] h-[35px] rounded-full ${activeTab === 'mining'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -1130,8 +1166,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('staking')}
                         className={`flex items-center gap-[12px] justify-center w-[255px] h-[35px] rounded-full ${activeTab === 'staking'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -1149,8 +1185,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('listing')}
                         className={`flex items-center gap-[12px] justify-center w-[255px] h-[35px] rounded-full ${activeTab === 'listing'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -1168,8 +1204,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('nft')}
                         className={`flex items-center gap-[12px] justify-center w-[255px] h-[35px] rounded-full ${activeTab === 'nft'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -1202,6 +1238,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                     <div>{translations.opened[language]}</div>
                                     <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                                   </div>
+                                  <div className="flex justify-between text-[14px] font-semibold">
+                                    <div>{translations.percentage[language]}</div>
+                                    <div>{session.percentage}</div>
+                                  </div>
                                   <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                                     <div>{translations.closes[language]}</div>
                                     <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
@@ -1230,6 +1270,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                   <div className="flex justify-between text-[14px] font-semibold">
                                     <div>{translations.opened[language]}</div>
                                     <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
+                                  </div>
+                                  <div className="flex justify-between text-[14px] font-semibold">
+                                    <div>{translations.percentage[language]}</div>
+                                    <div>{session.percentage}</div>
                                   </div>
                                   <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                                     <div>{translations.closes[language]}</div>
@@ -1260,6 +1304,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                     <div>{translations.opened[language]}</div>
                                     <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                                   </div>
+                                  <div className="flex justify-between text-[14px] font-semibold text-white">
+                                    <div>{translations.percentage[language]}</div>
+                                    <div>{session.percentage}</div>
+                                  </div>
                                   <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
                                     <div>{translations.closes[language]}</div>
                                     <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
@@ -1289,13 +1337,17 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                     <div>{translations.opened[language]}</div>
                                     <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                                   </div>
+                                  <div className="flex justify-between text-[14px] font-semibold text-white">
+                                    <div>{translations.percentage[language]}</div>
+                                    <div>{session.percentage}</div>
+                                  </div>
                                   <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
                                     <div>{translations.closes[language]}</div>
                                     <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
                                   </div>
                                   <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
                                     <div>{translations.earned[language]}</div>
-                                    <div>{(session?.paidDays*session?.amount *session?.percentage/100/session?.durationDays).toFixed(2)}</div>
+                                    <div>{(session?.paidDays * session?.amount * session?.percentage / 100 / session?.durationDays).toFixed(2)}</div>
                                   </div>
                                 </div>
                               </div>
@@ -1314,8 +1366,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('mining')}
                         className={`flex items-center gap-[12px] justify-center w-[255px] h-[35px] rounded-full ${activeTab === 'mining'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -1333,8 +1385,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('staking')}
                         className={`flex items-center gap-[12px] justify-center w-[255px] h-[35px] rounded-full ${activeTab === 'staking'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -1352,8 +1404,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('listing')}
                         className={`flex items-center gap-[12px] justify-center w-[255px] h-[35px] rounded-full ${activeTab === 'listing'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -1371,8 +1423,8 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                       <div
                         onClick={() => setActiveTab('nft')}
                         className={`flex items-center gap-[12px] justify-center w-[255px] h-[35px] rounded-full ${activeTab === 'nft'
-                            ? 'bg-[#3581FF] text-white rounded-[15px]'
-                            : 'text-[#00163A] border border-[#00163A]'
+                          ? 'bg-[#3581FF] text-white rounded-[15px]'
+                          : 'text-[#00163A] border border-[#00163A]'
                           }`}
                       >
                         <Image
@@ -1405,6 +1457,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                     <div>{translations.opened[language]}</div>
                                     <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                                   </div>
+                                  <div className="flex justify-between text-[14px] font-semibold">
+                                    <div>{translations.percentage[language]}</div>
+                                    <div>{session.percentage}</div>
+                                  </div>
                                   <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                                     <div>{translations.closes[language]}</div>
                                     <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
@@ -1433,6 +1489,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                   <div className="flex justify-between text-[14px] font-semibold">
                                     <div>{translations.opened[language]}</div>
                                     <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
+                                  </div>
+                                  <div className="flex justify-between text-[14px] font-semibold">
+                                    <div>{translations.percentage[language]}</div>
+                                    <div>{session.percentage}</div>
                                   </div>
                                   <div className="flex justify-between text-[14px] font-semibold mb-[5px]">
                                     <div>{translations.closes[language]}</div>
@@ -1463,6 +1523,10 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                     <div>{translations.opened[language]}</div>
                                     <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                                   </div>
+                                  <div className="flex justify-between text-[14px] font-semibold text-white">
+                                    <div>{translations.percentage[language]}</div>
+                                    <div>{session.percentage}</div>
+                                  </div>
                                   <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
                                     <div>{translations.closes[language]}</div>
                                     <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
@@ -1492,13 +1556,17 @@ const ReportComponent: React.FC<TeamComponentProps> = ({ userId }) => {
                                     <div>{translations.opened[language]}</div>
                                     <div>{new Date(session.startDate).toISOString().slice(0, 10)}</div>
                                   </div>
+                                  <div className="flex justify-between text-[14px] font-semibold text-white">
+                                    <div>{translations.percentage[language]}</div>
+                                    <div>{session.percentage}</div>
+                                  </div>
                                   <div className="flex justify-between text-[14px] font-semibold mb-[5px] text-white">
                                     <div>{translations.closes[language]}</div>
                                     <div>{new Date(session.endDate).toISOString().slice(0, 10)}</div>
                                   </div>
                                   <div className="flex justify-between text-[14px] font-bold text-[#3581FF]">
                                     <div>{translations.earned[language]}</div>
-                                    <div>{(session?.paidDays*session?.amount *session?.percentage/100/session?.durationDays).toFixed(2)}</div>
+                                    <div>{(session?.paidDays * session?.amount * session?.percentage / 100 / session?.durationDays).toFixed(2)}</div>
                                   </div>
                                 </div>
                               </div>

@@ -87,7 +87,10 @@ export async function PATCH(request) {
     for (const session of listingSessions) {
       const { startDate, percentage, currency, amount, paidDays, day } = session;
       const now = new Date();
-      const daysSinceStart = Math.floor((now.getTime() - new Date(startDate).getTime()) / (1000 * 60 * 60 * 24));
+      const today = new Date(now);
+      today.setUTCHours(0, 0, 0, 0);
+      // Обчислюємо кількість днів, включаючи поточний день
+      const daysSinceStart = Math.ceil((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
       const daysToPay = daysSinceStart - paidDays;
 
       if (daysToPay > 0) {
@@ -104,13 +107,15 @@ export async function PATCH(request) {
 
           for (let i = 0; i < daysToPay; ++i) {
             // const operationDate = new Date(startDate.getTime() + (paidDays + i + 1) * 24 * 60 * 60 * 1000);
+            const operationDate = new Date(now);
+            operationDate.setUTCDate(now.getUTCDate() - (daysToPay - 1 - i));
             const newOperation = new Operations({
               id: userId,
               description: `Пришло с листинга`,
               amount: dailyReward,
               currency: "USDT",
               type: 'listing',
-              createdAt: new Date(),
+              createdAt: operationDate,
             });
             await newOperation.save();
           }
