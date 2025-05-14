@@ -66,10 +66,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex items-center justify-center bg-cover bg-center"
+    style={{ backgroundImage: "url('/background.png')" }}
+    >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-8 w-full max-w-md"
+        className="bg bg-opacity-20 p-8 w-full max-w-md backdrop-blur" 
+        style={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}
       >
         <h2 className="text-3xl mb-6 text-center">
           {loginContent[language].title}
