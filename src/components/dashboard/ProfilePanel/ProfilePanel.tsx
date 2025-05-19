@@ -332,7 +332,7 @@ export default function ProfilePanel({ user, setUser }: AdminDepositsProps) {
   }, []);
 
   const fields: Field[] = [
-    { label: translations.fields.username[language], key: 'username', value: user?.username || translations.fields.noData[language] },
+    // { label: translations.fields.username[language], key: 'username', value: user?.username || translations.fields.noData[language] },
     { label: translations.fields.email[language], key: 'email', value: user?.email || translations.fields.noData[language] },
     { label: translations.fields.phone[language], key: 'phone', value: user?.phone || translations.fields.noData[language] },
     { label: translations.fields.password[language], key: 'password', value: '*********' },

@@ -57,63 +57,63 @@ export default function NFT() {
   const translations: Translations = {
     nftSection: {
       ru: {
-        title: "🖼 Уникальные NFT-предложения от Crypto Corporation 🚀",
+        title: "Уникальные NFT-предложения от Crypto Corporation",
         subtitle:
           "В Crypto Corporation мы открываем совершенно новый уровень для наших пользователей — NFT-инфраструктура, сочетающая технологии, искусство и прибыль!",
-        offeringsTitle: "🔹 Что у нас есть?",
+        offeringsTitle: "Что у нас есть?",
         offerings: [
-          "💎 Эксклюзивные коллекции NFT — ограниченные по количеству, с уникальным дизайном и смысловой ценностью. За время, отведенное компанией, мы занимаемся продвижением и перепродажей данной картины.",
-          "🎮 NFT с функцией дохода — у нас есть NFT, которые приносят пассивный доход или открывают доступ к закрытым функциям платформы.",
-          "🧩 NFT-контракты — интеграция с трейдингом, стейкингом, реферальной системой и даже майнингом!",
-          "🎟 NFT-доступы — некоторые NFT дают доступ к раннему участию в листингах, закрытым инвестициям и премиум-ботам.",
+          "Эксклюзивные коллекции NFT — ограниченные по количеству, с уникальным дизайном и смысловой ценностью. За время, отведенное компанией, мы занимаемся продвижением и перепродажей данной картины.",
+          "NFT с функцией дохода — у нас есть NFT, которые приносят пассивный доход или открывают доступ к закрытым функциям платформы.",
+          "NFT-контракты — интеграция с трейдингом, стейкингом, реферальной системой и даже майнингом!",
+          "NFT-доступы — некоторые NFT дают доступ к раннему участию в листингах, закрытым инвестициям и премиум-ботам.",
         ],
-        updatesTitle: "🔄 Постоянное обновление и гибкость",
+        updatesTitle: "Постоянное обновление и гибкость",
         updatesDescription:
           "Мы мониторим рынок в реальном времени и оперативно реагируем на новые интересные возможности. Как только появляются уникальные активы или трендовые направления, мы выпускаем новые коллекции или адаптируем существующие, чтобы наши пользователи всегда были на шаг впереди.",
-        howToGetTitle: "💼 Как получить NFT?",
+        howToGetTitle: "Как получить NFT?",
         howToGetSteps: [
-          "Зарегистрируйтесь на платформе 👉 Crypto Corporation",
+          "Зарегистрируйтесь на платформе Crypto Corporation",
           "Участвуйте в розыгрышах, акциях или приобретайте NFT напрямую",
           "Храните в своём кабинете",
           "Зарабатывайте на перепродаже NFT на рынке",
         ],
         callToAction:
-          "🚀 Crypto Corporation NFT — это не просто токены. Это живой, постоянно обновляющийся инструмент для заработка, участия и роста в криптомире!",
+          "Crypto Corporation NFT — это не просто токены. Это живой, постоянно обновляющийся инструмент для заработка, участия и роста в криптомире!",
       },
       en: {
-        title: "🖼 Unique NFT Offerings from Crypto Corporation 🚀",
+        title: "🖼 Unique NFT Offerings from Crypto Corporation",
         subtitle:
           "At Crypto Corporation, we’re unlocking a whole new level for our users — an NFT infrastructure that combines technology, art, and profit!",
         offeringsTitle: "🔹 What do we offer?",
         offerings: [
-          "💎 Exclusive NFT collections — limited in quantity, with unique designs and meaningful value. During the period designated by the company, we handle the promotion and resale of these assets.",
-          "🎮 Income-generating NFTs — we offer NFTs that provide passive income or unlock access to exclusive platform features.",
-          "🧩 NFT contracts — integrated with trading, staking, referral systems, and even mining!",
-          "🎟 NFT access passes — certain NFTs grant early access to listings, private investments, and premium bots.",
+          "Exclusive NFT collections — limited in quantity, with unique designs and meaningful value. During the period designated by the company, we handle the promotion and resale of these assets.",
+          "Income-generating NFTs — we offer NFTs that provide passive income or unlock access to exclusive platform features.",
+          "NFT contracts — integrated with trading, staking, referral systems, and even mining!",
+          "NFT access passes — certain NFTs grant early access to listings, private investments, and premium bots.",
         ],
-        updatesTitle: "🔄 Constant Updates and Flexibility",
+        updatesTitle: "Constant Updates and Flexibility",
         updatesDescription:
           "We monitor the market in real-time and quickly adapt to new and exciting opportunities. Whenever unique assets or trending directions emerge, we release new collections or update existing ones to keep our users one step ahead.",
-        howToGetTitle: "💼 How to get NFTs?",
+        howToGetTitle: "How to get NFTs?",
         howToGetSteps: [
-          "Register on the platform 👉 Crypto Corporation",
+          "Register on the platform Crypto Corporation",
           "Participate in giveaways, promotions, or purchase NFTs directly",
           "Store them in your account",
           "Earn by reselling NFTs on the market",
         ],
         callToAction:
-          "🚀 Crypto Corporation NFTs are more than just tokens. They’re a dynamic, constantly evolving tool for earning, participating, and growing in the crypto world!",
+          "Crypto Corporation NFTs are more than just tokens. They’re a dynamic, constantly evolving tool for earning, participating, and growing in the crypto world!",
       },
     },
     stepsSection: {
       ru: {
-        step1: "Зарегистрируйтесь на платформе 👉 Crypto Corporation",
+        step1: "Зарегистрируйтесь на платформе Crypto Corporation",
         step2: "Участвуйте в розыгрышах, акциях или приобретайте NFT напрямую",
         step3: "Храните в своём кабинете",
         step4: "Зарабатывайте на перепродаже NFT на рынке",
       },
       en: {
-        step1: "Register on the platform 👉 Crypto Corporation",
+        step1: "Register on the platform Crypto Corporation",
         step2: "Participate in giveaways, promotions, or purchase NFTs directly",
         step3: "Store them in your account",
         step4: "Earn by reselling NFTs on the market",
@@ -219,7 +219,7 @@ export default function NFT() {
             >
               {translations.nftSection[language].howToGetSteps.map((step, index) => (
                 <li key={index} className="text-gray-700 mb-2">
-                  {index + 1}️⃣ {step}
+                  {step}
                 </li>
               ))}
             </motion.ul>

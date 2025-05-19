@@ -55,12 +55,10 @@ export async function PATCH(request) {
               type: 'mining',
               createdAt: operationDate, // Використовуємо дату з актуальним часом
             });
-            console.log(newOperation)
 
             await newOperation.save();
           }
 
-          console.log("all")
           // Оновлюємо кількість сплачених днів у сесії
           session.paidDays += daysToPay;
           session.fullAmount += reward;

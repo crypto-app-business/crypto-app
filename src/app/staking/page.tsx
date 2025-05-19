@@ -73,13 +73,13 @@ export default function Staking() {
   const translations: Translations = {
     stakingSection: {
       ru: {
-        title: "💰 Стейкинг монеты CC от Crypto Corporation 💰",
+        title: "Стейкинг монеты CC от Crypto Corporation",
         subtitle:
           "СС (Crypto Corporation Coin) — это наша фирменная монета, созданная для пользователей внутри экосистемы. Она станет основой всех внутренних операций: от стейкинга до участия в проектах и листингах.",
-        stakingTitle: "🔹 Что такое стейкинг?",
+        stakingTitle: "Что такое стейкинг?",
         stakingDescription:
           "Стейкинг — это способ пассивного заработка, при котором вы размещаете монеты CC на нашей платформе, и они начинают приносить прибыль. Чем дольше вы держите монеты — тем выше ваш доход.",
-        benefitsTitle: "📈 Преимущества стейкинга CC",
+        benefitsTitle: "Преимущества стейкинга CC",
         benefits: [
           "Доходность 0.3% в сутки — в зависимости от суммы и срока размещения",
           "Сложный процент — ваши монеты приносят всё больше прибыли",
@@ -87,47 +87,47 @@ export default function Staking() {
           "Автоматическое начисление дохода",
           "Доступен прямо во внутренней бирже Crypto Corporation",
         ],
-        listingTitle: "🔥 Листинг монет в Crypto Corporation — платформа роста и дохода 💎",
+        listingTitle: "Листинг монет в Crypto Corporation — платформа роста и дохода",
         listingDescription:
           "В Crypto Corporation мы не просто размещаем монеты — мы строим мост между перспективными криптопроектами и инвесторами по всему миру. Наша система листинга — это мощный инструмент как для создателей токенов, так и для наших пользователей.",
-        uniqueFeaturesTitle: "💼 Что у нас уникального?",
+        uniqueFeaturesTitle: "Что у нас уникального?",
         uniqueFeatures: [
           "Крупные контракты с молодыми, но перспективными проектами — мы получаем монеты по цене ниже рыночной",
           "Доход от роста цены — после листинга стоимость монеты может вырасти в несколько раз",
           "Доступ только внутри Crypto Corporation — ранний доступ до выхода на внешние биржи",
           "Партнёрские условия — мы сотрудничаем с проектами напрямую, исключая посредников",
         ],
-        howToEarnTitle: "📈 Как вы зарабатываете на листинге?",
+        howToEarnTitle: "Как вы зарабатываете на листинге?",
         howToEarnSteps: [
           "Мы анонсируем листинг перспективной монеты",
           "Пользователи могут инвестировать заранее по специальной цене",
           "После выхода на биржи, вы фиксируете прибыль от роста стоимости токена",
           "Можно также удерживать токен в стейкинге или обменивать внутри платформы",
         ],
-        whyParticipateTitle: "🚀 Почему стоит участвовать?",
+        whyParticipateTitle: "Почему стоит участвовать?",
         whyParticipateItems: [
           "Монета CC ещё не вышла на внешние биржи, и сейчас у вас есть возможность купить её по низкой цене",
           "На момент листинга стоимость монеты может вырасти, а значит — заработаете вдвойне: и от роста цены, и от стейкинга",
           "Всё происходит внутри защищённой платформы, без посредников и комиссий",
         ],
-        howToStartTitle: "💼 Как начать стейкинг?",
+        howToStartTitle: "Как начать стейкинг?",
         howToStartSteps: [
-          "Зарегистрируйтесь на платформе 👉 Crypto Corporation",
+          "Зарегистрируйтесь на платформе Crypto Corporation",
           "Купите или получите монеты CC",
           "Выберите стейкинг-контракт во внутренней бирже",
           "Получайте стабильный доход каждый день!",
         ],
         callToAction:
-          "💎 Crypto Corporation Coin (CC) — монета будущего. Стейкай, держи, зарабатывай!",
+          "Crypto Corporation Coin (CC) — монета будущего. Стейкай, держи, зарабатывай!",
       },
       en: {
-        title: "💰 Staking CC Coin with Crypto Corporation 💰",
+        title: "Staking CC Coin with Crypto Corporation",
         subtitle:
           "CC (Crypto Corporation Coin) is our proprietary coin created for users within the ecosystem. It will serve as the foundation for all internal operations: from staking to participation in projects and listings.",
-        stakingTitle: "🔹 What is staking?",
+        stakingTitle: "What is staking?",
         stakingDescription:
           "Staking is a passive income method where you lock CC coins on our platform, and they start generating profit. The longer you hold the coins, the higher your returns.",
-        benefitsTitle: "📈 Benefits of staking CC",
+        benefitsTitle: "Benefits of staking CC",
         benefits: [
           "Daily profitability of 0.3% — depending on the amount and duration of staking",
           "Compound interest — your coins generate increasing profits",
@@ -135,49 +135,49 @@ export default function Staking() {
           "Automatic profit accrual",
           "Available directly on the Crypto Corporation internal exchange",
         ],
-        listingTitle: "🔥 Coin Listing with Crypto Corporation — A Platform for Growth and Income 💎",
+        listingTitle: "Coin Listing with Crypto Corporation — A Platform for Growth and Income",
         listingDescription:
           "At Crypto Corporation, we don’t just list coins — we build a bridge between promising crypto projects and investors worldwide. Our listing system is a powerful tool for both token creators and our users.",
-        uniqueFeaturesTitle: "💼 What makes us unique?",
+        uniqueFeaturesTitle: "What makes us unique?",
         uniqueFeatures: [
           "Major contracts with young, promising projects — we acquire coins at below-market prices",
           "Profit from price growth — after listing, a coin’s value can increase multiple times",
           "Exclusive access within Crypto Corporation — early access before external exchange listings",
           "Partnership terms — we work directly with projects, eliminating intermediaries",
         ],
-        howToEarnTitle: "📈 How do you earn from listings?",
+        howToEarnTitle: "How do you earn from listings?",
         howToEarnSteps: [
           "We announce the listing of a promising coin",
           "Users can invest early at a special price",
           "After the coin is listed on exchanges, you lock in profits from the token’s price increase",
           "You can also hold the token in staking or trade it within the platform",
         ],
-        whyParticipateTitle: "🚀 Why should you participate?",
+        whyParticipateTitle: "Why should you participate?",
         whyParticipateItems: [
           "CC Coin has not yet been listed on external exchanges, giving you the chance to buy it at a low price now",
           "At the time of listing, the coin’s value may rise, allowing you to earn both from price growth and staking",
           "Everything happens within a secure platform, with no intermediaries or fees",
         ],
-        howToStartTitle: "💼 How to start staking?",
+        howToStartTitle: "How to start staking?",
         howToStartSteps: [
-          "Register on the platform 👉 Crypto Corporation",
+          "Register on the platform Crypto Corporation",
           "Buy or acquire CC coins",
           "Choose a staking contract on the internal exchange",
           "Receive stable income every day!",
         ],
         callToAction:
-          "💎 Crypto Corporation Coin (CC) — the coin of the future. Stake, hold, earn!",
+          "Crypto Corporation Coin (CC) — the coin of the future. Stake, hold, earn!",
       },
     },
     stepsSection: {
       ru: {
-        step1: "Зарегистрируйтесь на платформе 👉 Crypto Corporation",
+        step1: "Зарегистрируйтесь на платформе Crypto Corporation",
         step2: "Купите или получите монеты CC",
         step3: "Выберите стейкинг-контракт во внутренней бирже",
         step4: "Получайте стабильный доход каждый день!",
       },
       en: {
-        step1: "Register on the platform 👉 Crypto Corporation",
+        step1: "Register on the platform Crypto Corporation",
         step2: "Buy or acquire CC coins",
         step3: "Choose a staking contract on the internal exchange",
         step4: "Receive stable income every day!",
@@ -267,7 +267,7 @@ export default function Staking() {
             >
               {translations.stakingSection[language].benefits.map((benefit, index) => (
                 <li key={index} className="text-gray-700 mb-2">
-                  🔸 {benefit}
+                  {benefit}
                 </li>
               ))}
             </motion.ul>
@@ -295,7 +295,7 @@ export default function Staking() {
             >
               {translations.stakingSection[language].uniqueFeatures.map((feature, index) => (
                 <li key={index} className="text-gray-700 mb-2">
-                  🔸 {feature}
+                  {feature}
                 </li>
               ))}
             </motion.ul>
@@ -311,7 +311,7 @@ export default function Staking() {
             >
               {translations.stakingSection[language].howToEarnSteps.map((step, index) => (
                 <li key={index} className="text-gray-700 mb-2">
-                  {index + 1}️⃣ {step}
+                 {step}
                 </li>
               ))}
             </motion.ul>
@@ -327,7 +327,7 @@ export default function Staking() {
             >
               {translations.stakingSection[language].whyParticipateItems.map((item, index) => (
                 <li key={index} className="text-gray-700 mb-2">
-                  ✅ {item}
+                  {item}
                 </li>
               ))}
             </motion.ul>
@@ -343,7 +343,7 @@ export default function Staking() {
             >
               {translations.stakingSection[language].howToStartSteps.map((step, index) => (
                 <li key={index} className="text-gray-700 mb-2">
-                  ✔ {step}
+                  {step}
                 </li>
               ))}
             </motion.ul>

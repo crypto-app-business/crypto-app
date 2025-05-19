@@ -67,8 +67,8 @@ export default function Home() {
       en: "Everything is so simple, it’s downright profitable!",
     },
     title: {
-      ru: "Добро пожаловать в Crypto Corporation — будущее уже здесь! 🚀",
-      en: "Welcome to Crypto Corporation — the future is here! 🚀",
+      ru: "Добро пожаловать в Crypto Corporation — будущее уже здесь!",
+      en: "Welcome to Crypto Corporation — the future is here!",
     },
     description: {
       ru: "Мы создаём новые возможности в мире блокчейна, криптовалют и децентрализованных технологий. Наша миссия — дать каждому доступ к инновационным финансовым инструментам, обеспечивая безопасность, прозрачность и свободу.",
@@ -84,16 +84,16 @@ export default function Home() {
     },
     miningSection: {
       ru: {
-        title: "💎 Майнинг с Crypto Corporation 💎",
+        title: "Майнинг с Crypto Corporation",
         subtitle: "Хотите зарабатывать на криптовалютах без сложного оборудования? Crypto Corporation предлагает аренду мощностей для майнинга перспективных альткоинов! 🚀",
-        howItWorks: "🔹 Как это работает?",
+        howItWorks: "Как это работает?",
         howItWorks2: "Здесь мы объясняем, как работает сам процесс:",
         steps: [
-          "1️⃣ Выбираете контракт – у нас 20 вариантов с разными уровнями доходности.",
-          "2️⃣ Покупаете мощность – чем больше мощности, тем выше заработок.",
-          "3️⃣ Получаете пассивный доход – монеты начисляются автоматически!",
+          "Выбираете контракт – у нас 20 вариантов с разными уровнями доходности.",
+          "Покупаете мощность – чем больше мощности, тем выше заработок.",
+          "Получаете пассивный доход – монеты начисляются автоматически!",
         ],
-        availableCoins: "✅ Доступные альткоины для майнинга",
+        availableCoins: "Доступные альткоины для майнинга",
         coinList: [
           "Ethereum (ETH)",
           "Litecoin (LTC)",
@@ -101,26 +101,26 @@ export default function Home() {
           "Dogecoin (DOGE)",
           "И другие перспективные монеты!",
         ],
-        whyProfitable: "🔥 Почему выгодно майнить с нами?",
+        whyProfitable: "Почему выгодно майнить с нами?",
         benefits: [
           "Не нужно покупать дорогое оборудование",
           "Нет затрат на электроэнергию и охлаждение",
           "Автоматические выплаты в удобную криптовалюту",
           "Надёжная защита и прозрачная система",
         ],
-        callToAction: "🚀 Начни майнить прямо сейчас с Crypto Corporation и получай стабильный доход!",
+        callToAction: "Начни майнить прямо сейчас с Crypto Corporation и получай стабильный доход!",
       },
       en: {
-        title: "💎 Mining with Crypto Corporation 💎",
+        title: "Mining with Crypto Corporation",
         subtitle: "Want to earn on cryptocurrencies without complicated equipment? Crypto Corporation offers power rental for mining promising altcoins! 🚀",
-        howItWorks: "🔹 How it works?",
+        howItWorks: "How it works?",
         howItWorks2: "Here we explain how the process works:",
         steps: [
-          "1️⃣ Choose a contract – we have 20 options with different profitability levels.",
-          "2️⃣ Purchase power – the more power, the higher the earnings.",
-          "3️⃣ Receive passive income – coins are credited automatically!",
+          "Choose a contract – we have 20 options with different profitability levels.",
+          "Purchase power – the more power, the higher the earnings.",
+          "Receive passive income – coins are credited automatically!",
         ],
-        availableCoins: "✅ Available altcoins for mining",
+        availableCoins: "Available altcoins for mining",
         coinList: [
           "Ethereum (ETH)",
           "Litecoin (LTC)",
@@ -128,14 +128,14 @@ export default function Home() {
           "Dogecoin (DOGE)",
           "And other promising coins!",
         ],
-        whyProfitable: "🔥 Why is it profitable to mine with us?",
+        whyProfitable: "Why is it profitable to mine with us?",
         benefits: [
           "No need to buy expensive equipment",
           "No costs for electricity and cooling",
           "Automatic payouts in your preferred cryptocurrency",
           "Reliable protection and transparent system",
         ],
-        callToAction: "🚀 Start mining now with Crypto Corporation and get stable income!",
+        callToAction: "Start mining now with Crypto Corporation and get stable income!",
       },
     },
     stepsSection: {
@@ -224,7 +224,7 @@ export default function Home() {
                 {translations.miningSection[language].howItWorks}
               </motion.h4>
               <motion.ul
-                className="list-decimal list-inside mb-6 pl-5"
+                className=" list-inside mb-6 pl-5"
                 variants={fadeIn("up", "tween", 0.5, 1)}
               >
                 {translations.miningSection[language].steps.map((step, index) => (
@@ -240,7 +240,7 @@ export default function Home() {
                 {translations.miningSection[language].availableCoins}
               </motion.h4>
               <motion.ul
-                className="list-disc list-inside mb-6 pl-5"
+                className=" list-inside mb-6 pl-5"
                 variants={fadeIn("up", "tween", 0.7, 1)}
               >
                 {translations.miningSection[language].coinList.map((coin, index) => (
@@ -256,7 +256,7 @@ export default function Home() {
                 {translations.miningSection[language].whyProfitable}
               </motion.h4>
               <motion.ul
-                className="list-disc list-inside mb-6 pl-5"
+                className=" list-inside mb-6 pl-5"
                 variants={fadeIn("up", "tween", 0.9, 1)}
               >
                 {translations.miningSection[language].benefits.map((benefit, index) => (

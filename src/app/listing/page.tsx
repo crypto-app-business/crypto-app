@@ -65,45 +65,45 @@ export default function Listing() {
   const translations: Translations = {
     listingSection: {
       ru: {
-        title: "🚀 Листинг монет в Crypto Corporation — платформа роста и дохода 💎",
+        title: "Листинг монет в Crypto Corporation — платформа роста и дохода",
         subtitle:
           "В Crypto Corporation мы не просто размещаем монеты — мы строим мост между перспективными криптопроектами и инвесторами по всему миру. Наша система листинга — это мощный инструмент как для создателей токенов, так и для наших пользователей.",
-        listingTitle: "🔹 Что такое листинг?",
+        listingTitle: "Что такое листинг?",
         listingDescription:
           "Листинг монеты — это процесс добавления токена на биржу или платформу, где его можно покупать, продавать и торговать. У нас этот процесс сопровождается крупными инвестиционными контрактами и широкой поддержкой.",
-        uniqueFeaturesTitle: "💼 Что у нас уникального?",
+        uniqueFeaturesTitle: "Что у нас уникального?",
         uniqueFeatures: [
           "Крупные контракты с молодыми, но перспективными проектами — мы получаем монеты по цене ниже рыночной",
           "Доход от роста цены — после листинга стоимость монеты может вырасти в несколько раз",
           "Доступ только внутри Crypto Corporation — ранний доступ до выхода на внешние биржи",
           "Партнёрские условия — мы сотрудничаем с проектами напрямую, исключая посредников",
         ],
-        howToEarnTitle: "📈 Как вы зарабатываете на листинге?",
+        howToEarnTitle: "Как вы зарабатываете на листинге?",
         howToEarnSteps: [
           "Мы анонсируем листинг перспективной монеты",
           "Пользователи могут инвестировать заранее по специальной цене",
           "После выхода на биржи, вы фиксируете прибыль от роста стоимости токена",
           "Можно также удерживать токен в стейкинге или обменивать внутри платформы",
         ],
-        whyParticipateTitle: "🚀 Почему стоит участвовать?",
+        whyParticipateTitle: "Почему стоит участвовать?",
         whyParticipateItems: [
           "Ранний доступ к перспективным монетам по низкой цене до их выхода на внешние биржи",
           "Возможность многократного роста стоимости токенов после листинга",
           "Безопасная платформа без посредников и скрытых комиссий",
           "Поддержка 24/7 для всех участников листинга",
         ],
-        howToStartTitle: "💼 Как начать участвовать в листинге?",
+        howToStartTitle: "Как начать участвовать в листинге?",
         howToStartSteps: [
-          "Зарегистрируйтесь на платформе 👉 Crypto Corporation",
+          "Зарегистрируйтесь на платформе Crypto Corporation",
           "Следите за анонсами новых листингов в нашей системе",
           "Инвестируйте в монеты по специальной цене",
           "Фиксируйте прибыль после листинга или удерживайте токены",
         ],
         callToAction:
-          "🔥 Листинг в Crypto Corporation — это твой шанс войти в проект раньше всех! Участвуй, следи за анонсами и не упусти рост будущих крипто-гигантов!",
+          "Листинг в Crypto Corporation — это твой шанс войти в проект раньше всех! Участвуй, следи за анонсами и не упусти рост будущих крипто-гигантов!",
       },
       en: {
-        title: "🚀 Coin Listing with Crypto Corporation — A Platform for Growth and Income 💎",
+        title: "Coin Listing with Crypto Corporation — A Platform for Growth and Income 💎",
         subtitle:
           "At Crypto Corporation, we don’t just list coins — we build a bridge between promising crypto projects and investors worldwide. Our listing system is a powerful tool for both token creators and our users.",
         listingTitle: "🔹 What is listing?",
@@ -116,40 +116,40 @@ export default function Listing() {
           "Exclusive access within Crypto Corporation — early access before external exchange listings",
           "Partnership terms — we work directly with projects, eliminating intermediaries",
         ],
-        howToEarnTitle: "📈 How do you earn from listings?",
+        howToEarnTitle: "How do you earn from listings?",
         howToEarnSteps: [
           "We announce the listing of a promising coin",
           "Users can invest early at a special price",
           "After the coin is listed on exchanges, you lock in profits from the token’s price increase",
           "You can also hold the token in staking or trade it within the platform",
         ],
-        whyParticipateTitle: "🚀 Why should you participate?",
+        whyParticipateTitle: "Why should you participate?",
         whyParticipateItems: [
           "Early access to promising coins at a low price before they hit external exchanges",
           "Potential for multiple-fold growth in token value after listing",
           "Secure platform with no intermediaries or hidden fees",
           "24/7 support for all listing participants",
         ],
-        howToStartTitle: "💼 How to start participating in listings?",
+        howToStartTitle: "How to start participating in listings?",
         howToStartSteps: [
-          "Register on the platform 👉 Crypto Corporation",
+          "Register on the platform Crypto Corporation",
           "Follow announcements of new listings in our system",
           "Invest in coins at a special price",
           "Lock in profits after listing or hold the tokens",
         ],
         callToAction:
-          "🔥 Listing with Crypto Corporation is your chance to enter a project before everyone else! Participate, follow announcements, and don’t miss the growth of future crypto giants!",
+          "Listing with Crypto Corporation is your chance to enter a project before everyone else! Participate, follow announcements, and don’t miss the growth of future crypto giants!",
       },
     },
     stepsSection: {
       ru: {
-        step1: "Зарегистрируйтесь на платформе 👉 Crypto Corporation",
+        step1: "Зарегистрируйтесь на платформе Crypto Corporation",
         step2: "Следите за анонсами новых листингов в нашей системе",
         step3: "Инвестируйте в монеты по специальной цене",
         step4: "Фиксируйте прибыль после листинга или удерживайте токены",
       },
       en: {
-        step1: "Register on the platform 👉 Crypto Corporation",
+        step1: "Register on the platform Crypto Corporation",
         step2: "Follow announcements of new listings in our system",
         step3: "Invest in coins at a special price",
         step4: "Lock in profits after listing or hold the tokens",
@@ -238,8 +238,8 @@ export default function Listing() {
               variants={fadeIn("up", "tween", 0.7, 1)}
             >
               {translations.listingSection[language].uniqueFeatures.map((feature, index) => (
-                <li key={index} className="text-gray-700 mb-2">
-                  🔸 {feature}
+                <li key={index} className="text-gray-700 mb-2 ">
+                  {feature}
                 </li>
               ))}
             </motion.ul>
@@ -254,8 +254,8 @@ export default function Listing() {
               variants={fadeIn("up", "tween", 0.9, 1)}
             >
               {translations.listingSection[language].howToEarnSteps.map((step, index) => (
-                <li key={index} className="text-gray-700 mb-2">
-                  {index + 1}️⃣ {step}
+                <li key={index} className="text-gray-700 mb-2 ">
+                  {step}
                 </li>
               ))}
             </motion.ul>
@@ -270,8 +270,8 @@ export default function Listing() {
               variants={fadeIn("up", "tween", 1.1, 1)}
             >
               {translations.listingSection[language].whyParticipateItems.map((item, index) => (
-                <li key={index} className="text-gray-700 mb-2">
-                  ✅ {item}
+                <li key={index} className="text-gray-700 mb-2 ">
+                  {item}
                 </li>
               ))}
             </motion.ul>
@@ -286,8 +286,8 @@ export default function Listing() {
               variants={fadeIn("up", "tween", 1.3, 1)}
             >
               {translations.listingSection[language].howToStartSteps.map((step, index) => (
-                <li key={index} className="text-gray-700 mb-2">
-                  ✔ {step}
+                <li key={index} className="text-gray-700 mb-2 ">
+                  {step}
                 </li>
               ))}
             </motion.ul>

@@ -61,60 +61,60 @@ export default function TradingBot() {
   const translations: Translations = {
     tradingSection: {
       ru: {
-        title: "🤖 Трейдинг с ботом от Crypto Corporation 📈",
+        title: "Трейдинг с ботом от Crypto Corporation",
         subtitle:
           "Добро пожаловать в умный мир крипто-трейдинга с нашим телеграм-ботом! Теперь зарабатывать на криптовалюте можно быстро, просто и автоматически, прямо с телефона.",
-        featuresTitle: "🔹 Что делает наш трейд-бот?",
+        featuresTitle: "Что делает наш трейд-бот?",
         features: [
-          "1️⃣ Анализирует рынок 24/7: Бот использует продвинутые алгоритмы и следит за десятками криптовалют в реальном времени.",
-          "2️⃣ Совершает сделки автоматически: На основе сигналов бот покупает и продаёт активы, фиксируя прибыль при росте цен.",
-          "3️⃣ Минимизирует риски: Применяются безопасные стратегии с защитой капитала и распределением вложений.",
+          "Анализирует рынок 24/7: Бот использует продвинутые алгоритмы и следит за десятками криптовалют в реальном времени.",
+          "Совершает сделки автоматически: На основе сигналов бот покупает и продаёт активы, фиксируя прибыль при росте цен.",
+          "Минимизирует риски: Применяются безопасные стратегии с защитой капитала и распределением вложений.",
         ],
-        bonusTitle: "🎁 Бонус для новых пользователей",
+        bonusTitle: "Бонус для новых пользователей",
         bonusText:
           "Каждый новый пользователь получает бонус $50 – отличная возможность протестировать бота без рисков! Бонус можно получить после регистрации и выполнения простых условий.",
-        reportingTitle: "📊 Отчётность и прозрачность",
+        reportingTitle: "Отчётность и прозрачность",
         reportingItems: [
           "Все открытые и закрытые сделки",
           "Прибыль по каждой операции",
           "Обновлённый баланс и доходность",
         ],
-        howToStartTitle: "💼 Как начать?",
+        howToStartTitle: "Как начать?",
         howToStartSteps: [
-          "Зайти в бот 👉 @Crypto_corporation_bot",
+          "Зайти в бот @Crypto_corporation_bot",
           "Зарегистрироваться и активировать трейдинг",
           "Получить бонус $50 и начать зарабатывать",
         ],
         callToAction:
-          "🚀 Crypto Corporation — это простой старт в мире трейдинга. Включи трейд-бота сегодня и зарабатывай, пока другие наблюдают!",
+          "Crypto Corporation — это простой старт в мире трейдинга. Включи трейд-бота сегодня и зарабатывай, пока другие наблюдают!",
       },
       en: {
-        title: "🤖 Trading with Crypto Corporation Bot 📈",
+        title: "Trading with Crypto Corporation Bot",
         subtitle:
           "Welcome to the smart world of crypto trading with our Telegram bot! Now you can earn on cryptocurrencies quickly, easily, and automatically, right from your phone.",
         featuresTitle: "🔹 What does our trading bot do?",
         features: [
-          "1️⃣ Analyzes the market 24/7: The bot uses advanced algorithms and monitors dozens of cryptocurrencies in real-time.",
-          "2️⃣ Executes trades automatically: Based on signals, the bot buys and sells assets, locking in profits when prices rise.",
-          "3️⃣ Minimizes risks: Safe strategies with capital protection and diversified investments are applied.",
+          "Analyzes the market 24/7: The bot uses advanced algorithms and monitors dozens of cryptocurrencies in real-time.",
+          "Executes trades automatically: Based on signals, the bot buys and sells assets, locking in profits when prices rise.",
+          "Minimizes risks: Safe strategies with capital protection and diversified investments are applied.",
         ],
-        bonusTitle: "🎁 Bonus for new users",
+        bonusTitle: "Bonus for new users",
         bonusText:
           "Every new user receives a $50 bonus – a great opportunity to test the bot without risks! The bonus can be obtained after registration and completing simple conditions.",
-        reportingTitle: "📊 Reporting and transparency",
+        reportingTitle: "Reporting and transparency",
         reportingItems: [
           "All open and closed trades",
           "Profit for each operation",
           "Updated balance and profitability",
         ],
-        howToStartTitle: "💼 How to start?",
+        howToStartTitle: "How to start?",
         howToStartSteps: [
-          "Join the bot 👉 @Crypto_corporation_bot",
+          "Join the bot @Crypto_corporation_bot",
           "Register and activate trading",
           "Get the $50 bonus and start earning",
         ],
         callToAction:
-          "🚀 Crypto Corporation — your easy start in the world of trading. Activate the trading bot today and earn while others watch!",
+          "Crypto Corporation — your easy start in the world of trading. Activate the trading bot today and earn while others watch!",
       },
     },
     stepsSection: {
@@ -224,7 +224,7 @@ export default function TradingBot() {
               {translations.tradingSection[language].reportingTitle}
             </motion.h4>
             <motion.ul
-              className="list-disc list-inside mb-6 pl-5"
+              className="list-none list-inside mb-6 pl-5"
               variants={fadeIn("up", "tween", 0.9, 1)}
             >
               {translations.tradingSection[language].reportingItems.map((item, index) => (
@@ -245,7 +245,7 @@ export default function TradingBot() {
             >
               {translations.tradingSection[language].howToStartSteps.map((step, index) => (
                 <li key={index} className="text-gray-700 mb-2">
-                  ✔ {step}
+                  {step}
                 </li>
               ))}
             </motion.ul>

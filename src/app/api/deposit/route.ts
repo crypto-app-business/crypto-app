@@ -42,7 +42,6 @@ export async function POST(request: Request) {
     await deposit.save();
 
     const user = await User.findById(id);
-    console.log(user)
 
     // Відправка сповіщення адміну
     const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;

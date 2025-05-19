@@ -17,7 +17,6 @@ export async function GET(request) {
 
     const token = authHeader.split(' ')[1];
     let decoded;
-    console.log(token)
 
     try {
       decoded = jwt.verify(token, JWT_SECRET);
@@ -28,9 +27,7 @@ export async function GET(request) {
 
 
     const adminUser = await User.findById(decoded.id);
-    console.log(decoded.id)
 
-    console.log(adminUser)
     if (!adminUser || adminUser.role !== 'admin') {
       return NextResponse.json({ error: 'Недостатньо прав' }, { status: 403 });
     }
