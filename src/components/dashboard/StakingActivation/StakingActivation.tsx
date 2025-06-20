@@ -402,7 +402,7 @@ export default function StakingActivation({ user }: StakingActivationProps) {
               </div>
             </div>
             <div className="flex items-end gap-[6px] ml-[40px] mt-[-13px]">
-              <div className="text-[24px] font-bold">{balance || 0.00}</div>
+              <div className="text-[24px] font-bold">{balance.toFixed(0) || 0.00}</div>
               <div className="text-[14px]">CC</div>
             </div>
           </div>

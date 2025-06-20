@@ -33,7 +33,7 @@ export async function POST(request) {
       const newOperation = new Operations({
         id: userId,
         description: `Пополнение баланса`,
-        amount: amount,
+        amount: amount/10,
         currency: "USDT",
         type: 'staking',
         createdAt: new Date(),
@@ -42,7 +42,7 @@ export async function POST(request) {
 
       const newOperation2 = new Operations({
         id: userId,
-        description: `Снятие баланса`,
+        description: `Снятие баланса стейкинга`,
         amount: amount,
         currency: "CC",
         type: 'staking',
@@ -63,7 +63,7 @@ export async function POST(request) {
 
       const newOperation2 = new Operations({
         id: userId,
-        description: `Пополнение баланса`,
+        description: `Пополнение баланса стейкинга`,
         amount: amount*10,
         currency: "CC",
         type: 'staking',
