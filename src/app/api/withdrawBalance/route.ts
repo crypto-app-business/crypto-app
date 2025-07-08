@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     const user = await User.findById(id);
     if (!user) {
-      return NextResponse.json({ error: "Користувач не знайдений." }, { status: 404 });
+      return NextResponse.json({ error: "Пользователь не найден." }, { status: 404 });
     }
 
     const currentBalance = user.balance.get('USDT');
@@ -76,7 +76,7 @@ export async function POST(request: Request) {
       const message = `
 Нове виведення створено:
 ID: ${withdrawal._id}
-Користувач: ${id}
+Пользователь: ${id}
 Email: ${user.email}
 Валюта: ${currency}
 Сума: ${amount} USD

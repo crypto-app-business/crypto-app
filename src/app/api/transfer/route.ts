@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     // Знаходимо відправника
     const sender = await User.findById(userId);
     if (!sender) {
-      return NextResponse.json({ error: 'Відправник не знайдений' }, { status: 404 });
+      return NextResponse.json({ error: 'Відправник не знайденый' }, { status: 404 });
     }
 
     // Перевіряємо баланс у відправника
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     // Знаходимо одержувача за username
     const receiver = await User.findOne({ username });
     if (!receiver) {
-      return NextResponse.json({ error: 'Одержувач не знайдений' }, { status: 404 });
+      return NextResponse.json({ error: 'Одержувач не знайденый' }, { status: 404 });
     }
 
     // Створюємо запис про трансфер зі статусом 'pending'

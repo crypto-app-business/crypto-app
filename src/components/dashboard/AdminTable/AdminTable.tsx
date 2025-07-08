@@ -59,7 +59,7 @@ export default function UsersTable() {
         if (data.success) {
           setUsers(data.users);
         } else {
-          setError(data.error || "Не вдалося отримати користувачів");
+          setError(data.error || "Не удалось получить пользователей");
         }
       } catch (err) {
         console.error("Помилка при отриманні користувачів:", err);
@@ -219,7 +219,7 @@ export default function UsersTable() {
             ) : (
               <tr>
                 <td colSpan={3} className="py-2 text-center text-gray-500 text-xs md:text-sm">
-                  Користувачі не знайдені
+                  Пользователи не найдены
                 </td>
               </tr>
             )}
@@ -287,7 +287,7 @@ export default function UsersTable() {
             </div>
           ))
         ) : (
-          <p className="text-center text-gray-500 text-xs">Користувачі не знайдені</p>
+          <p className="text-center text-gray-500 text-xs">Пользователи не найдены</p>
         )}
       </div>
     </div>

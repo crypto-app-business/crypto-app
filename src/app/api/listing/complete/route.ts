@@ -76,7 +76,7 @@ export async function PATCH(request) {
     const listingSessions = await ListingSession.find({ userId, isCompleted: false });
 
     if (listingSessions.length === 0) {
-      return NextResponse.json({ success: false, message: 'Активние сессии не найдени' });
+      return NextResponse.json({ success: false, message: 'Активние сессии не найдены' });
     }
 
     const user = await User.findById(userId);

@@ -17,7 +17,7 @@ export async function POST(request) {
 
     const user = await User.findById(userId);
     if (!user) {
-      return NextResponse.json({ error: 'Користувач не знайдений.' }, { status: 404 });
+      return NextResponse.json({ error: 'Пользователь не найден.' }, { status: 404 });
     }
 
     if (!user.balance.has(currency)) {

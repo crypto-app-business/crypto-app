@@ -21,7 +21,7 @@ export async function POST(request: Request) {
     // Валідація вхідних даних
     if (!id || !currency || !amount) {
       return NextResponse.json(
-        { error: 'Всі поля є обов’язковими: id, currency, amount' },
+        { error: 'Все поля обязательни: id, currency, amount' },
         { status: 400 }
       );
     }
@@ -49,7 +49,7 @@ export async function POST(request: Request) {
       const message = `
 Новий депозит створено:
 ID: ${deposit._id}
-Користувач: ${id}
+Пользователь: ${id}
 Email: ${user.email}
 Валюта: ${currency}
 Сума: ${amount} USD
@@ -67,6 +67,6 @@ Email: ${user.email}
     );
   } catch (error) {
     console.error('Error creating deposit:', error);
-    return NextResponse.json({ error: 'Помилка сервера' }, { status: 500 });
+    return NextResponse.json({ error: 'Ошибка сервера' }, { status: 500 });
   }
 }

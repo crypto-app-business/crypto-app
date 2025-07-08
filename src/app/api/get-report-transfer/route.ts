@@ -24,7 +24,7 @@ export async function GET(request: Request) {
     const user = await User.findById(userId);
     if (!user) {
       return NextResponse.json(
-        { error: 'Користувача не знайдено' },
+        { error: 'Пользователь не найден' },
         { status: 404 }
       );
     }

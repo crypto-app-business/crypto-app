@@ -49,7 +49,7 @@ export async function POST(request: Request) {
 
     const newOperation = new Operations({
       id: userId,
-      description: `Снятие баланса не подтвержден`,
+      description: `Снятие баланса не подтверждено`,
       amount: deposit.amount,
       currency: "USDT",
       type: 'deposit',

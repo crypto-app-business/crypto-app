@@ -41,7 +41,7 @@ export async function PATCH(request: Request) {
     // Оновлення балансу користувача
     const user = await User.findOne({ username });
     if (!user) {
-      return NextResponse.json({ error: 'Користувача не знайдено' }, { status: 404 });
+      return NextResponse.json({ error: 'Пользователя не найдено' }, { status: 404 });
     }
 
     // Робота з Map: оновлюємо CC і USDT, зберігаємо інші валюти

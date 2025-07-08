@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     // Створення операції для відправника
     const senderOperation = new Operations({
       id: userId,
-      description: `Трансфер до ${transfer.username} не підтверджено`,
+      description: `Трансфер к ${transfer.username} не подтвержден`,
       amount: transfer.amount,
       currency: transfer.currency,
       type: 'transfer',

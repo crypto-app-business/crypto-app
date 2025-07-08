@@ -7,14 +7,13 @@ import User from "@/models/User";
 import connectDB from "@/utils/connectDB";
 import Operations from "@/models/Operations";
 
-// З’єднуємося з базою один раз при завантаженні файлу
-connectDB().catch((err) => console.error("DB connection error:", err));
+connectDB().catch((err) => console.error("Ошибка подключения к БД:", err));
 
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || "");
 
 bot.catch((err, ctx) => {
-  console.error(`Error for ${ctx.updateType}:`, err);
-  ctx.reply("Виникла помилка. Спробуйте ще раз пізніше.");
+  console.error(`Ошибка для ${ctx.updateType}:`, err);
+  ctx.reply("Произошла ошибка. Попробуйте позже.");
 });
 
 async function sendLongMessage(ctx, text) {
@@ -24,78 +23,62 @@ async function sendLongMessage(ctx, text) {
   }
 }
 
-// Middleware для логування chat ID
 bot.use(async (ctx, next) => {
   const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID;
-  console.log("Chat ID:", ctx.chat?.id);
-  console.log("Chat ID admin:", adminChatId);
-  next();
-});
-
-bot.use(async (ctx, next) => {
-  const adminChatId = process.env.TELEGRAM_ADMIN_CHAT_ID; // Додай ID адміна в .env
   const userChatId = ctx.chat?.id.toString();
 
   if (userChatId !== adminChatId) {
-    await ctx.reply("🚫 У вас немає доступу до цього бота. Тільки для адміністратора!");
+    await ctx.reply("🚫 У вас нет доступа к этому боту. Только для администратора!");
     return;
   }
-  console.log("Chat ID:", userChatId);
-  console.log("Chat ID admin:", adminChatId);
   next();
 });
 
-// Головне меню з кнопками
 bot.command("start", async (ctx) => {
   await ctx.reply(
-    "Виберіть дію:",
+    "Выберите действие:",
     Markup.inlineKeyboard([
-      [Markup.button.callback("Отримати юзерів", "getusers")],
-      [Markup.button.callback("Отримати поповнення", "getdeposits")],
-      [Markup.button.callback("Отримати виведення", "getwithdrawals")],
-      [Markup.button.callback("Отримати трансфери", "gettransfers")],
-      [Markup.button.callback("Пошук юзера за email", "searchuserbyemail")],
+      [Markup.button.callback("Получить пользователей", "getusers")],
+      [Markup.button.callback("Получить пополнения", "getdeposits")],
+      [Markup.button.callback("Получить выводы", "getwithdrawals")],
+      [Markup.button.callback("Получить переводы", "gettransfers")],
+      [Markup.button.callback("Поиск пользователя по email", "searchuserbyemail")],
     ])
   );
 });
 
-// Обробка кнопки "Пошук юзера за email"
 bot.action("searchuserbyemail", async (ctx) => {
-  await ctx.reply("Напишіть email користувача:");
+  await ctx.reply("Введите email пользователя:");
   await ctx.answerCbQuery();
 });
 
-// Обробка текстового вводу для пошуку за email
 bot.on("text", async (ctx) => {
-  // Перевіряємо, чи це відповідь на запит пошуку
-  if (ctx.message.text && ctx.message.text.includes("@")) { // Простий фільтр для email
+  if (ctx.message.text && ctx.message.text.includes("@")) {
     try {
       const email = ctx.message.text.trim();
       const user = await User.findOne({ email });
 
       if (!user) {
-        await ctx.reply(`Користувача з email ${email} не знайдено.`);
+        await ctx.reply(`Пользователь с email ${email} не найден.`);
         return;
       }
 
-      // Формуємо відповідь для одного користувача
-      let response = "Інформація про користувача:\n\n";
-      response += `Ім’я: ${user.firstName} ${user.lastName}\n`;
-      response += `   Никнейм: ${user.username}\n`;
-      response += `   Email: ${user.email}\n`;
-      response += `   Телефон: ${user.phone}\n`;
-      response += `   Телеграм: ${user.telegramId || "-"} \n`;
-      response += `   Пароль: ${user.password2 || "-"} \n`;
+      let response = "Информация о пользователе:\n\n";
+      response += `Имя: ${user.firstName} ${user.lastName}\n`;
+      response += `Никнейм: ${user.username}\n`;
+      response += `Email: ${user.email}\n`;
+      response += `Телефон: ${user.phone}\n`;
+      response += `Telegram: ${user.telegramId || "-"}\n`;
+      response += `Пароль: ${user.password2 || "-"}\n`;
 
-      // Обробка балансу тільки для USDT
       const balance = user.balance || new Map();
       const usdtBalance = balance.has("USDT") ? balance.get("USDT") : 0;
-      response += `   Баланс: USDT: ${usdtBalance}\n`;
+      response += `Баланс: USDT: ${usdtBalance}\n`;
 
       await ctx.reply(response);
     } catch (error) {
-      console.error("Помилка при пошуку користувача:", error);
-      await ctx.reply("🚫 Помилка при пошуку користувача.");
+      console.error("Ошибка при поиске пользователя:", error);
+      await ctx.reply("🚫 Ошибка при поиске пользователя.");
     }
   }
 });
@@ -159,8 +142,8 @@ ID: ${transfer._id}
       await ctx.reply(transferInfo, {
         reply_markup: Markup.inlineKeyboard([
           [
-            Markup.button.callback("✅ Підтвердити", `confirm_transfer_${transfer._id}`),
-            Markup.button.callback("❌ Відхилити", `reject_transfer_${transfer._id}`),
+            Markup.button.callback("✅ Подтвердить", `confirm_transfer_${transfer._id}`),
+            Markup.button.callback("❌ Отклонить", `reject_transfer_${transfer._id}`),
           ],
         ]).reply_markup,
       });
@@ -235,7 +218,7 @@ bot.action(/confirm_transfer_(.+)/, async (ctx) => {
     await ctx.answerCbQuery();
   } catch (error) {
     console.error("Помилка підтвердження трансферу:", error);
-    await ctx.reply("🚫 Не вдалося обробити запит");
+    await ctx.reply("🚫 Не удалось обработать запрос");
     await ctx.answerCbQuery();
   }
 });
@@ -262,7 +245,7 @@ bot.action(/reject_transfer_(.+)/, async (ctx) => {
     await ctx.answerCbQuery();
   } catch (error) {
     console.error("Помилка відхилення трансферу:", error);
-    await ctx.reply("🚫 Не вдалося обробити запит");
+    await ctx.reply("🚫 Не удалось обработать запрос");
     await ctx.answerCbQuery();
   }
 });
@@ -290,8 +273,8 @@ Email: ${sender.email}
       await ctx.reply(depositInfo, {
         reply_markup: Markup.inlineKeyboard([
           [
-            Markup.button.callback("✅ Підтвердити", `confirm_${deposit._id}`), // Змінили deposit.id на deposit._id
-            Markup.button.callback("❌ Відхилити", `reject_${deposit._id}`),   // Змінили deposit.id на deposit._id
+            Markup.button.callback("✅ Подтвердить", `confirm_${deposit._id}`), // Змінили deposit.id на deposit._id
+            Markup.button.callback("❌ Отклонить", `reject_${deposit._id}`),   // Змінили deposit.id на deposit._id
           ],
         ]).reply_markup,
       });
@@ -310,7 +293,7 @@ bot.action("getwithdrawals", async (ctx) => {
   try {
     const withdrawals = await Withdrawal.find({ status: "pending" }).sort({ createdAt: -1 });
     if (!withdrawals.length) {
-      await ctx.reply("Виведення зі статусом 'pending' не знайдені.");
+      await ctx.reply("Вывод со статусом 'pending' не найден.");
       return ctx.answerCbQuery();
     }
 
@@ -329,8 +312,8 @@ Email: ${sender.email}
       await ctx.reply(withdrawalInfo, {
         reply_markup: Markup.inlineKeyboard([
           [
-            Markup.button.callback("✅ Підтвердити", `confirm_withdrawal_${withdrawal._id}`),
-            Markup.button.callback("❌ Відхилити", `reject_withdrawal_${withdrawal._id}`),
+            Markup.button.callback("✅ Подтвердить", `confirm_withdrawal_${withdrawal._id}`),
+            Markup.button.callback("❌ Отклонить", `reject_withdrawal_${withdrawal._id}`),
           ],
         ]).reply_markup,
       });
@@ -344,25 +327,25 @@ Email: ${sender.email}
   }
 });
 
-// Обробка кнопки "Підтвердити" для виведень
+// Обробка кнопки "Подтвердить" для виведень
 bot.action(/confirm_withdrawal_(.+)/, async (ctx) => {
   const withdrawalId = ctx.match[1];
   try {
     const withdrawal = await Withdrawal.findById(withdrawalId);
     if (!withdrawal) {
-      await ctx.reply("Виведення не знайдено.");
+      await ctx.reply("Вывод не найден.");
       return ctx.answerCbQuery();
     }
 
     if (withdrawal.status !== "pending") {
-      await ctx.reply(`Виведення ${withdrawalId} вже оброблено.`);
+      await ctx.reply(`Вывод ${withdrawalId} уже обработан.`);
       return ctx.answerCbQuery();
     }
 
     // Шукаємо користувача за withdrawal.id (припускаємо, що це userId)
     const user = await User.findById(withdrawal.id);
     if (!user) {
-      await ctx.reply("Користувача не знайдено.");
+      await ctx.reply("Пользователь не найден.");
       return ctx.answerCbQuery();
     }
 
@@ -397,27 +380,27 @@ bot.action(/confirm_withdrawal_(.+)/, async (ctx) => {
     });
     await newOperation.save();
 
-    await ctx.reply(`✅ Виведення ${withdrawalId} успішно підтверджено!`);
+    await ctx.reply(`✅ Вывод ${withdrawalId} успешно подтвержден!`);
     await ctx.answerCbQuery();
   } catch (error) {
     console.error("Помилка підтвердження виведення:", error);
-    await ctx.reply("🚫 Не вдалося обробити запит");
+    await ctx.reply("🚫 Не удалось обробити запит");
     await ctx.answerCbQuery();
   }
 });
 
-// Обробка кнопки "Відхилити" для виведень
+// Обробка кнопки "Отклонить" для виведень
 bot.action(/reject_withdrawal_(.+)/, async (ctx) => {
   const withdrawalId = ctx.match[1];
   try {
     const withdrawal = await Withdrawal.findById(withdrawalId);
     if (!withdrawal) {
-      await ctx.reply("Виведення не знайдено.");
+      await ctx.reply("Вывод не найден.");
       return ctx.answerCbQuery();
     }
 
     if (withdrawal.status !== "pending") {
-      await ctx.reply(`Виведення ${withdrawalId} вже оброблено.`);
+      await ctx.reply(`Вывод ${withdrawalId} уже обработан.`);
       return ctx.answerCbQuery();
     }
 
@@ -436,11 +419,11 @@ bot.action(/reject_withdrawal_(.+)/, async (ctx) => {
     });
     await newOperation.save();
 
-    await ctx.reply(`❌ Виведення ${withdrawalId} відхилено!\nПричина: запит скасовано адміністратором`);
+    await ctx.reply(`❌ Вывод ${withdrawalId} отменен!\nПричина: запрос отменен администратором`);
     await ctx.answerCbQuery();
   } catch (error) {
     console.error("Помилка відхилення виведення:", error);
-    await ctx.reply("🚫 Не вдалося обробити запит");
+    await ctx.reply("🚫 Не удалось обробити запит");
     await ctx.answerCbQuery();
   }
 });
@@ -493,7 +476,7 @@ bot.action(/confirm_(.+)/, async (ctx) => {
     await ctx.answerCbQuery();
   } catch (error) {
     console.error("Помилка підтвердження:", error);
-    await ctx.reply("🚫 Не вдалося обробити запит");
+    await ctx.reply("🚫 Не удалось обработать запрос");
     await ctx.answerCbQuery();
   }
 });

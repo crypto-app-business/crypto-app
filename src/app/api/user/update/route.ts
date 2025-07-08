@@ -56,7 +56,7 @@ export async function PATCH(request: Request) {
     ).select('-password');
 
     if (!updatedUser) {
-      return NextResponse.json({ error: 'Користувача не знайдено' }, { status: 404 });
+      return NextResponse.json({ error: 'Пользовательа не найден' }, { status: 404 });
     }
 
     console.log('Updated user:', updatedUser); // Log updated user for debugging

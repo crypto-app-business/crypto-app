@@ -18,7 +18,7 @@ export async function GET(request: Request) {
     // Перевірка користувача
     const user = await User.findById(userId);
     if (!user) {
-      return NextResponse.json({ error: 'Користувач не знайдений.' }, { status: 404 });
+      return NextResponse.json({ error: 'Пользователь не найден.' }, { status: 404 });
     }
 
     // Отримання завершених NFT-сесій (isCompleted: true)

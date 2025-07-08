@@ -13,7 +13,7 @@ export async function PATCH(request) {
     // Отримуємо всі активні сесії для цього користувача
     const miningSessions = await MiningSession.find({ userId, isCompleted: false });
     if (miningSessions.length === 0) {
-      return NextResponse.json({ success: false, message: 'Активние сесиии не найдени.' });
+      return NextResponse.json({ success: false, message: 'Активние сесиии не найдены.' });
     }
 
     // Обробка кожної сесії
